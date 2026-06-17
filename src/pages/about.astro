@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { personLd } from '../lib/seo';
 import { AUTHOR_NAME } from '../config';
 ---
-<BaseLayout title={`About — ${AUTHOR_NAME}`} description={`About ${AUTHOR_NAME}, author.`} jsonLd={personLd()}>
+<BaseLayout title={`About | ${AUTHOR_NAME}`} description={`About ${AUTHOR_NAME}, author.`} jsonLd={personLd()}>
   <article class="about-page" style="max-width:60ch;margin:0 auto;padding:3rem 1rem">
     <h1>The mind of Chris</h1>
     <p>

@@ -3,20 +3,24 @@ import { pickLine } from '../lib/gm';
 import type { GmContext } from '../lib/gm';
 interface Props { context?: GmContext; }
 const { context = 'greeting' } = Astro.props;
-const uid = `gmv-${crypto.randomUUID()}`;
 const initial = pickLine(context, 0);
 ---
-<p id={uid} class="gm-line" data-gm-voice data-gm-context={context}>{initial}</p>
-<script define:vars={{ uid }}>
+<p class="gm-line" data-gm-voice data-gm-context={context}>{initial}</p>
+<script>
   import { randomLine } from '../lib/gm';
-  const el = document.getElementById(uid);
-  if (el) {
-    const ctx = (el.dataset.gmContext || 'idle');
-    let timer = window.setInterval(() => { el.textContent = randomLine('idle'); }, 12000);
-    document.addEventListener('astro:before-swap', () => clearInterval(timer));
-    window.addEventListener('beforeunload', () => clearInterval(timer));
-    document.addEventListener('gm:say', (e) => {
-      el.textContent = randomLine(e.detail?.context || ctx);
+  function wireGmVoice() {
+    document.querySelectorAll<HTMLElement>('[data-gm-voice]').forEach((el) => {
+      const ctx = (el.dataset.gmContext || 'idle') as import('../lib/gm').GmContext;
+      let timer = window.setInterval(() => { el.textContent = randomLine('idle'); }, 12000);
+      const cleanup = () => clearInterval(timer);
+      document.addEventListener('astro:before-swap', cleanup, { once: true });
+      window.addEventListener('beforeunload', cleanup);
+      document.addEventListener('gm:say', (e) => {
+        const ev = e as CustomEvent;
+        el.textContent = randomLine(ev.detail?.context || ctx);
+      });
     });
   }
+  wireGmVoice();
+  document.addEventListener('astro:page-load', wireGmVoice);
 </script>

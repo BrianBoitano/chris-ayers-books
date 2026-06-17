@@ -14,7 +14,7 @@ const { Content } = await book.render();
 const url = new URL(`/books/${book.slug}`, Astro.site).href;
 ---
 <BaseLayout
-  title={`${book.data.title} — Chris Ayers`}
+  title={`${book.data.title} | Chris Ayers`}
   description={`${book.data.title} by Christopher Ayers`}
   image={book.data.cover}
   type="book"

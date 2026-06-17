@@ -8,8 +8,9 @@ import { worksLd } from '../../lib/seo';
 export async function getStaticPaths() {
   const works = await getCollection('works');
   // External works (e.g. The Broadcast) live off-site; no internal page.
+  // Locked works are non-clickable teasers; they get no routable page either.
   return works
-    .filter((w) => !isExternal({ data: w.data }))
+    .filter((w) => !isExternal({ data: w.data }) && w.data.status !== 'locked')
     .map((w) => ({ params: { slug: w.slug }, props: { work: w } }));
 }
 
@@ -20,7 +21,7 @@ const books = sortWorks(
 );
 ---
 <BaseLayout
-  title={`${work.data.title} — Chris Ayers`}
+  title={`${work.data.title} | Chris Ayers`}
   description={work.data.tagline}
   jsonLd={worksLd(books.map((b) => ({ title: b.data.title, url: new URL(`/books/${b.slug}`, Astro.site).href })))}
 >
