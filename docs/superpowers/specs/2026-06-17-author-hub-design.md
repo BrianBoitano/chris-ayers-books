@@ -6,9 +6,8 @@ Status: Approved for planning
 
 ## Purpose
 
-A standalone author-brand website at chrisayers.com (domain availability to be
-confirmed before build) that serves as the home for all of Chris Ayers' adult
-fiction. It is a brand-new site in its own repo and Vercel project. The existing
+A standalone author-brand website at chrisayersbooks.com that serves as the home
+for all of Chris Ayers' adult fiction. It is a brand-new site in its own repo and Vercel project. The existing
 The Broadcast series site (thebroadcastseries.com) is left completely untouched
 and is featured on the hub as a link out, not duplicated.
 
@@ -101,7 +100,8 @@ an egg is a data edit. Eggs increment progression and trigger GM `eggFound` line
 
 Stack: Astro 5, `@astrojs/vercel`, `@astrojs/sitemap`, content collections, vitest.
 New repo (proposed `github.com/BrianBoitano/chris-ayers-site`), new Vercel project,
-domain chrisayers.com.
+domain chrisayersbooks.com (confirmed available via RDAP 2026-06-17; Chris to
+register and point DNS at the Vercel project at deploy time).
 
 Reused from `~/broadcast-site` (copied and adapted, not shared):
 
@@ -130,6 +130,6 @@ quips and easter eggs, and verifying on production.
 
 ## Open items to confirm before build
 
-- Confirm chrisayers.com availability; fall back to chrisayersbooks.com /
-  chrisayersauthor.com / readchrisayers.com if taken.
+- Domain: chrisayersbooks.com (selected, available as of 2026-06-17). Chris to
+  register at his registrar.
 - Confirm GitHub repo name and Vercel project name.
