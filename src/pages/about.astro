@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { personLd } from '../lib/seo';
+import { AUTHOR_NAME } from '../config';
+---
+<BaseLayout title={`About — ${AUTHOR_NAME}`} description={`About ${AUTHOR_NAME}, author.`} jsonLd={personLd()}>
+  <article class="about-page" style="max-width:60ch;margin:0 auto;padding:3rem 1rem">
+    <h1>The mind of Chris</h1>
+    <p>
+      Chris Ayers writes adult fiction with a dangerously overclocked imagination:
+      sharp, funny, and built like a game you can fall into. By day he wrangles
+      data. By night he builds worlds and then dares you to survive them.
+    </p>
+    <p>
+      Every series and standalone he writes lives here. Pick a world from the
+      home screen and start playing.
+    </p>
+  </article>
+</BaseLayout>

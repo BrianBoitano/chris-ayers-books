@@ -5,6 +5,7 @@ import WorldTile from '../components/WorldTile.astro';
 import { sortWorks } from '../lib/works';
 import { SITE_NAME, SITE_TAGLINE } from '../config';
 import GmVoice from '../components/GmVoice.astro';
+import EmailCapture from '../components/EmailCapture.astro';
 
 const works = sortWorks(await getCollection('works'));
 ---
@@ -16,5 +17,8 @@ const works = sortWorks(await getCollection('works'));
   </section>
   <section id="worlds" class="world-grid">
     {works.map((w) => <WorldTile slug={w.slug} data={w.data} />)}
+  </section>
+  <section class="join">
+    <EmailCapture />
   </section>
 </BaseLayout>
