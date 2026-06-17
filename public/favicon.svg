@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Chris Ayers Books">
+  <rect width="64" height="64" rx="14" fill="#07090c"/>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="12.5" fill="none" stroke="#39ff9e" stroke-opacity="0.55" stroke-width="2"/>
+  <!-- faint red glitch echo of the play mark -->
+  <path d="M25 19 L47 32 L25 45 Z" fill="#ff3b3b" opacity="0.5" transform="translate(-1.6,0.6)"/>
+  <!-- play sigil -->
+  <path d="M25 19 L47 32 L25 45 Z" fill="#39ff9e"/>
+</svg>

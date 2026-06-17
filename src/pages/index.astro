@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_NAME, SITE_TAGLINE } from '../config';
+---
+<BaseLayout title={SITE_NAME} description={SITE_TAGLINE}>
+  <section style="padding:4rem 1rem;text-align:center">
+    <h1>{SITE_NAME}</h1>
+    <p>{SITE_TAGLINE}</p>
+  </section>
+</BaseLayout>

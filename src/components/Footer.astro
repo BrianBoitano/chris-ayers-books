@@ -1,0 +1,212 @@
+---
+import { AUTHOR_NAME, SITE_NAME, SUPPORT_URL, AUTHOR_AMAZON_URL } from '../config';
+const year = new Date().getFullYear();
+const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
+const showAmazon = AUTHOR_AMAZON_URL && AUTHOR_AMAZON_URL.length > 0;
+---
+
+<footer class="footer" role="contentinfo">
+  <div class="wrap footer__inner">
+
+    <!-- Brand row -->
+    <div class="footer__brand">
+      <span class="footer__brand-sigil" aria-hidden="true">▶</span>
+      <span class="footer__brand-name">{SITE_NAME}</span>
+    </div>
+
+    <!-- Support / tip the author -->
+    {showSupport && (
+      <div class="footer__support">
+        <a
+          href={SUPPORT_URL}
+          class="footer__coffee"
+          target="_blank"
+          rel="noopener"
+        >
+          <span aria-hidden="true">☕</span>
+          <span>Buy the author a coffee</span>
+        </a>
+      </div>
+    )}
+
+    <!-- Nav links row -->
+    <nav class="footer__nav" aria-label="Footer navigation">
+      <ul class="footer__nav-list" role="list">
+        <li><a href="/" class="footer__nav-link">Home</a></li>
+        <li><a href="/#worlds" class="footer__nav-link">Works</a></li>
+        <li><a href="/about" class="footer__nav-link">About</a></li>
+        {showAmazon && (
+          <li>
+            <a
+              href={AUTHOR_AMAZON_URL}
+              class="footer__nav-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Amazon Author</a>
+          </li>
+        )}
+      </ul>
+    </nav>
+
+    <!-- Bottom bar -->
+    <div class="footer__bottom">
+      <span class="footer__copy">
+        &copy; {year} {AUTHOR_NAME}. All rights reserved.
+      </span>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  /* ================================================================
+     Footer — Author hub chrome, bottom rail
+     ================================================================ */
+
+  .footer {
+    border-top: 1px solid var(--line);
+    background: var(--bg-0);
+    padding-block: clamp(2.5rem, 5vw, 4rem) 1.5rem;
+    position: relative;
+  }
+
+  /* Top-edge green accent line */
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(57, 255, 158, 0.35) 30%,
+      rgba(57, 255, 158, 0.35) 70%,
+      transparent 100%
+    );
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  /* Brand */
+  .footer__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  .footer__brand-sigil {
+    color: var(--green);
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+
+  .footer__brand-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    opacity: 1;
+  }
+
+  /* Support / tip */
+  .footer__support {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .footer__coffee {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-decoration: none;
+    padding: 0.55em 1em;
+    border: 1px solid var(--amber);
+    border-radius: 2px;
+    transition: background-color 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
+  }
+
+  .footer__coffee:hover {
+    background: var(--amber);
+    color: var(--bg-0);
+    box-shadow: 0 0 18px rgba(200, 134, 26, 0.35);
+    text-decoration: none;
+  }
+
+  /* Footer nav */
+  .footer__nav-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0;
+  }
+
+  .footer__nav-link {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.2em 0.7em;
+    border-right: 1px solid var(--line);
+    transition: color 0.12s ease;
+  }
+
+  .footer__nav-list li:first-child .footer__nav-link {
+    padding-left: 0;
+  }
+
+  .footer__nav-list li:last-child .footer__nav-link {
+    border-right: none;
+  }
+
+  .footer__nav-link:hover {
+    color: var(--green);
+    text-decoration: none;
+  }
+
+  /* Bottom bar */
+  .footer__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .footer__copy {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  @media (min-width: 640px) {
+    .footer__bottom {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer__nav-link,
+    .footer__coffee {
+      transition: none;
+    }
+  }
+</style>

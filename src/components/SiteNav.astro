@@ -1,0 +1,304 @@
+---
+import { SITE_NAME, SUPPORT_URL } from '../config';
+const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
+---
+
+<header class="nav">
+  <div class="wrap nav__inner">
+
+    <!-- Brand: left on desktop, left on mobile -->
+    <a href="/" class="nav__brand" aria-label={`${SITE_NAME} — home`}>
+      <span class="nav__brand-sigil" aria-hidden="true">▶</span>
+      <span class="nav__brand-name">{SITE_NAME}</span>
+    </a>
+
+    <!-- Hamburger: mobile only -->
+    <button
+      class="nav__burger"
+      aria-controls="nav-menu"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+      type="button"
+    >
+      <span class="nav__burger-bar"></span>
+      <span class="nav__burger-bar"></span>
+      <span class="nav__burger-bar"></span>
+    </button>
+
+    <!-- Nav links -->
+    <nav id="nav-menu" class="nav__menu" aria-label="Site navigation">
+      <ul class="nav__list" role="list">
+        <li><a href="/#worlds" class="nav__link">Works</a></li>
+        <li><a href="/about" class="nav__link">About</a></li>
+        {showSupport && (
+          <li>
+            <a
+              href={SUPPORT_URL}
+              class="nav__link nav__coffee"
+              target="_blank"
+              rel="noopener"
+              title="Support the author"
+            >
+              <span aria-hidden="true">☕</span> Bribe the author
+            </a>
+          </li>
+        )}
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<script>
+  // Hamburger toggle — no framework needed
+  const burger = document.querySelector('.nav__burger') as HTMLButtonElement | null;
+  const menu = document.getElementById('nav-menu');
+
+  if (burger && menu) {
+    burger.addEventListener('click', () => {
+      const expanded = burger.getAttribute('aria-expanded') === 'true';
+      burger.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('nav__menu--open');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.classList.contains('nav__menu--open')) {
+        burger.setAttribute('aria-expanded', 'false');
+        menu.classList.remove('nav__menu--open');
+        burger.focus();
+      }
+    });
+  }
+
+</script>
+
+<style>
+  /* ================================================================
+     SiteNav — Author hub chrome
+     Mobile-first. Mono font throughout for that platform-UI feel.
+     ================================================================ */
+
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(7, 9, 12, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    box-shadow:
+      0 1px 0 0 rgba(57, 255, 158, 0.08),
+      inset 0 1px 0 rgba(57, 255, 158, 0.06);
+  }
+
+  .nav__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    min-height: 56px;
+    gap: 0.5rem;
+    position: relative;
+  }
+
+  /* ---- Brand ---- */
+  .nav__brand {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .nav__brand:hover {
+    color: var(--green);
+    text-decoration: none;
+  }
+
+  .nav__brand-sigil {
+    color: var(--green);
+    font-size: 0.75em;
+    animation: sigil-breathe 3s ease-in-out infinite;
+  }
+
+  @keyframes sigil-breathe {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.55; }
+  }
+
+  /* ---- Hamburger (mobile only) ---- */
+  .nav__burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 0;
+    justify-self: end;
+    transition: border-color 0.15s ease;
+  }
+
+  .nav__burger:hover {
+    border-color: var(--green);
+  }
+
+  .nav__burger-bar {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: var(--ink);
+    transition: background 0.15s ease;
+  }
+
+  .nav__burger:hover .nav__burger-bar {
+    background: var(--green);
+  }
+
+  /* ---- Nav menu ---- */
+  .nav__menu {
+    /* Mobile: hidden panel that slides from top */
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(7, 9, 12, 0.97);
+    border-bottom: 1px solid var(--line);
+    padding: 1rem var(--space);
+  }
+
+  .nav__menu--open {
+    display: block;
+  }
+
+  .nav__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .nav__link {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.55em 0;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transform-origin: center;
+    transition: color 0.12s ease, border-color 0.12s ease,
+      transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1.4);
+  }
+
+  .nav__link:hover {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  /* macOS-dock-style hover magnify (desktop pointer only) */
+  @media (hover: hover) and (min-width: 768px) {
+    .nav__link:hover {
+      transform: scale(1.22);
+      color: var(--green);
+    }
+    .nav__coffee:hover {
+      transform: scale(1.12);
+    }
+  }
+
+  /* ---- Coffee / tip button — amber ---- */
+  .nav__coffee {
+    color: var(--amber);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    margin-top: 0.35rem;
+    white-space: nowrap;
+  }
+
+  .nav__coffee:hover {
+    color: var(--amber);
+    filter: brightness(1.15);
+  }
+
+  /* ---- Desktop layout (>= 768px) ---- */
+  @media (min-width: 768px) {
+    .nav__inner {
+      grid-template-columns: auto 1fr;
+    }
+
+    .nav__brand {
+      justify-self: start;
+    }
+
+    .nav__burger {
+      display: none;
+    }
+
+    .nav__menu {
+      display: block;
+      position: static;
+      background: transparent;
+      border: none;
+      padding: 0;
+      justify-self: end;
+    }
+
+    .nav__list {
+      flex-direction: row;
+      align-items: center;
+      gap: 0;
+      justify-content: flex-end;
+    }
+
+    .nav__link {
+      padding: 0.4em 0.75em;
+      border-bottom: none;
+      border-radius: 2px;
+    }
+
+    .nav__coffee {
+      margin-top: 0;
+      background: rgba(200, 134, 26, 0.08);
+      border: 1px solid rgba(200, 134, 26, 0.35);
+      padding: 0.35em 0.75em;
+      border-radius: 2px;
+      margin-left: 0.5rem;
+      font-weight: 700;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .nav__coffee:hover {
+      background: var(--amber);
+      color: var(--bg-0);
+      border-color: var(--amber);
+      filter: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__brand-sigil {
+      animation: none;
+    }
+    .nav__link,
+    .nav__burger,
+    .nav__burger-bar {
+      transition: none;
+    }
+  }
+</style>

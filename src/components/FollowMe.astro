@@ -1,0 +1,188 @@
+---
+// Floating "follow" FAB, bottom-right, site-wide.
+// Closed = a single round button. Click = a labelled stack of follow links
+// springs up above it. Fully config-driven via FOLLOW_LINKS in config.ts —
+// add an entry and it appears here automatically. Renders nothing if empty.
+import { FOLLOW_LINKS } from '../config';
+
+const links = FOLLOW_LINKS.filter((l) => l.url && l.url.length > 0);
+---
+
+{links.length > 0 && (
+  <div class="fab" data-follow>
+    <ul class="fab__stack" id="fab-stack" role="list">
+      {links.map((l, i) => (
+        <li class="fab__item" style={`--i:${links.length - 1 - i}`}>
+          <a class="fab__link" href={l.url} target="_blank" rel="noopener noreferrer" tabindex="-1">
+            <span class="fab__link-label">{l.label}</span>
+            <span class="fab__link-glyph" aria-hidden="true">{l.glyph}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <button
+      type="button"
+      class="fab__toggle"
+      data-fab-toggle
+      aria-expanded="false"
+      aria-controls="fab-stack"
+      aria-label="Follow the author"
+    >
+      <span class="fab__toggle-text">Follow</span>
+      <span class="fab__toggle-x" aria-hidden="true">✕</span>
+    </button>
+  </div>
+)}
+
+<style>
+  .fab {
+    position: fixed;
+    left: clamp(1rem, 3vw, 1.75rem);
+    bottom: clamp(1rem, 3vw, 1.75rem);
+    z-index: 70;
+    font-family: var(--font-mono);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  /* ---- The link stack (hidden until open) ---- */
+  .fab__stack {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.55rem;
+  }
+  .fab__item {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+    pointer-events: none;
+  }
+  .fab.is-open .fab__item {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    /* stagger using the inline --i index, counting up from the FAB */
+    transition-delay: calc(var(--i) * 45ms);
+  }
+
+  .fab__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.7rem 0.55rem 0.9rem;
+    background: var(--bg-2);
+    color: var(--ink);
+    border: 1px solid rgba(57, 255, 158, 0.35);
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.8);
+    transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease, transform 0.12s ease;
+    white-space: nowrap;
+  }
+  .fab__link:hover {
+    background: var(--bg-1);
+    border-color: var(--green);
+    color: var(--green);
+    text-decoration: none;
+    transform: translateX(2px);
+  }
+  .fab__link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+  .fab__link-label { order: 1; }
+  /* Glyph rides in its own round chip so the row echoes the FAB shape. */
+  .fab__link-glyph {
+    order: 2;
+    display: grid;
+    place-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--bg-0);
+    border: 1px solid var(--line);
+    font-size: 0.95rem;
+    line-height: 1;
+    flex: none;
+  }
+
+  /* ---- The round toggle ---- */
+  .fab__toggle {
+    display: grid;
+    place-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--green);
+    color: #07090c;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 28px -8px rgba(57, 255, 158, 0.6), 0 4px 12px -4px rgba(0, 0, 0, 0.8);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    position: relative;
+  }
+  .fab__toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px -8px rgba(57, 255, 158, 0.7), 0 4px 12px -4px rgba(0, 0, 0, 0.8);
+  }
+  .fab__toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  /* "Follow" text shows when closed; the ✕ shows when open. Cross-fade in place. */
+  .fab__toggle-text,
+  .fab__toggle-x {
+    grid-area: 1 / 1;
+    transition: opacity 0.16s ease, transform 0.16s ease;
+  }
+  .fab__toggle-x { opacity: 0; transform: scale(0.6) rotate(-45deg); font-size: 1.1rem; }
+  .fab.is-open .fab__toggle-text { opacity: 0; transform: scale(0.6); }
+  .fab.is-open .fab__toggle-x { opacity: 1; transform: scale(1) rotate(0); }
+  .fab.is-open .fab__toggle { background: var(--ink); color: var(--bg-0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fab__item,
+    .fab__toggle,
+    .fab__toggle-text,
+    .fab__toggle-x,
+    .fab__link { transition: none; }
+    .fab.is-open .fab__item { transition-delay: 0ms; }
+  }
+</style>
+
+<script>
+  // Open/close the follow FAB: toggle on click, close on outside click or Escape.
+  // When open, the stacked links become focusable (tabindex 0); closed = -1.
+  const root = document.querySelector<HTMLElement>('[data-follow]');
+  if (root) {
+    const toggle = root.querySelector<HTMLButtonElement>('[data-fab-toggle]');
+    const linkEls = Array.from(root.querySelectorAll<HTMLAnchorElement>('.fab__link'));
+
+    const setOpen = (open: boolean) => {
+      root.classList.toggle('is-open', open);
+      toggle?.setAttribute('aria-expanded', String(open));
+      linkEls.forEach((a) => a.setAttribute('tabindex', open ? '0' : '-1'));
+    };
+
+    toggle?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(!root.classList.contains('is-open'));
+    });
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+  }
+</script>
