@@ -1,10 +1,19 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import WorldTile from '../components/WorldTile.astro';
+import { sortWorks } from '../lib/works';
 import { SITE_NAME, SITE_TAGLINE } from '../config';
+
+const works = sortWorks(await getCollection('works'));
 ---
-<BaseLayout title={SITE_NAME} description={SITE_TAGLINE}>
-  <section style="padding:4rem 1rem;text-align:center">
-    <h1>{SITE_NAME}</h1>
-    <p>{SITE_TAGLINE}</p>
+<BaseLayout title={`${SITE_NAME} — Choose Your World`} description={SITE_TAGLINE}>
+  <section class="hero-select">
+    <p class="gm-line" data-gm="greeting">Oh good, you're back. Pick something this time.</p>
+    <h1>Choose Your World</h1>
+    <p class="hero-sub">{SITE_TAGLINE}</p>
+  </section>
+  <section id="worlds" class="world-grid">
+    {works.map((w) => <WorldTile slug={w.slug} data={w.data} />)}
   </section>
 </BaseLayout>

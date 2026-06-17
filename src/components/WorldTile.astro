@@ -1,0 +1,29 @@
+---
+import { worldHref, isExternal } from '../lib/works';
+interface Props {
+  slug: string;
+  data: {
+    title: string; tagline: string; status: string;
+    accentColor: string; externalUrl?: string; cover?: string;
+  };
+}
+const { slug, data } = Astro.props;
+const href = worldHref({ slug, data });
+const external = isExternal({ data });
+const locked = data.status === 'locked';
+const Tag = href ? 'a' : 'div';
+---
+<Tag
+  class:list={['world-tile', { 'is-locked': locked }]}
+  href={href ?? undefined}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+  data-gm-tile={slug}
+  style={`--accent:${data.accentColor}`}
+>
+  <span class="world-status">{data.status.replace('-', ' ')}</span>
+  <h3 class="world-title">{data.title}</h3>
+  <p class="world-tagline">{data.tagline}</p>
+  {external && <span class="world-out">Enter &rarr; own site</span>}
+  {locked && <span class="world-lock" aria-hidden="true">&#x1F512;</span>}
+</Tag>
