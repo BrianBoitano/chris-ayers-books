@@ -10,6 +10,11 @@ export const AUTHOR_AMAZON_URL =
 // Support / tip link. Set to '' to hide.
 export const SUPPORT_URL = 'https://buymeacoffee.com/brianboitat';
 
+// Google Search Console verification token. From Search Console, choose the
+// "HTML tag" method and paste ONLY the content="..." value here (not the whole
+// tag), then push. Leave '' to render no verification meta.
+export const GSC_VERIFICATION = '';
+
 export interface FollowLink {
   label: string;
   url: string;

@@ -1,7 +1,7 @@
 ---
 import '@fontsource/archivo/400.css';
 import '@fontsource/archivo/700.css';
-import { SITE_URL, SITE_NAME } from '../config';
+import { SITE_URL, SITE_NAME, GSC_VERIFICATION } from '../config';
 
 interface Props {
   title: string;
@@ -19,6 +19,10 @@ const canonical = new URL(Astro.url.pathname, SITE_URL).href;
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <meta name="theme-color" content="#07090c" />
+
+{GSC_VERIFICATION && (
+  <meta name="google-site-verification" content={GSC_VERIFICATION} />
+)}
 
 <title>{title}</title>
 <meta name="description" content={description} />

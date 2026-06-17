@@ -1,19 +1,67 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { personLd } from '../lib/seo';
 import { AUTHOR_NAME } from '../config';
+import headshot from '../assets/headshot.png';
 ---
 <BaseLayout title={`About | ${AUTHOR_NAME}`} description={`About ${AUTHOR_NAME}, author.`} jsonLd={personLd()}>
-  <article class="about-page" style="max-width:60ch;margin:0 auto;padding:3rem 1rem">
-    <h1>The mind of Chris</h1>
-    <p>
-      Chris Ayers writes adult fiction with a dangerously overclocked imagination:
-      sharp, funny, and built like a game you can fall into. By day he wrangles
-      data. By night he builds worlds and then dares you to survive them.
-    </p>
-    <p>
-      Every series and standalone he writes lives here. Pick a world from the
-      home screen and start playing.
-    </p>
+  <article class="about-page">
+    <div class="about-portrait">
+      <Image
+        src={headshot}
+        alt={`${AUTHOR_NAME}, author`}
+        width={440}
+        height={567}
+        widths={[280, 440, 880]}
+        sizes="(max-width: 640px) 60vw, 320px"
+        loading="eager"
+        class="about-portrait-img"
+      />
+    </div>
+    <div class="about-copy">
+      <h1>The mind of Chris</h1>
+      <p>
+        Chris Ayers writes adult fiction with a dangerously overclocked imagination:
+        sharp, funny, and built like a game you can fall into. By day he wrangles
+        data. By night he builds worlds and then dares you to survive them.
+      </p>
+      <p>
+        Every series and standalone he writes lives here. Pick a world from the
+        home screen and start playing.
+      </p>
+    </div>
   </article>
 </BaseLayout>
+
+<style>
+  .about-page {
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    display: grid;
+    grid-template-columns: minmax(0, 320px) 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .about-portrait-img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+  }
+  .about-copy h1 {
+    margin-top: 0;
+  }
+  @media (max-width: 640px) {
+    .about-page {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      text-align: center;
+    }
+    .about-portrait {
+      max-width: 240px;
+      margin: 0 auto;
+    }
+  }
+</style>
