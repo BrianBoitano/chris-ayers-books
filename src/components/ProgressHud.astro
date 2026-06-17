@@ -1,0 +1,45 @@
+---
+---
+<aside class="progress-hud" aria-label="Your progress" data-progress-hud>
+  <span class="hud-xp">XP <b data-hud-xp>0</b></span>
+  <span class="hud-eggs">Secrets <b data-hud-eggs>0</b></span>
+</aside>
+<script>
+  import { SAVE_KEY, normalize, visitWorld, findEgg } from '../lib/progress';
+  import { EGGS } from '../data/eggs';
+
+  const load = () => {
+    try { return normalize(JSON.parse(localStorage.getItem(SAVE_KEY) || 'null')); }
+    catch { return normalize(null); }
+  };
+  const save = (p: any) => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(p)); } catch {} };
+
+  let p = load();
+  const render = () => {
+    const xp = document.querySelector('[data-hud-xp]');
+    const eg = document.querySelector('[data-hud-eggs]');
+    if (xp) xp.textContent = String(p.xp);
+    if (eg) eg.textContent = String(p.eggs.length);
+  };
+  const say = (context: string) => document.dispatchEvent(new CustomEvent('gm:say', { detail: { context } }));
+
+  // Count a world visit when a tile is opened.
+  document.querySelectorAll('[data-gm-tile]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const slug = (el as HTMLElement).dataset.gmTile!;
+      const next = visitWorld(p, slug);
+      if (next !== p) { p = next; save(p); render(); }
+    });
+  });
+
+  // Wire easter eggs from the registry.
+  for (const egg of EGGS) {
+    const t = document.querySelector(egg.selector);
+    if (t) t.addEventListener('click', () => {
+      const next = findEgg(p, egg.id);
+      if (next !== p) { p = next; save(p); render(); say('eggFound'); }
+    });
+  }
+
+  render();
+</script>
