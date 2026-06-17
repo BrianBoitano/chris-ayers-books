@@ -1,0 +1,62 @@
+---
+import { worldHref, isExternal } from '../lib/works';
+interface Props {
+  slug: string;
+  x: number;
+  y: number;
+  data: { title: string; tagline: string; status: string; accentColor?: string; externalUrl?: string };
+}
+const { slug, x, y, data } = Astro.props;
+const href = worldHref({ slug, data });
+const external = isExternal({ data });
+const locked = data.status === 'locked';
+const kind = locked ? 'locked' : external ? 'external' : 'hosted';
+const idNum = String((Math.abs(hashStr(slug)) % 99) + 1).padStart(2, '0');
+function hashStr(s: string) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
+const meta = locked ? 'ICE LOCKED | ACCESS DENIED'
+  : external ? 'PUBLIC FEED | EXTERNAL'
+  : data.status === 'coming-soon' ? 'ENCRYPTED | COMING ONLINE'
+  : 'ONLINE | JACK IN';
+const aria = locked ? `${data.title}, locked sector`
+  : external ? `Enter ${data.title}, opens external feed in a new tab`
+  : `Enter ${data.title}`;
+const Tag = locked ? 'button' : 'a';
+---
+<div class:list={['net-node', kind]} style={`left:${x}%; top:${y}%; --accent:${data.accentColor || '#fcee0a'}`}
+     data-node data-slug={slug} data-x={x} data-y={y} data-kind={kind}>
+  <Tag
+    class="term"
+    href={locked ? undefined : href}
+    type={locked ? 'button' : undefined}
+    aria-disabled={locked ? 'true' : undefined}
+    data-locked={locked ? '' : undefined}
+    target={external ? '_blank' : undefined}
+    rel={external ? 'noopener' : undefined}
+    aria-label={aria}
+  >
+    <span class="ic" aria-hidden="true">{locked ? '\u{1F512}' : external ? '▲' : '◆'}</span>
+    <span class="txt"><span class="id">NODE.{idNum}</span><span class="nm">{data.title}</span></span>
+  </Tag>
+  <span class="meta" aria-hidden="true">{meta}</span>
+</div>
+
+<style>
+  .net-node { position:absolute; transform:translate(-50%,-50%); width:148px; z-index:4; font-family:"Courier New",ui-monospace,monospace; }
+  .term { position:relative; display:flex; align-items:center; gap:8px; padding:0 10px; height:58px; text-decoration:none;
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), rgba(8,8,12,.86));
+    border:1px solid var(--accent); clip-path:polygon(0 0,100% 0,100% 64%,86% 100%,0 100%);
+    box-shadow:0 0 16px color-mix(in srgb, var(--accent) 38%, transparent); cursor:pointer; }
+  .term:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+  .ic { font-size:18px; color:var(--accent); }
+  .id { display:block; font-size:9px; letter-spacing:.14em; color:#cdd6b0; }
+  .nm { display:block; font-family:system-ui,sans-serif; font-weight:800; font-size:13px; color:#fff; }
+  .meta { display:block; margin-top:5px; font-size:9px; letter-spacing:.16em; color:var(--accent); }
+  .net-node.external { --accent:#00e5ff; }
+  .net-node.locked { --accent:#ff2e4d; }
+  .net-node.locked .term { box-shadow:none; cursor:not-allowed; background:linear-gradient(180deg, rgba(255,46,77,.06), rgba(8,8,12,.9)); }
+  .net-node.locked .nm { color:#9aa0a4; }
+  @media (prefers-reduced-motion: no-preference) {
+    .term { transition:box-shadow .15s, transform .15s; }
+    .net-node:not(.locked) .term:hover { transform:translateY(-1px); box-shadow:0 0 24px color-mix(in srgb, var(--accent) 60%, transparent); }
+  }
+</style>
