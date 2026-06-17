@@ -6,10 +6,12 @@ import { sortWorks } from '../lib/works';
 import { SITE_NAME, SITE_TAGLINE } from '../config';
 import GmVoice from '../components/GmVoice.astro';
 import EmailCapture from '../components/EmailCapture.astro';
+import { worksLd } from '../lib/seo';
 
 const works = sortWorks(await getCollection('works'));
+const ld = worksLd(works.map((w) => ({ title: w.data.title, url: w.data.externalUrl ?? new URL(`/works/${w.slug}`, Astro.site).href })));
 ---
-<BaseLayout title={`${SITE_NAME} — Choose Your World`} description={SITE_TAGLINE}>
+<BaseLayout title={`${SITE_NAME} — Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
   <section class="hero-select">
     <GmVoice context="greeting" />
     <h1>Choose Your World</h1>
