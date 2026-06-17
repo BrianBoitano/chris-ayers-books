@@ -10,12 +10,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "astro": "^5.0.0",
+    "@astrojs/sitemap": "^3.0.0",
     "@astrojs/vercel": "^8.0.0",
-    "@astrojs/sitemap": "^3.0.0"
+    "astro": "^5.0.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "vitest": "^3.0.0",
-    "@fontsource/archivo": "^5.0.0"
+    "@fontsource/archivo": "^5.0.0",
+    "vitest": "^3.0.0"
   }
 }
