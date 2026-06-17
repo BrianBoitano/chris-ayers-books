@@ -13,6 +13,9 @@ export const workSchema = z.object({
   externalUrl: z.string().url().optional(),
   // Sarcastic Game Master lines specific to this world.
   gmQuips: z.array(z.string()).optional(),
+  // Optional node placement override for the overworld map, in 0..100 viewBox
+  // units on each axis. Absent = auto-placed by network layout.
+  position: z.object({ x: z.number(), y: z.number() }).optional(),
 });
 
 export const bookSchema = z.object({

@@ -31,6 +31,22 @@ describe('workSchema', () => {
     });
     expect(r.success).toBe(false);
   });
+  it('accepts an optional position override', () => {
+    const r = workSchema.safeParse({
+      title: 'X', type: 'series', status: 'live',
+      tagline: 't', accentColor: '#fff', order: 1,
+      position: { x: 20, y: 60 },
+    });
+    expect(r.success).toBe(true);
+  });
+  it('rejects a malformed position', () => {
+    const r = workSchema.safeParse({
+      title: 'X', type: 'series', status: 'live',
+      tagline: 't', accentColor: '#fff', order: 1,
+      position: { x: 'nope' },
+    });
+    expect(r.success).toBe(false);
+  });
 });
 
 describe('bookSchema', () => {
