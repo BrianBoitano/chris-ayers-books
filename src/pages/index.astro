@@ -4,12 +4,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import WorldTile from '../components/WorldTile.astro';
 import { sortWorks } from '../lib/works';
 import { SITE_NAME, SITE_TAGLINE } from '../config';
+import GmVoice from '../components/GmVoice.astro';
 
 const works = sortWorks(await getCollection('works'));
 ---
 <BaseLayout title={`${SITE_NAME} — Choose Your World`} description={SITE_TAGLINE}>
   <section class="hero-select">
-    <p class="gm-line" data-gm="greeting">Oh good, you're back. Pick something this time.</p>
+    <GmVoice context="greeting" />
     <h1>Choose Your World</h1>
     <p class="hero-sub">{SITE_TAGLINE}</p>
   </section>
