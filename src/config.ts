@@ -13,7 +13,7 @@ export const SUPPORT_URL = 'https://buymeacoffee.com/brianboitat';
 // Google Search Console verification token. From Search Console, choose the
 // "HTML tag" method and paste ONLY the content="..." value here (not the whole
 // tag), then push. Leave '' to render no verification meta.
-export const GSC_VERIFICATION = '';
+export const GSC_VERIFICATION = 'GJUuu_v7SmE3I-irrlEJ3OkA3eycexPtsZ9cKTPA-Z0';
 
 export interface FollowLink {
   label: string;
