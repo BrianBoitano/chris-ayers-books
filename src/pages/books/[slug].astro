@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BuyButton from '../../components/BuyButton.astro';
+import { bookLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const books = await getCollection('books');
+  return books.map((b) => ({ params: { slug: b.slug }, props: { book: b } }));
+}
+
+const { book } = Astro.props;
+const { Content } = await book.render();
+const url = new URL(`/books/${book.slug}`, Astro.site).href;
+---
+<BaseLayout
+  title={`${book.data.title} — Chris Ayers`}
+  description={`${book.data.title} by Christopher Ayers`}
+  image={book.data.cover}
+  type="book"
+  jsonLd={bookLd({ title: book.data.title, description: `${book.data.title} by Christopher Ayers`, url, image: book.data.cover })}
+>
+  <article class="book-page">
+    <h1>{book.data.title}</h1>
+    <div class="book-blurb"><Content /></div>
+    <div class="buy-row">
+      {book.data.amazonUrl && <BuyButton href={book.data.amazonUrl} label="Buy on Amazon" />}
+      {book.data.paperbackUrl && <BuyButton href={book.data.paperbackUrl} label="Paperback" />}
+      {book.data.audiobookUrl && <BuyButton href={book.data.audiobookUrl} label="Audiobook" />}
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .book-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1;
+    margin: 0 0 1.5rem;
+  }
+
+  .book-blurb {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 65ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .buy-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+</style>

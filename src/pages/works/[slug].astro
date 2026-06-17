@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookCard from '../../components/BookCard.astro';
+import { isExternal, sortWorks } from '../../lib/works';
+import { worksLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const works = await getCollection('works');
+  // External works (e.g. The Broadcast) live off-site; no internal page.
+  return works
+    .filter((w) => !isExternal({ data: w.data }))
+    .map((w) => ({ params: { slug: w.slug }, props: { work: w } }));
+}
+
+const { work } = Astro.props;
+const { Content } = await work.render();
+const books = sortWorks(
+  (await getCollection('books')).filter((b) => b.data.work === work.slug)
+);
+const url = new URL(`/works/${work.slug}`, Astro.site).href;
+---
+<BaseLayout
+  title={`${work.data.title} — Chris Ayers`}
+  description={work.data.tagline}
+  jsonLd={worksLd(books.map((b) => ({ title: b.data.title, url: new URL(`/books/${b.slug}`, Astro.site).href })))}
+>
+  <article class="work-page" style={`--accent:${work.data.accentColor}`}>
+    <header>
+      <p class="work-status">{work.data.status.replace('-', ' ')}</p>
+      <h1>{work.data.title}</h1>
+      <p class="work-tagline">{work.data.tagline}</p>
+    </header>
+    <div class="work-blurb"><Content /></div>
+    {books.length > 0 && (
+      <section class="book-grid">
+        {books.map((b) => <BookCard slug={b.slug} data={b.data} />)}
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .work-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    border-left: 3px solid var(--accent, var(--green));
+    padding-left: 1.25rem;
+  }
+
+  .work-status {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin: 0 0 0.5rem;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1;
+    margin: 0 0 0.75rem;
+  }
+
+  .work-tagline {
+    font-size: 1.1rem;
+    color: var(--dim);
+    margin: 0;
+  }
+
+  .work-blurb {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 65ch;
+    margin-bottom: 3rem;
+  }
+
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+</style>
