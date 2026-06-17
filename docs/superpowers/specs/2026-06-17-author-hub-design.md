@@ -99,9 +99,10 @@ an egg is a data edit. Eggs increment progression and trigger GM `eggFound` line
 ## Tech stack and reuse
 
 Stack: Astro 5, `@astrojs/vercel`, `@astrojs/sitemap`, content collections, vitest.
-New repo (proposed `github.com/BrianBoitano/chris-ayers-site`), new Vercel project,
-domain chrisayersbooks.com (confirmed available via RDAP 2026-06-17; Chris to
-register and point DNS at the Vercel project at deploy time).
+Repo: `github.com/BrianBoitano/chris-ayers-books` (created; local clone at
+`~/chris-ayers-books`). Vercel project not yet created (to be created and linked
+at deploy time). Domain chrisayersbooks.com (confirmed available via RDAP
+2026-06-17; Chris to register and point DNS at the Vercel project at deploy time).
 
 Reused from `~/broadcast-site` (copied and adapted, not shared):
 
@@ -132,4 +133,5 @@ quips and easter eggs, and verifying on production.
 
 - Domain: chrisayersbooks.com (selected, available as of 2026-06-17). Chris to
   register at his registrar.
-- Confirm GitHub repo name and Vercel project name.
+- GitHub repo: chris-ayers-books (created). Vercel project: not yet created;
+  create and link at deploy time.
