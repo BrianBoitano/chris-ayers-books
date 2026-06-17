@@ -38,7 +38,13 @@ describe('layoutNetwork', () => {
   it('centers a single node and makes no wires', () => {
     const m = layoutNetwork([w('only', 1)]);
     expect(m.nodes[0].x).toBe(50);
+    expect(m.nodes[0].y).toBe(32);
     expect(m.wires).toEqual([]);
+  });
+  it('two nodes produce exactly one wire', () => {
+    const m = layoutNetwork([w('a', 1), w('b', 2)]);
+    expect(m.wires.length).toBe(1);
+    expect([m.wires[0].from, m.wires[0].to]).toEqual(['a', 'b']);
   });
   it('handles empty input', () => {
     const m = layoutNetwork([]);
