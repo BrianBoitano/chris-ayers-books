@@ -18,7 +18,6 @@ const { Content } = await work.render();
 const books = sortWorks(
   (await getCollection('books')).filter((b) => b.data.work === work.slug)
 );
-const url = new URL(`/works/${work.slug}`, Astro.site).href;
 ---
 <BaseLayout
   title={`${work.data.title} — Chris Ayers`}
