@@ -31,5 +31,12 @@ export const bookSchema = z.object({
   audioSampleUrl: z.string().optional(),
 });
 
+export const transmissionSchema = z.object({
+  title: z.string(),
+  date: z.coerce.date(),
+  tag: z.string().optional(),
+});
+
 export type Work = z.infer<typeof workSchema>;
 export type Book = z.infer<typeof bookSchema>;
+export type Transmission = z.infer<typeof transmissionSchema>;

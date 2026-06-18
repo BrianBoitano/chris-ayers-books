@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { workSchema, bookSchema } from '../src/content/schema';
+import { workSchema, bookSchema, transmissionSchema } from '../src/content/schema';
 
 describe('workSchema', () => {
   it('accepts a hosted series', () => {
@@ -56,5 +56,16 @@ describe('bookSchema', () => {
       amazonUrl: 'https://amazon.com/dp/x',
     });
     expect(r.success).toBe(true);
+  });
+});
+
+describe('transmissionSchema', () => {
+  it('accepts a valid post', () => {
+    const r = transmissionSchema.safeParse({ title: 'Hi', date: new Date('2026-06-17'), tag: 'news' });
+    expect(r.success).toBe(true);
+  });
+  it('rejects a post missing a title', () => {
+    const r = transmissionSchema.safeParse({ date: new Date('2026-06-17') });
+    expect(r.success).toBe(false);
   });
 });
