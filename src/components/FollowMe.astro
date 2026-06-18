@@ -79,7 +79,7 @@ const links = FOLLOW_LINKS.filter((l) => l.url && l.url.length > 0);
     padding: 0.55rem 0.7rem 0.55rem 0.9rem;
     background: var(--bg-2);
     color: var(--ink);
-    border: 1px solid rgba(57, 255, 158, 0.35);
+    border: 1px solid rgba(0, 229, 255, 0.35);
     border-radius: 999px;
     text-decoration: none;
     font-size: 0.78rem;
@@ -90,12 +90,12 @@ const links = FOLLOW_LINKS.filter((l) => l.url && l.url.length > 0);
   }
   .fab__link:hover {
     background: var(--bg-1);
-    border-color: var(--green);
-    color: var(--green);
+    border-color: var(--cy-cyan);
+    color: var(--cy-cyan);
     text-decoration: none;
     transform: translateX(2px);
   }
-  .fab__link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .fab__link:focus-visible { outline: 2px solid var(--cy-yellow); outline-offset: 2px; }
 
   .fab__link-label { order: 1; }
   /* Glyph rides in its own round chip so the row echoes the FAB shape. */
@@ -120,8 +120,8 @@ const links = FOLLOW_LINKS.filter((l) => l.url && l.url.length > 0);
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 50%;
-    background: var(--green);
-    color: #07090c;
+    background: var(--cy-yellow);
+    color: #0a0a04;
     border: none;
     cursor: pointer;
     font-family: var(--font-mono);
@@ -129,15 +129,15 @@ const links = FOLLOW_LINKS.filter((l) => l.url && l.url.length > 0);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    box-shadow: 0 10px 28px -8px rgba(57, 255, 158, 0.6), 0 4px 12px -4px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 10px 28px -8px rgba(252, 238, 10, 0.6), 0 4px 12px -4px rgba(0, 0, 0, 0.8);
     transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
     position: relative;
   }
   .fab__toggle:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 34px -8px rgba(57, 255, 158, 0.7), 0 4px 12px -4px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 14px 34px -8px rgba(252, 238, 10, 0.7), 0 4px 12px -4px rgba(0, 0, 0, 0.8);
   }
-  .fab__toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .fab__toggle:focus-visible { outline: 2px solid var(--cy-yellow); outline-offset: 3px; }
 
   /* "Follow" text shows when closed; the ✕ shows when open. Cross-fade in place. */
   .fab__toggle-text,
