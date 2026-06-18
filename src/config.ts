@@ -21,6 +21,7 @@ export interface FollowLink {
   glyph: string;
 }
 export const FOLLOW_LINKS: FollowLink[] = [
+  { label: 'Read on Royal Road', url: 'https://www.royalroad.com/profile/1000657/fictions', glyph: '📖' },
   { label: 'Amazon Author Page', url: AUTHOR_AMAZON_URL, glyph: '▶' },
   { label: 'Buy Me a Coffee', url: SUPPORT_URL, glyph: '☕' },
 ];
