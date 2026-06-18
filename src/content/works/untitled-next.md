@@ -6,7 +6,7 @@ tagline: Currently being argued about in Chris's head.
 overview: "A brand new world is still loading in Chris's head. Get on the list and you are first through the door when it opens."
 accentColor: "#b56cff"
 genre: Adult fiction
-order: 2
+order: 3
 gmQuips:
   - "Locked. Like the author's focus. Check back."
   - "You can rattle the handle all you want. It's not ready."

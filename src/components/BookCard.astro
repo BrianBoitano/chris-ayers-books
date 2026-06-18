@@ -12,6 +12,7 @@ import type { ImageMetadata } from 'astro';
 interface BookData {
   title: string;
   cover?: string;
+  order?: number;
   amazonUrl?: string;
   paperbackUrl?: string;
   audiobookUrl?: string;
@@ -21,10 +22,11 @@ interface BookData {
 interface Props {
   data: BookData;
   slug: string;
+  start?: boolean;
 }
 
-const { data, slug } = Astro.props;
-const { title, cover } = data;
+const { data, slug, start = false } = Astro.props;
+const { title, cover, order } = data;
 
 // Eagerly import every cover so they get optimized at build time.
 const coverModules = import.meta.glob<{ default: ImageMetadata }>(
@@ -70,6 +72,11 @@ const href = `/books/${slug}`;
     </div>
 
     <div class="card__meta">
+      {order && (
+        <span class:list={['card__order', { 'is-start': start }]}>
+          {start ? `Start here // Book ${order}` : `Book ${order}`}
+        </span>
+      )}
       <h3 class="card__title">{title}</h3>
     </div>
   </a>
@@ -113,6 +120,24 @@ const href = `/books/${slug}`;
   /* --- meta below the tile --- */
   .card__meta {
     padding-top: 0.85rem;
+  }
+
+  .card__order {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cy-cyan);
+    margin-bottom: 0.3rem;
+  }
+  .card__order.is-start {
+    color: #0a0a04;
+    background: var(--cy-yellow);
+    padding: 0.12em 0.5em;
+    align-self: flex-start;
+    width: max-content;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%);
   }
 
   .card__title {

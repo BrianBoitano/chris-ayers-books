@@ -35,8 +35,11 @@ const books = sortWorks(
       <div class="work-blurb"><Content /></div>
     </div>
     {books.length > 0 && (
-      <section class="book-grid">
-        {books.map((b) => <BookCard slug={b.slug} data={b.data} />)}
+      <section class="lineup">
+        <p class="lineup__head"><span aria-hidden="true">//</span> READING ORDER</p>
+        <div class="book-grid">
+          {books.map((b) => <BookCard slug={b.slug} data={b.data} start={b.data.order === 1} />)}
+        </div>
       </section>
     )}
   </article>
@@ -107,6 +110,15 @@ const books = sortWorks(
     line-height: 1.7;
     color: var(--muted);
     max-width: 65ch;
+  }
+
+  .lineup__head {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cy-cyan);
+    margin: 0 0 1.25rem;
   }
 
   .book-grid {
