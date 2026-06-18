@@ -293,17 +293,72 @@ npm test       # all green
 npm run build  # dist/ created, no errors
 ```
 
+## The /works archive page
+
+`/works` is a static archive that auto-lists every work in the `works` collection (sorted by `order`). No manual curation is required: add a work file and it appears here automatically, with status badge and genre tag. The `data-egg="archive"` trigger is embedded in the archive heading for the scavenger hunt.
+
+Nav and footer both link to `/works`.
+
+## The transmissions log
+
+`/transmissions` is an update log. Each post is a markdown file in `src/content/transmissions/` with this frontmatter:
+
+```
+---
+title: string
+date: YYYY-MM-DD
+tag: string (optional)   # e.g. "writing", "meta"
+---
+```
+
+Body is plain markdown. The log page (`src/pages/transmissions/index.astro`) auto-lists all posts sorted newest-first, displaying date, tag, and title. Individual posts render at `/transmissions/<slug>` via `src/pages/transmissions/[slug].astro`.
+
+**To add a post:** create `src/content/transmissions/<slug>.md` with the frontmatter above, write the body in markdown, then push. Nav and footer both link to `/transmissions`. The home "what is this" band surfaces the most recent post as a teaser link.
+
+## The egg scavenger hunt (5 eggs)
+
+The site has 5 registered easter eggs. Finding all 5 triggers a full-screen takeover that reveals the Section Zero node on the overworld, which links to `/section-zero`.
+
+Current egg registry (in `src/data/eggs.ts`):
+
+| id | selector | placement |
+|---|---|---|
+| `wordmark` | `[data-egg="wordmark"]` | site wordmark |
+| `footer` | `[data-egg="footer"]` | footer |
+| `dossier` | `[data-egg="dossier"]` | /about dossier tag |
+| `archive` | `[data-egg="archive"]` | /works archive heading |
+| `notfound` | `[data-egg="notfound"]` | /404 heading |
+
+**To add an egg:** add `{ id: 'your-id', selector: '[data-egg="your-id"]' }` to `EGGS` in `src/data/eggs.ts`, then place a `data-egg="your-id"` attribute on a real or invisible element somewhere in a component or page. Finding all registered eggs unlocks the Section Zero reveal.
+
+## The /section-zero page
+
+`/section-zero` is a hidden reward page (`src/pages/section-zero.astro`). It carries `noindex` so it is excluded from the sitemap and search engines. It is not linked from the main nav. Visitors reach it only after finding all 5 eggs, which causes the overworld to show the Section Zero node. Copy can be tuned live. Do not add nav links to it.
+
+## The home "what is this" band
+
+The home page (`src/pages/index.astro`) has a `<section class="pitch">` band below the overworld map with class `pitch__h` on the headline ("You jacked into an author.") and `pitch__copy` on the body. It links to `/works`, `/about`, and the email signup, and surfaces the most recent transmission as a teaser. To update the band copy, edit the relevant elements in `src/pages/index.astro`. No em dashes.
+
+---
+
 ## File map (quick reference)
-- `src/content/schema.ts` -- Zod schemas for `works` and `books` (includes `position` field)
+- `src/content/schema.ts` -- Zod schemas for `works`, `books`, and `transmissions` (includes `position` field)
 - `src/content/works/*.md` -- one file per world/series; each auto-appears as an overworld node
 - `src/content/books/*.md` -- one file per book
+- `src/content/transmissions/*.md` -- one file per transmission post; frontmatter: title, date, tag (optional)
 - `src/assets/covers/` -- cover images (resolved by basename in BookCard)
 - `src/data/gmLines.ts` -- global GM line pools, keyed by `GmContext`
 - `src/lib/gm.ts` -- `GmContext` type, `pickLine`, `randomLine`
-- `src/data/eggs.ts` -- easter egg registry `{id, selector}[]`
+- `src/data/eggs.ts` -- easter egg registry `{id, selector}[]`; 5 eggs total; all-found unlocks Section Zero
 - `src/components/Overworld.astro` -- renders the home page neon-noir network map; each world/series is a node (external = link out; locked = ICE-locked div, no href)
 - `src/components/BookCard.astro` -- renders one book card, cover resolved by glob
-- `src/pages/index.astro` -- home page; renders the neon-noir overworld network map
+- `src/components/SiteNav.astro` -- top nav (links to /, /works, /transmissions, /about)
+- `src/components/Footer.astro` -- site footer (links to /works, /transmissions)
+- `src/pages/index.astro` -- home page; overworld network map + what-is-this pitch band
+- `src/pages/works/index.astro` -- /works archive; auto-lists all works
 - `src/pages/works/[slug].astro` -- internal work page (excludes external + locked)
 - `src/pages/books/[slug].astro` -- book detail page with BuyButtons
+- `src/pages/transmissions/index.astro` -- /transmissions log; auto-lists posts newest-first
+- `src/pages/transmissions/[slug].astro` -- individual transmission post page
+- `src/pages/section-zero.astro` -- hidden reward page; noindex; unlocked by finding all 5 eggs
 - `src/pages/api/subscribe.ts` -- email list endpoint (Upstash Redis)
