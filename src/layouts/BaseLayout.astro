@@ -12,14 +12,15 @@ interface Props {
   image?: string;
   jsonLd?: object;
   type?: string;
+  noindex?: boolean;
 }
 
-const { title, description, image, jsonLd, type } = Astro.props;
+const { title, description, image, jsonLd, type, noindex } = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} image={image} jsonLd={jsonLd} type={type} />
+    <BaseHead title={title} description={description} image={image} jsonLd={jsonLd} type={type} noindex={noindex} />
   </head>
   <body>
     <div class="site-bg" aria-hidden="true"></div>

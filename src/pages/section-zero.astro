@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Section Zero" description="A part of the network that was not on the map." noindex>
+  <section class="sz">
+    <p class="sz__eyebrow"><span aria-hidden="true">//</span> SECTION ZERO // RESTRICTED</p>
+    <h1 class="sz__title">You were not supposed to find this</h1>
+    <div class="sz__body">
+      <p>So you turned over every node, every footer, every dead end, until the
+      whole map gave up its datashards. Most people skim a site and leave. You
+      went looking. That tells me something, and I respect it.</p>
+      <p>Here is the part the brochure does not say. I write these worlds at night
+      after a day of reading dashboards nobody acts on, and I build the place you
+      are standing in for fun, mostly to see if anyone would dig this deep. You
+      did. So here is a real one: the next book is closer than the locked node
+      lets on, and the people on the signal list hear about it first. That is the
+      whole secret. The rest is just me showing off.</p>
+      <p>Now go tell one person, out loud, with your whole face, to come find this.</p>
+    </div>
+    <p class="sz__back"><a href="/">&lt; return to the network</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .sz { max-width: 60ch; margin-inline: auto; padding: clamp(3rem,8vh,6rem) var(--space); }
+  .sz__eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cy-red); }
+  .sz__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem,5.5vw,3rem); color: var(--ink);
+    margin: 0.6rem 0 1.6rem; text-shadow: 2px 0 var(--cy-red), -2px 0 var(--cy-cyan); }
+  .sz__body { color: var(--ink); line-height: 1.8; }
+  .sz__body p { margin: 0 0 1.1rem; }
+  .sz__back { margin-top: 2rem; font-family: var(--font-mono); font-size: 0.8rem; }
+  .sz__back a { color: var(--cy-cyan); }
+</style>
