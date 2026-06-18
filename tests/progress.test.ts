@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { defaultProgress, normalize, visitWorld, findEgg } from '../src/lib/progress';
+import { defaultProgress, normalize, visitWorld, findEgg, isComplete } from '../src/lib/progress';
 
 describe('defaultProgress', () => {
   it('starts empty', () => {
@@ -46,5 +46,13 @@ describe('findEgg', () => {
   it('is idempotent', () => {
     const once = findEgg(defaultProgress(), 'greg');
     expect(findEgg(once, 'greg').xp).toBe(25);
+  });
+});
+
+describe('isComplete', () => {
+  it('false below total, true at or over total', () => {
+    expect(isComplete({ xp: 0, visited: [], eggs: ['a', 'b'], achievements: [] }, 5)).toBe(false);
+    expect(isComplete({ xp: 0, visited: [], eggs: ['a','b','c','d','e'], achievements: [] }, 5)).toBe(true);
+    expect(isComplete({ xp: 0, visited: [], eggs: ['a','b','c','d','e','f'], achievements: [] }, 5)).toBe(true);
   });
 });

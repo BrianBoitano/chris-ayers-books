@@ -32,3 +32,7 @@ export function findEgg(p: Progress, id: string): Progress {
   if (p.eggs.includes(id)) return p;
   return { ...p, eggs: [...p.eggs, id], xp: p.xp + 25 };
 }
+
+export function isComplete(p: Progress, total: number): boolean {
+  return p.eggs.length >= total;
+}
