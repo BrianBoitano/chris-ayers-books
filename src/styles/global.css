@@ -178,3 +178,26 @@ a:hover {
   .live-pulse, .glitch { animation: none !important; }
 }
 
+/* Site-wide cyberpunk backdrop: faint grid + subtle grain behind all content. */
+body { position: relative; background: var(--bg-0); }
+.site-bg {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(80% 60% at 50% -10%, rgba(0,229,255,.06), transparent 60%),
+    radial-gradient(70% 50% at 100% 100%, rgba(255,46,77,.05), transparent 60%),
+    linear-gradient(var(--bg-0), #06070b);
+}
+.site-bg::before {
+  content:""; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.05) 1px, transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 80%);
+  mask-image:radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 80%);
+}
+.site-bg::after {
+  content:""; position:absolute; inset:0; opacity:.05; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+@media (prefers-reduced-motion: reduce) { .site-bg::after { display:none; } }
+

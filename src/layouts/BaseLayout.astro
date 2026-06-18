@@ -22,6 +22,7 @@ const { title, description, image, jsonLd, type } = Astro.props;
     <BaseHead title={title} description={description} image={image} jsonLd={jsonLd} type={type} />
   </head>
   <body>
+    <div class="site-bg" aria-hidden="true"></div>
     <div class="scanlines" aria-hidden="true"></div>
     <SiteNav />
     <main id="main-content" tabindex="-1">
