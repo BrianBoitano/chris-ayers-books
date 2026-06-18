@@ -20,8 +20,9 @@ export const GM_LINES: Record<GmContext, string[]> = {
     "I can hear you not clicking.",
   ],
   eggFound: [
-    "An easter egg. Congratulations, you are now legally a detective.",
-    "You found a secret. Don't let it go to your head.",
+    "Datashard logged. There are more. Keep turning things over.",
+    "Found one. The map is hiding others. Obviously.",
+    "Nice. A real one. Most people never look this hard.",
   ],
   signup: [
     "You joined the list. The newsletter equivalent of choosing the good ending.",

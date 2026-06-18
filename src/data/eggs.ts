@@ -6,4 +6,8 @@ export interface Egg {
 }
 export const EGGS: Egg[] = [
   { id: 'wordmark', selector: '[data-egg="wordmark"]' },
+  { id: 'footer', selector: '[data-egg="footer"]' },
+  { id: 'dossier', selector: '[data-egg="dossier"]' },
+  { id: 'archive', selector: '[data-egg="archive"]' },
+  { id: 'notfound', selector: '[data-egg="notfound"]' },
 ];
