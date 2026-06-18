@@ -34,7 +34,7 @@ const statusLabel = (s: string) => s === 'live' ? 'LIVE' : s === 'coming-soon' ?
               <p class="arch-card__ovr">{w.data.overview || w.data.tagline}</p>
               {locked
                 ? <span class="arch-card__cta arch-card__cta--locked">LOCKED // SOON</span>
-                : <a class="arch-card__cta" href={href ?? undefined} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}>{ext ? 'OPEN FEED >' : 'JACK IN >'}</a>}
+                : <a class="arch-card__cta" href={href ?? undefined} target={ext ? '_blank' : undefined} rel={ext ? 'noopener noreferrer' : undefined}>{ext ? 'OPEN FEED >' : 'JACK IN >'}</a>}
             </div>
           </li>
         );
