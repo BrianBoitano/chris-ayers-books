@@ -14,8 +14,9 @@ export default function initBreach() {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let idleTimer = 0;
   if (!reduceMotion) idleTimer = window.setInterval(() => setDaemon('idle'), 12000);
-  document.addEventListener('gm:say', (e: any) => setDaemon(e.detail?.context || 'idle'));
-  const stopIdle = () => clearInterval(idleTimer);
+  const onGmSay = (e: any) => setDaemon(e.detail?.context || 'idle');
+  document.addEventListener('gm:say', onGmSay);
+  const stopIdle = () => { clearInterval(idleTimer); document.removeEventListener('gm:say', onGmSay); };
   document.addEventListener('astro:before-swap', stopIdle, { once: true });
   window.addEventListener('beforeunload', stopIdle);
 
