@@ -10,7 +10,7 @@ const glitch = await getImage({ src: headshot, width: 640, format: 'webp' });
 
 const role = 'Author · Analytics Leader · Chronic Side-Quest Enjoyer';
 const bio =
-  'Christopher Ayers reads dashboards nobody acts on by day and writes worlds where someone finally does by night. The rest of his time is split, evenly and unwisely, between a home server with better uptime than he has, a 3D printer that is always mid-job, a boat that exists mostly to humiliate salmon, a snowmobile, a barbell, and a rotating cast of half-finished side quests his family has learned to nod along to. He lives near Puyallup with three kids and a long-suffering partner, all of whom are excellent at calling out his crap. He likes his coffee black and this much |--------| cheese to this much bread |---|.';
+  'Christopher Ayers reads dashboards nobody acts on by day and writes worlds where someone finally does by night. The rest of his time is split, evenly and unwisely, between a home server with better uptime than he has, a 3D printer that is always mid-job, a boat that exists mostly to humiliate salmon, a snowmobile, a barbell, and a rotating cast of half-finished side quests his family has learned to nod along to. He lives near Puyallup with three kids and a long-suffering partner, all of whom are excellent at calling out his crap.';
 ---
 <BaseLayout title={`About | ${AUTHOR_NAME}`} description={`About ${AUTHOR_NAME}, author.`} jsonLd={personLd()}>
   <section class="about">
@@ -61,6 +61,14 @@ const bio =
         </header>
         <div class="about__bio">
           <p>{bio}</p>
+          <p class="about__ratio">
+            He likes his coffee black, and this much
+            <span class="bar bar--cheese" aria-hidden="true"></span>
+            cheese to this much
+            <span class="bar bar--bread" aria-hidden="true"></span>
+            bread.
+            <span class="about__sr">A lot of cheese to a little bread.</span>
+          </p>
         </div>
       </div>
 
@@ -195,6 +203,20 @@ const bio =
     font-size: clamp(1rem, 2.1vw, 1.18rem); line-height: 1.8;
   }
   .about__bio p { color: var(--ink); max-width: 60ch; }
+
+  /* Cheese-to-bread ratio: styled neon meter bars instead of ASCII dashes */
+  .about__ratio { margin-top: 0.9rem; }
+  .bar {
+    display: inline-block; height: 0.62em; vertical-align: middle; margin: 0 0.25em;
+    border-radius: 1px; background: var(--cy-yellow);
+    box-shadow: 0 0 8px rgba(252, 238, 10, 0.45);
+  }
+  .bar--cheese { width: 6.5em; }
+  .bar--bread { width: 1.5em; background: var(--cy-cyan); box-shadow: 0 0 8px rgba(0, 229, 255, 0.45); }
+  .about__sr {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
 
   @media (min-width: 768px) {
     .about__grid { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.5rem); }
