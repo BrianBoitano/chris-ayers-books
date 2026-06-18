@@ -85,3 +85,11 @@ const polyPoints = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${y}`)
     .ow-scan, .ow-grain { display:none; }
   }
 </style>
+
+<script>
+  import initBreach from '../scripts/breach.ts';
+  const start = () => initBreach();
+  document.addEventListener('astro:page-load', start, { once: true });
+  if (document.readyState !== 'loading') start();
+  else document.addEventListener('DOMContentLoaded', start, { once: true });
+</script>
