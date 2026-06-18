@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('transmissions');
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await post.render();
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+---
+<BaseLayout title={`${post.data.title} | Transmission`} description={post.data.title}>
+  <article class="tpost">
+    <p class="tpost__date">{fmt(post.data.date)}{post.data.tag ? ` // ${post.data.tag}` : ''}</p>
+    <h1 class="tpost__title">{post.data.title}</h1>
+    <div class="tpost__body"><Content /></div>
+    <p class="tpost__back"><a href="/transmissions">&lt; back to the log</a></p>
+  </article>
+</BaseLayout>
+
+<style>
+  .tpost { max-width: 64ch; margin-inline: auto; padding: clamp(2.5rem,6vh,4.5rem) var(--space); }
+  .tpost__date { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cy-cyan); margin: 0; }
+  .tpost__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.8rem,5vw,2.8rem); color: var(--ink); margin: 0.5rem 0 1.5rem; }
+  .tpost__body { color: var(--ink); line-height: 1.8; }
+  .tpost__body :global(p) { margin: 0 0 1.1rem; }
+  .tpost__back { margin-top: 2rem; font-family: var(--font-mono); font-size: 0.8rem; }
+  .tpost__back a { color: var(--cy-cyan); }
+</style>
