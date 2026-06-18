@@ -74,17 +74,27 @@ const sub = compact
   }
   .capture--inline .capture__inner { max-width: none; padding-inline: 0; }
 
-  /* Compact variant: slim band for the site-wide footer (every page). */
+  /* Compact variant: left-aligned column block for the site-wide footer.
+     Fits beside the footer brand/nav rather than a full-bleed centered band. */
   .capture--compact {
-    padding-block: 0 1.5rem;
+    padding-block: 0;
     border-top: none;
-    border-bottom: 1px solid var(--line);
     background: none;
+    text-align: left;
   }
-  .capture--compact .capture__inner { gap: 0.5rem; }
-  .capture--compact .capture__title { font-size: clamp(1.1rem, 2.5vw, 1.4rem); }
-  .capture--compact .capture__sub { font-size: 0.78rem; }
-  .capture--compact .capture__form { margin-top: 0.4rem; }
+  .capture--compact .capture__inner {
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+    align-items: flex-start;
+    text-align: left;
+    gap: 0.5rem;
+  }
+  .capture--compact .capture__title { font-size: clamp(1.1rem, 2.4vw, 1.35rem); }
+  .capture--compact .capture__sub { font-size: 0.78rem; max-width: 42ch; }
+  .capture--compact .capture__fine { max-width: 42ch; }
+  .capture--compact .capture__form { margin-top: 0.4rem; align-items: flex-start; }
+  .capture--compact .capture__field { justify-content: flex-start; }
 
   .capture__inner {
     max-width: 640px;

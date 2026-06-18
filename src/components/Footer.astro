@@ -9,48 +9,55 @@ const showAmazon = AUTHOR_AMAZON_URL && AUTHOR_AMAZON_URL.length > 0;
 <footer class="footer" role="contentinfo">
   <div class="wrap footer__inner">
 
-    <!-- Newsletter signup (site-wide, compact) -->
-    <EmailCapture compact />
+    <!-- Two-column main: brand/nav on the left, signup on the right -->
+    <div class="footer__main">
+      <div class="footer__left">
+        <!-- Brand row -->
+        <div class="footer__brand">
+          <span class="footer__brand-sigil" aria-hidden="true">▶</span>
+          <span class="footer__brand-name">{SITE_NAME}</span>
+        </div>
 
-    <!-- Brand row -->
-    <div class="footer__brand">
-      <span class="footer__brand-sigil" aria-hidden="true">▶</span>
-      <span class="footer__brand-name">{SITE_NAME}</span>
-    </div>
-
-    <!-- Support / tip the author -->
-    {showSupport && (
-      <div class="footer__support">
-        <a
-          href={SUPPORT_URL}
-          class="footer__coffee"
-          target="_blank"
-          rel="noopener"
-        >
-          <span aria-hidden="true">☕</span>
-          <span>Buy the author a coffee</span>
-        </a>
-      </div>
-    )}
-
-    <!-- Nav links row -->
-    <nav class="footer__nav" aria-label="Footer navigation">
-      <ul class="footer__nav-list" role="list">
-        <li><a href="/" class="footer__nav-link">Home</a></li>
-        <li><a href="/#worlds" class="footer__nav-link">Works</a></li>
-        <li><a href="/about" class="footer__nav-link">About</a></li>
-        {showAmazon && (
-          <li>
+        <!-- Support / tip the author -->
+        {showSupport && (
+          <div class="footer__support">
             <a
-              href={AUTHOR_AMAZON_URL}
-              class="footer__nav-link"
+              href={SUPPORT_URL}
+              class="footer__coffee"
               target="_blank"
-              rel="noopener noreferrer"
-            >Amazon Author</a>
-          </li>
+              rel="noopener"
+            >
+              <span aria-hidden="true">☕</span>
+              <span>Buy the author a coffee</span>
+            </a>
+          </div>
         )}
-      </ul>
-    </nav>
+
+        <!-- Nav links row -->
+        <nav class="footer__nav" aria-label="Footer navigation">
+          <ul class="footer__nav-list" role="list">
+            <li><a href="/" class="footer__nav-link">Home</a></li>
+            <li><a href="/#worlds" class="footer__nav-link">Works</a></li>
+            <li><a href="/about" class="footer__nav-link">About</a></li>
+            {showAmazon && (
+              <li>
+                <a
+                  href={AUTHOR_AMAZON_URL}
+                  class="footer__nav-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >Amazon Author</a>
+              </li>
+            )}
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Newsletter signup (site-wide, compact, right column) -->
+      <div class="footer__signup">
+        <EmailCapture compact />
+      </div>
+    </div>
 
     <!-- Bottom bar -->
     <div class="footer__bottom">
@@ -95,7 +102,28 @@ const showAmazon = AUTHOR_AMAZON_URL && AUTHOR_AMAZON_URL.length > 0;
   .footer__inner {
     display: flex;
     flex-direction: column;
-    gap: 1.75rem;
+    gap: 2rem;
+  }
+
+  /* Two-column main: left brand/nav, right signup */
+  .footer__main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+    align-items: start;
+  }
+  .footer__left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  @media (min-width: 760px) {
+    .footer__main {
+      grid-template-columns: 1fr minmax(300px, 420px);
+      gap: 3rem;
+    }
+    .footer__signup { justify-self: end; width: 100%; max-width: 420px; }
   }
 
   /* Brand */
