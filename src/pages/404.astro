@@ -5,8 +5,8 @@ const line = pickLine('notFound', 0);
 ---
 <BaseLayout title="404 | Chris Ayers" description="Page not found.">
   <section style="text-align:center;padding:5rem 1rem">
-    <h1>404</h1>
-    <p class="gm-line">{line}</p>
-    <p><a href="/">Back to Choose Your World</a></p>
+    <h1 style="font-size:clamp(5rem,20vw,10rem);font-family:var(--font-mono);color:var(--cy-red);text-shadow:1px 0 var(--cy-cyan),-1px 0 var(--cy-yellow);letter-spacing:0.05em;line-height:1;">404</h1>
+    <p class="gm-line" style="font-family:var(--font-mono);color:var(--muted);margin:1.5rem 0;">{line}</p>
+    <p><a href="/" style="color:var(--cy-cyan);text-decoration:underline;">Back to Choose Your World</a></p>
   </section>
 </BaseLayout>

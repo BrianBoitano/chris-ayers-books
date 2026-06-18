@@ -273,6 +273,16 @@ CSV export is gated by `SUBSCRIBE_ADMIN_TOKEN`. Set it in Vercel env, then call 
 5. **Covers**: KDP ebook ratio 1600x2560 (5:8) only. Drop at `src/assets/covers/` and reference by bare filename.
 6. **Astro build must pass before every push.** A frontmatter validation error will break the entire build.
 
+## Palette
+
+The site uses one cyberpunk token set defined in `src/styles/tokens.css`. There is no green anywhere on the site. When adding copy, components, or inline styles, stay on this palette:
+
+- `--cy-yellow` (`#fcee0a`) -- primary accent, headings, active states
+- `--cy-cyan` (`#00e5ff`) -- links, secondary highlights, hover glows
+- `--cy-red` (`#ff2e4d`) -- locked/danger states, error accents (e.g. the 404 heading)
+
+Legacy aliases `--green`, `--amber`, and `--link` all resolve through these tokens, so existing rules continue to work. Do not introduce raw hex greens or any color outside this set.
+
 ---
 
 ## First-time setup
