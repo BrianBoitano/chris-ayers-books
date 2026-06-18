@@ -1,87 +1,209 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { personLd } from '../lib/seo';
 import { AUTHOR_NAME } from '../config';
 import headshot from '../assets/headshot.png';
+
+// Optimized copy used by the CSS glitch channel-split layers.
+const glitch = await getImage({ src: headshot, width: 640, format: 'webp' });
+
+const role = 'Author · Analytics Leader · Chronic Side-Quest Enjoyer';
+const bio =
+  'Christopher Ayers reads dashboards nobody acts on by day and writes worlds where someone finally does by night. The rest of his time is split, evenly and unwisely, between a home server with better uptime than he has, a 3D printer that is always mid-job, a boat that exists mostly to humiliate salmon, a snowmobile, a barbell, and a rotating cast of half-finished side quests his family has learned to nod along to. He lives near Puyallup with three kids and a long-suffering partner, all of whom are excellent at reading fine print. He has never rated a coffee four out of ten. It was a three.';
 ---
 <BaseLayout title={`About | ${AUTHOR_NAME}`} description={`About ${AUTHOR_NAME}, author.`} jsonLd={personLd()}>
-  <article class="about-page">
-    <div class="about-portrait">
-      <Image
-        src={headshot}
-        alt={`${AUTHOR_NAME}, author`}
-        width={440}
-        height={567}
-        widths={[280, 440, 880]}
-        sizes="(max-width: 640px) 60vw, 320px"
-        loading="eager"
-        class="about-portrait-img"
-      />
+  <section class="about">
+    <div class="about__grid">
+
+      <figure
+        class="about__portrait"
+        tabindex="0"
+        aria-label={`Portrait of ${AUTHOR_NAME}, hover to decrypt`}
+        style={`--glitch-src:url('${glitch.src}')`}
+      >
+        <div class="about__portrait-frame">
+          <Image
+            src={headshot}
+            alt={`Portrait of ${AUTHOR_NAME}`}
+            width={960}
+            height={1237}
+            widths={[320, 480, 640, 960]}
+            sizes="(max-width: 768px) 88vw, 400px"
+            class="about__portrait-img"
+          />
+          <span class="about__glitch about__glitch--a" aria-hidden="true"></span>
+          <span class="about__glitch about__glitch--b" aria-hidden="true"></span>
+          <span class="about__scan" aria-hidden="true"></span>
+
+          <div class="about__dossier" aria-hidden="true">
+            <p class="about__dossier-h">// SUBJECT FILE // DECRYPTED</p>
+            <ul class="about__dossier-list">
+              <li><span>NAME</span> Christopher Ayers</li>
+              <li><span>ROLE</span> Analytics Leader / Author</li>
+              <li><span>HOBBIES</span> Yes. All of them.</li>
+              <li><span>THREAT</span> Puns (severe)</li>
+              <li><span>STATUS</span> <em>Perpetually mid side-quest</em></li>
+            </ul>
+            <p class="about__dossier-f">the fine print always wins.</p>
+          </div>
+        </div>
+        <figcaption class="about__portrait-tag" aria-hidden="true">
+          &#9679; VERIFIED // SUBJECT
+        </figcaption>
+      </figure>
+
+      <div class="about__body">
+        <header class="about__head">
+          <p class="about__eyebrow"><span aria-hidden="true">//</span> AUTHOR_FILE</p>
+          <h1 class="about__name" data-text={AUTHOR_NAME}>{AUTHOR_NAME}</h1>
+          <p class="about__role">{role}</p>
+        </header>
+        <div class="about__bio">
+          <p>{bio}</p>
+        </div>
+      </div>
+
     </div>
-    <div class="about-copy term-panel">
-      <h1>The mind of Chris</h1>
-      <p>
-        Chris Ayers writes adult fiction with a dangerously overclocked imagination:
-        sharp, funny, and built like a game you can fall into. By day he wrangles
-        data. By night he builds worlds and then dares you to survive them.
-      </p>
-      <p>
-        Every series and standalone he writes lives here. Pick a world from the
-        home screen and start playing.
-      </p>
-    </div>
-  </article>
+  </section>
 </BaseLayout>
 
 <style>
-  .about-page {
-    max-width: 60rem;
-    margin: 0 auto;
-    padding: 3rem 1rem;
+  .about {
+    padding-block: clamp(3rem, 8vh, 5.5rem);
+  }
+  .about__grid {
+    max-width: 1040px;
+    margin-inline: auto;
+    padding-inline: var(--space);
     display: grid;
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    gap: clamp(1.6rem, 4vw, 3rem);
     align-items: start;
   }
-  .about-portrait-img {
+
+  /* ---------- Portrait + glitch + dossier ---------- */
+  .about__portrait { margin: 0; width: 100%; max-width: 440px; outline: none; }
+  .about__portrait-frame {
+    position: relative;
     width: 100%;
-    height: auto;
-    border-radius: 12px;
-    display: block;
+    aspect-ratio: 1018 / 1312;
+    border-radius: 3px;
+    border: 1px solid var(--cy-cyan);
+    box-shadow: 0 0 0 4px var(--bg-1), 0 0 26px -4px rgba(0, 229, 255, 0.45);
+    overflow: hidden;
+    isolation: isolate;
+    cursor: help;
   }
-  .term-panel {
-    background: rgba(8, 8, 12, 0.72);
-    border: 1px solid var(--line);
-    clip-path: polygon(0 0, 100% 0, 100% 96%, 98% 100%, 0 100%);
-    padding: 1.5rem 1.6rem;
+  .about__portrait:focus-visible .about__portrait-frame {
+    box-shadow: 0 0 0 4px var(--bg-1), 0 0 0 2px var(--cy-cyan), 0 0 32px -4px rgba(0, 229, 255, 0.6);
   }
-  .term-panel h1,
-  .term-panel h2 {
-    font-family: var(--font-display);
-    letter-spacing: 0.06em;
-  }
-  .term-panel h1 {
-    text-shadow: 1px 0 var(--cy-red), -1px 0 var(--cy-cyan);
-  }
-  .term-panel p {
-    color: var(--ink);
-    line-height: 1.7;
-    max-width: 62ch;
+  .about__portrait-img {
+    display: block; width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 18%;
+    filter: grayscale(0.15) contrast(1.04);
   }
 
-  .about-copy h1 {
-    margin-top: 0;
+  .about__glitch {
+    position: absolute; inset: 0;
+    background-image: var(--glitch-src); background-size: cover; background-position: 50% 18%;
+    pointer-events: none; mix-blend-mode: screen; opacity: 0.5;
+    clip-path: inset(0 0 100% 0);
   }
-  @media (max-width: 640px) {
-    .about-page {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-      text-align: center;
-    }
-    .about-portrait {
-      max-width: 240px;
-      margin: 0 auto;
-    }
+  .about__glitch--a { filter: hue-rotate(-30deg) saturate(3) brightness(1.15); animation: about-glitch-a 5s steps(1) infinite; }
+  .about__glitch--b { filter: hue-rotate(150deg) saturate(3) brightness(1.1); animation: about-glitch-b 5.5s steps(1) infinite; }
+  @keyframes about-glitch-a {
+    0%, 86%, 100% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+    88% { clip-path: inset(15% 0 60% 0); transform: translateX(-5px); }
+    90% { clip-path: inset(55% 0 22% 0); transform: translateX(5px); }
+    92% { clip-path: inset(35% 0 45% 0); transform: translateX(-3px); }
+    93% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+  }
+  @keyframes about-glitch-b {
+    0%, 84%, 100% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+    87% { clip-path: inset(45% 0 30% 0); transform: translateX(5px); }
+    89% { clip-path: inset(10% 0 70% 0); transform: translateX(-6px); }
+    92% { clip-path: inset(65% 0 12% 0); transform: translateX(4px); }
+    94% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+  }
+  .about__scan {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px);
+    mix-blend-mode: multiply; opacity: 0.5;
+  }
+
+  .about__dossier {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center; gap: 0.55rem;
+    padding: clamp(1rem, 5%, 1.6rem);
+    background: linear-gradient(180deg, rgba(4, 4, 6, 0.9), rgba(4, 4, 6, 0.94));
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.18s ease, visibility 0.18s ease;
+  }
+  .about__portrait:hover .about__dossier,
+  .about__portrait:focus-within .about__dossier { opacity: 1; visibility: visible; }
+  .about__portrait:hover .about__glitch,
+  .about__portrait:focus-within .about__glitch { opacity: 0.85; }
+  .about__portrait:hover .about__glitch--a,
+  .about__portrait:focus-within .about__glitch--a { animation-duration: 1.4s; }
+  .about__portrait:hover .about__glitch--b,
+  .about__portrait:focus-within .about__glitch--b { animation-duration: 1.15s; }
+
+  .about__dossier-h { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; color: var(--cy-cyan); }
+  .about__dossier-list {
+    list-style: none; display: flex; flex-direction: column; gap: 0.4rem;
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink);
+  }
+  .about__dossier-list span { display: inline-block; width: 6em; color: var(--dim); }
+  .about__dossier-list em { color: var(--cy-yellow); font-style: italic; }
+  .about__dossier-f { font-family: var(--font-mono); font-style: italic; font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .about__portrait-tag {
+    margin-top: 0.6rem; font-family: var(--font-mono); font-size: 0.6rem;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--cy-cyan); opacity: 0.8;
+  }
+
+  /* ---------- Body / glitch name ---------- */
+  .about__eyebrow {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--cy-cyan); margin-bottom: 1.1rem; opacity: 0.85;
+  }
+  .about__name {
+    position: relative;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.2rem, 7vw, 4rem); line-height: 0.95; letter-spacing: -0.02em;
+    text-transform: uppercase; color: var(--ink);
+    text-shadow: 2px 0 var(--cy-red), -2px 0 var(--cy-cyan);
+  }
+  .about__name::after {
+    content: attr(data-text); position: absolute; inset: 0;
+    color: var(--cy-cyan); mix-blend-mode: screen;
+    clip-path: inset(0 0 100% 0); animation: name-glitch 4.5s steps(1) infinite;
+  }
+  @keyframes name-glitch {
+    0%, 90%, 100% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+    92% { clip-path: inset(20% 0 55% 0); transform: translateX(4px); }
+    94% { clip-path: inset(60% 0 18% 0); transform: translateX(-4px); }
+    96% { clip-path: inset(0 0 100% 0); transform: translateX(0); }
+  }
+  .about__role {
+    font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-top: 1rem;
+  }
+  .about__bio {
+    margin-top: clamp(2rem, 5vh, 3rem);
+    font-size: clamp(1rem, 2.1vw, 1.18rem); line-height: 1.8;
+  }
+  .about__bio p { color: var(--ink); max-width: 60ch; }
+
+  @media (min-width: 768px) {
+    .about__grid { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.5rem); }
+    .about__portrait { max-width: 400px; position: sticky; top: 84px; margin-top: clamp(2.5rem, 8vw, 7rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about__glitch--a, .about__glitch--b { animation: none; clip-path: inset(0 0 100% 0); }
+    .about__dossier { transition: none; }
+    .about__name::after { animation: none; clip-path: inset(0 0 100% 0); }
   }
 </style>

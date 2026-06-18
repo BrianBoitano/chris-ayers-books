@@ -3,6 +3,8 @@ title: The Broadcast
 type: series
 status: live
 tagline: Laugh first. Pay later.
+overview: "Three siblings get cast in an alien streaming platform's deadliest reality show. Six books, one apocalypse, and a leaderboard you do not want to top."
+cover: /covers/the-broadcast.jpg
 accentColor: "#39d0d8"
 genre: LitRPG / system-apocalypse satire
 order: 1

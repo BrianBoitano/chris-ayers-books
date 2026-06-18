@@ -4,9 +4,10 @@ interface Props {
   slug: string;
   x: number;
   y: number;
-  data: { title: string; tagline: string; status: string; accentColor?: string; externalUrl?: string };
+  data: { title: string; tagline: string; status: string; accentColor?: string; externalUrl?: string; overview?: string; cover?: string; genre?: string };
 }
 const { slug, x, y, data } = Astro.props;
+const overview = data.overview || data.tagline;
 const href = worldHref({ slug, data });
 const external = isExternal({ data });
 const locked = data.status === 'locked';
@@ -20,6 +21,7 @@ const meta = locked ? 'ICE LOCKED | ACCESS DENIED'
 const aria = locked ? `${data.title}, locked sector`
   : external ? `Enter ${data.title}, opens external feed in a new tab`
   : `Enter ${data.title}`;
+const cta = locked ? 'LOCKED // SOON' : external ? 'OPEN FEED >' : 'JACK IN >';
 const Tag = locked ? 'button' : 'a';
 ---
 <div class:list={['net-node', kind]} style={`left:${x}%; top:${y}%; --accent:${data.accentColor || '#fcee0a'}`}
@@ -38,6 +40,19 @@ const Tag = locked ? 'button' : 'a';
     <span class="txt" aria-hidden="true"><span class="id">NODE.{idNum}</span><span class="nm">{data.title}</span></span>
   </Tag>
   <span class="meta" aria-hidden="true">{meta}</span>
+
+  <div class="net-tip" aria-hidden="true">
+    <div class="net-tip__media">
+      {data.cover
+        ? <img src={data.cover} alt="" loading="lazy" width="50" height="74" />
+        : <span class="net-tip__ph">{locked ? '\u{1F512}' : '?'}</span>}
+    </div>
+    <div class="net-tip__body">
+      <p class="net-tip__ovr">{overview}</p>
+      {data.genre && <p class="net-tip__genre">{data.genre}</p>}
+      <p class="net-tip__cta">{cta}</p>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -59,5 +74,31 @@ const Tag = locked ? 'button' : 'a';
   @media (prefers-reduced-motion: no-preference) {
     .term { transition:box-shadow .15s, transform .15s; }
     .net-node:not(.locked) .term:hover { transform:translateY(-1px); box-shadow:0 0 24px color-mix(in srgb, var(--accent) 60%, transparent); }
+  }
+
+  /* Hover/focus tooltip: series overview + cover + CTA. Decorative (the node's
+     own aria-label carries the accessible name); never blocks the click. */
+  .net-tip {
+    position:absolute; left:50%; bottom:calc(100% + 10px); transform:translateX(-50%);
+    width:248px; z-index:10; pointer-events:none;
+    display:flex; gap:10px; padding:10px; text-align:left;
+    background:rgba(5,7,11,.97); border:1px solid var(--accent);
+    clip-path:polygon(0 0,100% 0,100% 90%,95% 100%,0 100%);
+    box-shadow:0 0 22px color-mix(in srgb, var(--accent) 42%, transparent);
+    opacity:0; visibility:hidden;
+  }
+  .net-tip__media { flex:0 0 50px; }
+  .net-tip__media img { width:50px; height:74px; object-fit:cover; display:block; border:1px solid var(--accent); }
+  .net-tip__ph { display:flex; width:50px; height:74px; align-items:center; justify-content:center;
+    border:1px dashed var(--accent); color:var(--accent); font-size:20px; }
+  .net-tip__body { min-width:0; }
+  .net-tip__ovr { font-family:system-ui,sans-serif; font-size:11px; line-height:1.5; color:#e6edf2; margin:0 0 6px; }
+  .net-tip__genre { font-family:"Courier New",monospace; font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 6px; }
+  .net-tip__cta { display:inline-block; margin:0; font-family:"Courier New",monospace; font-size:10px; letter-spacing:.14em;
+    color:#0a0a04; background:var(--accent); padding:2px 7px; clip-path:polygon(0 0,100% 0,100% 70%,90% 100%,0 100%); }
+  .net-node.locked .net-tip__cta { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  .net-node:hover .net-tip, .net-node:focus-within .net-tip { opacity:1; visibility:visible; }
+  @media (prefers-reduced-motion: no-preference) {
+    .net-tip { transition:opacity .15s ease, visibility .15s ease; }
   }
 </style>
