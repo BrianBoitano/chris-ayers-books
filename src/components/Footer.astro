@@ -1,5 +1,6 @@
 ---
 import { AUTHOR_NAME, SITE_NAME, SUPPORT_URL, AUTHOR_AMAZON_URL } from '../config';
+import EmailCapture from './EmailCapture.astro';
 const year = new Date().getFullYear();
 const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
 const showAmazon = AUTHOR_AMAZON_URL && AUTHOR_AMAZON_URL.length > 0;
@@ -7,6 +8,9 @@ const showAmazon = AUTHOR_AMAZON_URL && AUTHOR_AMAZON_URL.length > 0;
 
 <footer class="footer" role="contentinfo">
   <div class="wrap footer__inner">
+
+    <!-- Newsletter signup (site-wide, compact) -->
+    <EmailCapture compact />
 
     <!-- Brand row -->
     <div class="footer__brand">

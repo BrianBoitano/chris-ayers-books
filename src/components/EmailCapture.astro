@@ -6,17 +6,19 @@
 
 interface Props {
   inline?: boolean;
+  compact?: boolean;
 }
-const { inline = false } = Astro.props;
+const { inline = false, compact = false } = Astro.props;
 
 // GM voice: snarky-but-not-mean, no em dashes, no DCC references.
 const kicker = '▶ NEW WORLDS INCOMING';
-const title = 'Join the party. Be first into new worlds.';
-const sub =
-  'Chris builds more than one world. Drop your email and get pinged the moment a new book opens its doors. No noise, just the signal.';
+const title = compact ? 'Be first into new worlds.' : 'Join the party. Be first into new worlds.';
+const sub = compact
+  ? 'A new book opens its doors, you get the ping. No noise, just the signal.'
+  : 'Chris builds more than one world. Drop your email and get pinged the moment a new book opens its doors. No noise, just the signal.';
 ---
 
-<section id="notify" class:list={['capture', { 'capture--inline': inline }]} aria-labelledby="capture-title">
+<section id="notify" class:list={['capture', { 'capture--inline': inline, 'capture--compact': compact }]} aria-labelledby="capture-title">
   <div class="capture__inner">
     <span class="capture__kicker" aria-hidden="true">{kicker}</span>
     <h2 id="capture-title" class="capture__title">{title}</h2>
@@ -71,6 +73,18 @@ const sub =
     background: none;
   }
   .capture--inline .capture__inner { max-width: none; padding-inline: 0; }
+
+  /* Compact variant: slim band for the site-wide footer (every page). */
+  .capture--compact {
+    padding-block: 0 1.5rem;
+    border-top: none;
+    border-bottom: 1px solid var(--line);
+    background: none;
+  }
+  .capture--compact .capture__inner { gap: 0.5rem; }
+  .capture--compact .capture__title { font-size: clamp(1.1rem, 2.5vw, 1.4rem); }
+  .capture--compact .capture__sub { font-size: 0.78rem; }
+  .capture--compact .capture__form { margin-top: 0.4rem; }
 
   .capture__inner {
     max-width: 640px;

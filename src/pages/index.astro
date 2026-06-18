@@ -4,7 +4,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Overworld from '../components/Overworld.astro';
 import { sortWorks, worldHref } from '../lib/works';
 import { SITE_NAME, SITE_TAGLINE } from '../config';
-import EmailCapture from '../components/EmailCapture.astro';
 import { worksLd } from '../lib/seo';
 
 const works = sortWorks(await getCollection('works'));
@@ -16,7 +15,4 @@ const ld = worksLd(
 ---
 <BaseLayout title={`${SITE_NAME} | Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
   <Overworld works={works} />
-  <section class="join" id="join">
-    <EmailCapture />
-  </section>
 </BaseLayout>
