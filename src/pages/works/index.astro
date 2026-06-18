@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortWorks, worldHref, isExternal } from '../../lib/works';
+import { worksLd } from '../../lib/seo';
+
+const works = sortWorks(await getCollection('works'));
+const ld = worksLd(
+  works.filter((w) => worldHref(w) !== null)
+    .map((w) => ({ title: w.data.title, url: w.data.externalUrl ?? new URL(`/works/${w.slug}`, Astro.site).href }))
+);
+const statusLabel = (s: string) => s === 'live' ? 'LIVE' : s === 'coming-soon' ? 'COMING ONLINE' : 'ICE LOCKED';
+---
+<BaseLayout title="The Archive | Chris Ayers" description="Every world Chris Ayers has written." jsonLd={ld}>
+  <section class="archive">
+    <header class="archive__head">
+      <p class="archive__eyebrow"><span aria-hidden="true">//</span> THE ARCHIVE <span class="archive__egg" data-egg="archive" aria-hidden="true">::</span></p>
+      <h1 class="archive__title">Worlds</h1>
+      <p class="archive__sub">Every node on the network, listed. Pick one and jack in.</p>
+    </header>
+    <ul class="archive__grid" role="list">
+      {works.map((w) => {
+        const href = worldHref(w);
+        const ext = isExternal(w);
+        const locked = w.data.status === 'locked';
+        return (
+          <li class:list={['arch-card', { 'is-locked': locked }]} style={`--accent:${w.data.accentColor || '#fcee0a'}`}>
+            <div class="arch-card__media">
+              {w.data.cover ? <img src={w.data.cover} alt="" loading="lazy" width="80" height="120" /> : <span class="arch-card__ph" aria-hidden="true">{locked ? '\u{1F512}' : '?'}</span>}
+            </div>
+            <div class="arch-card__body">
+              <p class="arch-card__status">{statusLabel(w.data.status)}{w.data.genre ? ` // ${w.data.genre}` : ''}</p>
+              <h2 class="arch-card__title">{w.data.title}</h2>
+              <p class="arch-card__ovr">{w.data.overview || w.data.tagline}</p>
+              {locked
+                ? <span class="arch-card__cta arch-card__cta--locked">LOCKED // SOON</span>
+                : <a class="arch-card__cta" href={href ?? undefined} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}>{ext ? 'OPEN FEED >' : 'JACK IN >'}</a>}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .archive { max-width: 1040px; margin-inline: auto; padding: clamp(2.5rem,6vh,4.5rem) var(--space); }
+  .archive__eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cy-cyan); opacity: 0.85; }
+  .archive__egg { color: var(--dim); }
+  .archive__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem,6vw,3.4rem); text-transform: uppercase; letter-spacing: -0.02em; color: var(--ink); margin: 0.6rem 0 0.4rem; }
+  .archive__sub { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); }
+  .archive__grid { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 1.2rem; }
+  @media (min-width: 720px) { .archive__grid { grid-template-columns: 1fr 1fr; } }
+  .arch-card { display: flex; gap: 1rem; padding: 1rem; background: rgba(8,8,12,.72); border: 1px solid var(--line);
+    clip-path: polygon(0 0,100% 0,100% 94%,97% 100%,0 100%); }
+  .arch-card.is-locked { opacity: 0.8; }
+  .arch-card__media { flex: 0 0 80px; }
+  .arch-card__media img { width: 80px; height: 120px; object-fit: cover; border: 1px solid var(--accent); display: block; }
+  .arch-card__ph { display: flex; width: 80px; height: 120px; align-items: center; justify-content: center; border: 1px dashed var(--accent); color: var(--accent); font-size: 28px; }
+  .arch-card__status { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0; }
+  .arch-card__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--ink); margin: 0.3rem 0; }
+  .arch-card__ovr { font-size: 0.85rem; line-height: 1.55; color: var(--muted); margin: 0 0 0.7rem; }
+  .arch-card__cta { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; color: #0a0a04; background: var(--accent); padding: 0.35em 0.8em; text-decoration: none; clip-path: polygon(0 0,100% 0,100% 68%,90% 100%,0 100%); }
+  .arch-card__cta--locked { background: transparent; color: var(--cy-red); border: 1px solid var(--cy-red); }
+</style>
