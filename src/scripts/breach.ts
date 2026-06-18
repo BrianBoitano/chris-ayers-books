@@ -32,10 +32,10 @@ export default function initBreach() {
   let current = nodes[0].slug;
   const bySlug = (s: string) => nodes.find((n) => n.slug === s)!;
 
-  const placeCursor = () => {
+  const placeCursor = (focus = false) => {
     const n = bySlug(current);
     if (cursor) { cursor.style.left = n.x + '%'; cursor.style.top = n.y + '%'; cursor.style.transition = reduceMotion ? 'none' : 'left .18s, top .18s'; }
-    n.el.querySelector<HTMLElement>('.term')?.focus({ preventScroll: true });
+    if (focus) n.el.querySelector<HTMLElement>('.term')?.focus({ preventScroll: true });
   };
 
   const say = (context: string) => document.dispatchEvent(new CustomEvent('gm:say', { detail: { context } }));
@@ -68,7 +68,7 @@ export default function initBreach() {
   };
   stage.addEventListener('keydown', (e) => {
     const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-    if (k in keymap) { const to = move(nodes, edges, current, keymap[k] as Dir); if (to) { current = to; placeCursor(); e.preventDefault(); } }
+    if (k in keymap) { const to = move(nodes, edges, current, keymap[k] as Dir); if (to) { current = to; placeCursor(true); e.preventDefault(); } }
     else if (e.key === 'Enter' || e.key === ' ') { enter(current); e.preventDefault(); }
   });
 

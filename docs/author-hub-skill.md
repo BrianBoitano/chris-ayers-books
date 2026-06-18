@@ -236,7 +236,7 @@ export const EGGS: Egg[] = [
 </span>
 ```
 
-Or make it a discoverable element (a subtle icon, a tooltip, a hidden link). When a visitor clicks/activates the element, the ProgressHud awards XP and fires a `gm:say 'eggFound'` event, which plays a random line from the `eggFound` pool in `gmLines.ts`.
+Or make it a discoverable element (a subtle icon, a tooltip, a hidden link). When a visitor clicks/activates the element, the Overworld HUD awards XP via the progression state and fires a `gm:say 'eggFound'` event, which plays a random line from the `eggFound` pool in `gmLines.ts`.
 
 Build and verify: after deploy, interact with the trigger element on the live site and confirm the HUD reacts.
 
@@ -291,7 +291,7 @@ npm run build  # dist/ created, no errors
 - `src/data/gmLines.ts` -- global GM line pools, keyed by `GmContext`
 - `src/lib/gm.ts` -- `GmContext` type, `pickLine`, `randomLine`
 - `src/data/eggs.ts` -- easter egg registry `{id, selector}[]`
-- `src/components/WorldTile.astro` -- renders one world/series tile (external = link out; locked = ICE-locked div, no href)
+- `src/components/Overworld.astro` -- renders the home page neon-noir network map; each world/series is a node (external = link out; locked = ICE-locked div, no href)
 - `src/components/BookCard.astro` -- renders one book card, cover resolved by glob
 - `src/pages/index.astro` -- home page; renders the neon-noir overworld network map
 - `src/pages/works/[slug].astro` -- internal work page (excludes external + locked)
