@@ -30,7 +30,7 @@ body {
 
 /* --- Links ---------------------------------------------------- */
 a {
-  color: var(--green);
+  color: var(--link);
   text-decoration: none;
 }
 
