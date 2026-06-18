@@ -5,7 +5,6 @@ import BaseHead from '../components/BaseHead.astro';
 import SiteNav from '../components/SiteNav.astro';
 import Footer from '../components/Footer.astro';
 import FollowMe from '../components/FollowMe.astro';
-import ProgressHud from '../components/ProgressHud.astro';
 
 interface Props {
   title: string;
@@ -29,7 +28,6 @@ const { title, description, image, jsonLd, type } = Astro.props;
       <slot />
     </main>
     <Footer />
-    <ProgressHud />
     <FollowMe />
   </body>
 </html>

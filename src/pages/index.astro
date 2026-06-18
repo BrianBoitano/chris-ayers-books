@@ -1,10 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WorldTile from '../components/WorldTile.astro';
+import Overworld from '../components/Overworld.astro';
 import { sortWorks, worldHref } from '../lib/works';
 import { SITE_NAME, SITE_TAGLINE } from '../config';
-import GmVoice from '../components/GmVoice.astro';
 import EmailCapture from '../components/EmailCapture.astro';
 import { worksLd } from '../lib/seo';
 
@@ -16,14 +15,7 @@ const ld = worksLd(
 );
 ---
 <BaseLayout title={`${SITE_NAME} | Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
-  <section class="hero-select">
-    <GmVoice context="greeting" />
-    <h1>Choose Your World</h1>
-    <p class="hero-sub">{SITE_TAGLINE}</p>
-  </section>
-  <section id="worlds" class="world-grid">
-    {works.map((w) => <WorldTile slug={w.slug} data={w.data} />)}
-  </section>
+  <Overworld works={works} />
   <section class="join">
     <EmailCapture />
   </section>
