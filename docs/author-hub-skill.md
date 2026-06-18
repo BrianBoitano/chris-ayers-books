@@ -38,6 +38,16 @@ Static Astro 5 site on Vercel. Worlds catalog, per-world book listings, email li
 - **KDP ebook covers are 1600x2560 (5:8).** `BookCard.astro` renders at that ratio. Use that exact size.
 - **No local preview browser** in this environment. Verify via build output + production polling, or ask Chris to check the live URL.
 
+## The overworld home page
+
+The site home page is a neon-noir NETWORK overworld (Cyberpunk-2077 aesthetic). Every work in the `works` collection automatically appears as a breach-able network node. Nodes are auto-placed by a network layout algorithm using `order` as the seed -- lower `order` values tend to cluster toward the top-left. No manual positioning is required; just add the work file and it appears.
+
+**Art-directing a node's position:** Add the optional `position` field to the work's frontmatter. Values are in 0..100 viewBox units on each axis (0,0 = top-left corner of the map, 100,100 = bottom-right). Omit it to let the network layout decide.
+
+**Locked nodes** (status: `locked`) render as ICE-locked teasers. They are non-enterable: no internal page is generated and no link fires. They exist to taunt.
+
+**External nodes** (`externalUrl` set) link out to the external URL in a new tab. No internal page is generated.
+
 ## Content schema (source of truth: `src/content/schema.ts`)
 
 ### Work frontmatter (`src/content/works/<slug>.md`)
@@ -49,9 +59,10 @@ tagline: string                    # One-liner, shown on tile and in meta
 cover: string (optional)           # Bare filename in src/assets/covers/
 accentColor: string                # Hex color, e.g. "#39d0d8"
 genre: string (optional)           # e.g. "LitRPG / system-apocalypse satire"
-order: number (int)                # Tile sort order, lower = earlier
+order: number (int)                # Node sort order; also seeds auto-placement in the overworld
 externalUrl: string (url, optional) # When set: tile links OUT; NO internal page generated
 gmQuips: string[] (optional)       # Per-world sarcastic GM lines (voice rules below)
+position: { x: number, y: number } (optional)  # Art-direct node placement, 0..100 viewBox units each axis
 ```
 Body = markdown blurb shown on the internal work page (if one exists).
 
@@ -74,7 +85,9 @@ Body = markdown blurb shown on the book's detail page.
 
 ### ADD A WORK (hosted series -- gets an internal page)
 
-Create `src/content/works/<slug>.md`. Example for a hosted series:
+Create `src/content/works/<slug>.md`. The work automatically appears as a network node on the overworld home page, auto-placed by the network layout using `order`. To art-direct a specific position, add the optional `position` field (0..100 viewBox units; omit to let the layout decide).
+
+Example for a hosted series without position override:
 
 ```markdown
 ---
@@ -94,7 +107,32 @@ A radio analyst discovers the interference pattern has been talking back.
 The archive opens one frequency at a time.
 ```
 
+With a position override (places the node at roughly center-right of the map):
+
+```markdown
+---
+title: The Signal Archive
+type: series
+status: coming-soon
+tagline: Static was never just noise.
+accentColor: "#c86000"
+genre: Sci-fi thriller
+order: 3
+position:
+  x: 70
+  y: 45
+gmQuips:
+  - "Oh great, another mystery box. At least this one has good lighting."
+  - "You read the tagline. You are already in too deep."
+---
+
+A radio analyst discovers the interference pattern has been talking back.
+The archive opens one frequency at a time.
+```
+
 ### ADD A WORK (external -- links out to another site, NO internal page)
+
+An external work still appears as a network node on the overworld. Clicking it opens the `externalUrl` in a new tab. No `/works/<slug>` page is generated.
 
 ```markdown
 ---
@@ -115,7 +153,7 @@ Three siblings get cast in an alien streaming platform's deadliest reality show.
 Start the series on its own site.
 ```
 
-The WorldTile renders an "Enter -> own site" label and opens `_blank`. No `/works/the-broadcast` page is created.
+The node renders an "Enter -> own site" label and opens `_blank`. No `/works/the-broadcast` page is created. The optional `position` override works here too.
 
 ### ADD BOOKS to a hosted series
 
@@ -246,15 +284,16 @@ npm run build  # dist/ created, no errors
 ```
 
 ## File map (quick reference)
-- `src/content/schema.ts` -- Zod schemas for `works` and `books`
-- `src/content/works/*.md` -- one file per world/series
+- `src/content/schema.ts` -- Zod schemas for `works` and `books` (includes `position` field)
+- `src/content/works/*.md` -- one file per world/series; each auto-appears as an overworld node
 - `src/content/books/*.md` -- one file per book
 - `src/assets/covers/` -- cover images (resolved by basename in BookCard)
 - `src/data/gmLines.ts` -- global GM line pools, keyed by `GmContext`
 - `src/lib/gm.ts` -- `GmContext` type, `pickLine`, `randomLine`
 - `src/data/eggs.ts` -- easter egg registry `{id, selector}[]`
-- `src/components/WorldTile.astro` -- renders one world/series tile (external = link out; locked = div, no href)
+- `src/components/WorldTile.astro` -- renders one world/series tile (external = link out; locked = ICE-locked div, no href)
 - `src/components/BookCard.astro` -- renders one book card, cover resolved by glob
+- `src/pages/index.astro` -- home page; renders the neon-noir overworld network map
 - `src/pages/works/[slug].astro` -- internal work page (excludes external + locked)
 - `src/pages/books/[slug].astro` -- book detail page with BuyButtons
 - `src/pages/api/subscribe.ts` -- email list endpoint (Upstash Redis)
