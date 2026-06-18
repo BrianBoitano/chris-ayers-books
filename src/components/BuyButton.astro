@@ -39,8 +39,9 @@ const { href, label } = Astro.props;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #07090c;
-    background: var(--accent, var(--green, #39ff9e));
-    border: 2px solid var(--accent, var(--green, #39ff9e));
+    background: var(--accent, var(--cy-yellow));
+    border: 2px solid var(--accent, var(--cy-yellow));
+    clip-path: polygon(0 0, 100% 0, 100% 68%, 90% 100%, 0 100%);
     border-radius: 2px;
     text-decoration: none;
     position: relative;
@@ -71,8 +72,8 @@ const { href, label } = Astro.props;
     text-decoration: none;
     color: #07090c;
     box-shadow:
-      0 0 18px rgba(57, 255, 158, 0.55),
-      0 0 40px rgba(57, 255, 158, 0.2),
+      0 0 18px rgba(252, 238, 10, 0.55),
+      0 0 40px rgba(252, 238, 10, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
   }
@@ -84,7 +85,7 @@ const { href, label } = Astro.props;
   .buy-btn:active {
     transform: translateY(0);
     box-shadow:
-      0 0 8px rgba(57, 255, 158, 0.3),
+      0 0 8px rgba(252, 238, 10, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 

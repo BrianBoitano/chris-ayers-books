@@ -19,7 +19,7 @@ import headshot from '../assets/headshot.png';
         class="about-portrait-img"
       />
     </div>
-    <div class="about-copy">
+    <div class="about-copy term-panel">
       <h1>The mind of Chris</h1>
       <p>
         Chris Ayers writes adult fiction with a dangerously overclocked imagination:
@@ -50,6 +50,26 @@ import headshot from '../assets/headshot.png';
     border-radius: 12px;
     display: block;
   }
+  .term-panel {
+    background: rgba(8, 8, 12, 0.72);
+    border: 1px solid var(--line);
+    clip-path: polygon(0 0, 100% 0, 100% 96%, 98% 100%, 0 100%);
+    padding: 1.5rem 1.6rem;
+  }
+  .term-panel h1,
+  .term-panel h2 {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+  }
+  .term-panel h1 {
+    text-shadow: 1px 0 var(--cy-red), -1px 0 var(--cy-cyan);
+  }
+  .term-panel p {
+    color: var(--ink);
+    line-height: 1.7;
+    max-width: 62ch;
+  }
+
   .about-copy h1 {
     margin-top: 0;
   }

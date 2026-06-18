@@ -61,7 +61,7 @@ const sub =
     padding-block: clamp(3rem, 6vw, 5rem);
     border-top: 1px solid var(--line);
     background:
-      linear-gradient(180deg, rgba(57, 255, 158, 0.03) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(252, 238, 10, 0.03) 0%, transparent 60%),
       var(--bg-1);
   }
   /* Inline variant: no full-bleed chrome — the parent feed-row card supplies it. */
@@ -87,7 +87,7 @@ const sub =
     font-family: var(--font-mono);
     font-size: 0.7rem;
     letter-spacing: 0.18em;
-    color: var(--green);
+    color: var(--cy-cyan);
     text-transform: uppercase;
     opacity: 0.85;
   }
@@ -142,8 +142,8 @@ const sub =
   .capture__input::placeholder { color: var(--dim); }
   .capture__input:focus {
     outline: none;
-    border-color: var(--green);
-    box-shadow: 0 0 0 1px var(--green), 0 0 14px rgba(57, 255, 158, 0.25);
+    border-color: var(--cy-yellow);
+    box-shadow: 0 0 0 1px var(--cy-yellow), 0 0 14px rgba(252, 238, 10, 0.25);
   }
   .capture__input[aria-invalid='true'] {
     border-color: var(--red);
@@ -180,7 +180,7 @@ const sub =
     min-height: 1.2em;
     margin: 0;
   }
-  .capture__status[data-state='ok'] { color: var(--green); }
+  .capture__status[data-state='ok'] { color: var(--cy-cyan); }
   .capture__status[data-state='err'] { color: var(--red); }
 
   .capture__fine {

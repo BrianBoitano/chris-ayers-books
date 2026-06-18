@@ -126,15 +126,22 @@ const href = `/books/${slug}`;
     transition: color 0.2s ease;
   }
 
+  /* neon cover frame */
+  .card__cover {
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 94% 100%, 0 100%);
+    border: 1px solid var(--cy-yellow);
+    box-shadow: 0 0 14px rgba(252, 238, 10, 0.25);
+  }
+
   /* --- hover: lift + accent glow + cover zoom --- */
   .card__link:hover .card__tile,
   .card__link:focus-visible .card__tile {
     transform: translateY(-6px);
-    border-color: color-mix(in srgb, var(--accent, var(--green)) 60%, transparent);
+    border-color: color-mix(in srgb, var(--accent, var(--cy-yellow)) 60%, transparent);
     box-shadow:
       0 14px 40px -14px rgba(0, 0, 0, 0.9),
-      0 0 0 1px rgba(57, 255, 158, 0.35),
-      0 0 34px -6px rgba(57, 255, 158, 0.45);
+      0 0 0 1px rgba(252, 238, 10, 0.35),
+      0 0 34px -6px rgba(252, 238, 10, 0.45);
   }
   .card__link:hover .card__cover {
     transform: scale(1.04);
@@ -142,7 +149,7 @@ const href = `/books/${slug}`;
   }
   .card__link:hover .card__title,
   .card__link:focus-visible .card__title {
-    color: var(--accent, var(--green));
+    color: var(--accent, var(--cy-yellow));
   }
 
   /* NO SIGNAL placeholder */
@@ -181,7 +188,7 @@ const href = `/books/${slug}`;
     left: 0; right: 0;
     height: 22%;
     top: -22%;
-    background: linear-gradient(180deg, transparent, rgba(57, 255, 158, 0.07) 45%, rgba(255, 255, 255, 0.05) 50%, transparent);
+    background: linear-gradient(180deg, transparent, rgba(0, 229, 255, 0.07) 45%, rgba(255, 255, 255, 0.05) 50%, transparent);
     animation: scan-roll 4.5s linear infinite;
   }
   @keyframes scan-roll {

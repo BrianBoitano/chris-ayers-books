@@ -26,12 +26,14 @@ const books = sortWorks(
   jsonLd={worksLd(books.map((b) => ({ title: b.data.title, url: new URL(`/books/${b.slug}`, Astro.site).href })))}
 >
   <article class="work-page" style={`--accent:${work.data.accentColor}`}>
-    <header>
-      <p class="work-status">{work.data.status.replace('-', ' ')}</p>
-      <h1>{work.data.title}</h1>
-      <p class="work-tagline">{work.data.tagline}</p>
-    </header>
-    <div class="work-blurb"><Content /></div>
+    <div class="term-panel">
+      <header>
+        <p class="work-status">{work.data.status.replace('-', ' ')}</p>
+        <h1>{work.data.title}</h1>
+        <p class="work-tagline">{work.data.tagline}</p>
+      </header>
+      <div class="work-blurb"><Content /></div>
+    </div>
     {books.length > 0 && (
       <section class="book-grid">
         {books.map((b) => <BookCard slug={b.slug} data={b.data} />)}
@@ -47,9 +49,30 @@ const books = sortWorks(
     padding: 3rem 1.5rem 5rem;
   }
 
+  .term-panel {
+    background: rgba(8, 8, 12, 0.72);
+    border: 1px solid var(--line);
+    clip-path: polygon(0 0, 100% 0, 100% 96%, 98% 100%, 0 100%);
+    padding: 1.5rem 1.6rem;
+    margin-bottom: 3rem;
+  }
+  .term-panel h1,
+  .term-panel h2 {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+  }
+  .term-panel h1 {
+    text-shadow: 1px 0 var(--cy-red), -1px 0 var(--cy-cyan);
+  }
+  .term-panel p {
+    color: var(--ink);
+    line-height: 1.7;
+    max-width: 62ch;
+  }
+
   header {
     margin-bottom: 2.5rem;
-    border-left: 3px solid var(--accent, var(--green));
+    border-left: 3px solid var(--accent, var(--cy-yellow));
     padding-left: 1.25rem;
   }
 
@@ -84,7 +107,6 @@ const books = sortWorks(
     line-height: 1.7;
     color: var(--muted);
     max-width: 65ch;
-    margin-bottom: 3rem;
   }
 
   .book-grid {
