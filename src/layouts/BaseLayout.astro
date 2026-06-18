@@ -31,5 +31,19 @@ const { title, description, image, jsonLd, type, noindex } = Astro.props;
     </main>
     <Footer />
     <FollowMe />
+    <div class="gm-takeover" data-gm-takeover hidden role="dialog" aria-modal="true" aria-label="System override">
+      <div class="gm-takeover__panel">
+        <p class="gm-takeover__h">// SYSTEM OVERRIDE</p>
+        <p class="gm-takeover__body">All datashards recovered. You turned over the whole map. SECTION ZERO is now on the network. Go see what you unlocked.</p>
+        <button type="button" class="gm-takeover__close" data-gm-takeover-close>Acknowledge</button>
+      </div>
+    </div>
+    <script>
+      import initProgressEggs from '../scripts/progress-eggs.ts';
+      const start = () => initProgressEggs();
+      document.addEventListener('astro:page-load', start, { once: true });
+      if (document.readyState !== 'loading') start();
+      else document.addEventListener('DOMContentLoaded', start, { once: true });
+    </script>
   </body>
 </html>

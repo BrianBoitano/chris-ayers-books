@@ -38,6 +38,10 @@ const polyPoints = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${y}`)
 
   {first && <div class="ow-cursor" data-cursor style={`left:${first.x}%; top:${first.y}%`} aria-hidden="true"></div>}
 
+  <a class="ow-secret" data-secret-node href="/section-zero" hidden style="left:82%; top:15%" aria-label="Section Zero, unlocked secret">
+    <span class="ow-secret__term">SECTION ZERO</span>
+  </a>
+
   <a class="ow-scroll" href="#notify" aria-label="Scroll to newsletter and links">
     <span>MORE BELOW</span>
     <span class="ow-scroll-chev" aria-hidden="true">v</span>
@@ -47,7 +51,7 @@ const polyPoints = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${y}`)
     <span class="lab">ACCESS</span>
     <span class="seg" data-hud-seg></span>
     <span class="lab"><b data-hud-xp>0</b></span>
-    <span class="lab" style="margin-left:14px">DATASHARDS <b data-hud-eggs>0</b></span>
+    <span class="lab" style="margin-left:14px">DATASHARDS <b data-hud-eggs>0 / 5</b></span>
     <span class="daemon"><b>DAEMON//GM:</b> <span data-daemon-text>{greeting}</span></span>
   </div>
 
@@ -116,6 +120,12 @@ const polyPoints = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${y}`)
   @media (prefers-reduced-motion: reduce) {
     .ow-scan, .ow-grain { display:none; }
   }
+  .ow-secret { position:absolute; z-index:6; transform:translate(-50%,-50%); text-decoration:none;
+    font-family:"Courier New",monospace; }
+  .ow-secret__term { display:inline-block; padding:6px 12px; color:#0a0a04; background:#ff2bd6;
+    font-weight:700; font-size:12px; letter-spacing:.12em; clip-path:polygon(0 0,100% 0,100% 64%,90% 100%,0 100%);
+    box-shadow:0 0 18px rgba(255,43,214,.6); }
+  .ow-secret[hidden] { display:none; }
 </style>
 
 <script>

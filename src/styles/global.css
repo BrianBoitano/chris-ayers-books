@@ -201,3 +201,22 @@ body { position: relative; background: var(--bg-0); }
 }
 @media (prefers-reduced-motion: reduce) { .site-bg::after { display:none; } }
 
+/* GM takeover overlay (egg-scavenger completion) */
+.gm-takeover { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center;
+  background: rgba(4,4,6,.86); padding: 1.5rem; }
+.gm-takeover[hidden] { display: none; }
+.gm-takeover__panel { max-width: 440px; background: rgba(8,8,12,.96); border: 1px solid var(--cy-yellow);
+  box-shadow: 0 0 40px rgba(252,238,10,.3); clip-path: polygon(0 0,100% 0,100% 94%,97% 100%,0 100%); padding: 1.6rem 1.5rem; text-align: left; }
+.gm-takeover__h { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.18em; color: var(--cy-yellow); margin: 0 0 0.8rem; }
+.gm-takeover__body { color: var(--ink); line-height: 1.7; margin: 0 0 1.2rem; }
+.gm-takeover__close { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #0a0a04; background: var(--cy-yellow); border: 0; padding: 0.6em 1.2em; cursor: pointer;
+  clip-path: polygon(0 0,100% 0,100% 70%,92% 100%,0 100%); }
+/* Egg toast */
+.egg-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(8px); z-index: 190;
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; color: #0a0a04; background: var(--cy-cyan);
+  padding: 0.5em 1em; clip-path: polygon(0 0,100% 0,100% 68%,94% 100%,0 100%); opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s; }
+.egg-toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce) { .egg-toast { transition: none; } }
+
