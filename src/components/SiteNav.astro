@@ -88,8 +88,20 @@ const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
     box-shadow:
-      0 1px 0 0 rgba(57, 255, 158, 0.08),
-      inset 0 1px 0 rgba(57, 255, 158, 0.06);
+      0 1px 0 0 rgba(252, 238, 10, 0.08),
+      inset 0 1px 0 rgba(252, 238, 10, 0.06);
+  }
+
+  /* HUD accent line — thin yellow bar under the nav border */
+  .nav::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 120px;
+    height: 2px;
+    background: var(--cy-yellow);
+    box-shadow: 0 0 8px var(--cy-yellow);
   }
 
   .nav__inner {
@@ -108,22 +120,25 @@ const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
     align-items: center;
     gap: 0.35em;
     text-decoration: none;
-    color: var(--ink);
-    font-family: var(--font-display);
+    color: var(--cy-cyan);
+    font-family: var(--font-mono);
     font-size: 1.05rem;
     font-weight: 700;
-    letter-spacing: 0.01em;
-    transition: color 0.15s ease;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+    transition: color 0.15s ease, text-shadow 0.15s ease;
     white-space: nowrap;
   }
 
   .nav__brand:hover {
-    color: var(--green);
+    color: var(--cy-yellow);
+    text-shadow: 0 0 12px rgba(252, 238, 10, 0.7);
     text-decoration: none;
   }
 
   .nav__brand-sigil {
-    color: var(--green);
+    color: var(--cy-yellow);
     font-size: 0.75em;
     animation: sigil-breathe 3s ease-in-out infinite;
   }
@@ -194,27 +209,30 @@ const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
   .nav__link {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
+    font-size: 13px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--cy-cyan);
     padding: 0.55em 0;
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transform-origin: center;
-    transition: color 0.12s ease, border-color 0.12s ease,
+    transition: color 0.12s ease, text-shadow 0.12s ease, border-color 0.12s ease,
       transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1.4);
   }
 
-  .nav__link:hover {
-    color: var(--ink);
+  .nav__link:hover,
+  .nav__link:focus-visible {
+    color: var(--cy-yellow);
+    text-shadow: 0 0 8px rgba(252, 238, 10, 0.6);
     text-decoration: none;
   }
   /* macOS-dock-style hover magnify (desktop pointer only) */
   @media (hover: hover) and (min-width: 768px) {
     .nav__link:hover {
       transform: scale(1.22);
-      color: var(--green);
+      color: var(--cy-yellow);
+      text-shadow: 0 0 8px rgba(252, 238, 10, 0.6);
     }
     .nav__coffee:hover {
       transform: scale(1.12);
