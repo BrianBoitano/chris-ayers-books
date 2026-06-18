@@ -16,7 +16,7 @@ const ld = worksLd(
 ---
 <BaseLayout title={`${SITE_NAME} | Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
   <Overworld works={works} />
-  <section class="join">
+  <section class="join" id="join">
     <EmailCapture />
   </section>
 </BaseLayout>
