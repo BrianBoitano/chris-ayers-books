@@ -21,12 +21,15 @@ export default function initProgressEggs() {
 
   const revealSecret = () => { document.querySelector('[data-secret-node]')?.removeAttribute('hidden'); };
 
+  let takeoverOpen = false;
+
   const showTakeover = () => {
     const ov = document.querySelector<HTMLElement>('[data-gm-takeover]');
     if (!ov) return;
+    if (takeoverOpen) return; takeoverOpen = true;
     ov.hidden = false;
     const close = ov.querySelector<HTMLElement>('[data-gm-takeover-close]');
-    const hide = () => { ov.hidden = true; document.removeEventListener('keydown', onKey); };
+    const hide = () => { ov.hidden = true; takeoverOpen = false; document.removeEventListener('keydown', onKey); };
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') hide(); };
     close?.addEventListener('click', hide, { once: true });
     document.addEventListener('keydown', onKey);
@@ -67,6 +70,8 @@ export default function initProgressEggs() {
       if (next !== p) {
         p = next; persist(p);
         document.dispatchEvent(new CustomEvent('gm:say', { detail: { context: 'eggFound' } }));
+        // On the final find the full-screen takeover overlay is the payoff, so we skip
+        // the toast (it would just sit behind the overlay). Toast only the earlier finds.
         if (!isComplete(p, TOTAL)) toast(`DATASHARD ${p.eggs.length} / ${TOTAL} RECOVERED`);
         refresh(true);
       }
