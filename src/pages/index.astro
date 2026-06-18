@@ -12,7 +12,46 @@ const ld = worksLd(
     .filter((w) => worldHref(w) !== null)
     .map((w) => ({ title: w.data.title, url: w.data.externalUrl ?? new URL(`/works/${w.slug}`, Astro.site).href }))
 );
+const latest = (await getCollection('transmissions')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())[0];
+const latestDate = latest ? latest.data.date.toISOString().slice(0, 10) : '';
 ---
 <BaseLayout title={`${SITE_NAME} | Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
   <Overworld works={works} />
+  <section class="pitch" id="pitch">
+    <div class="pitch__inner">
+      <p class="pitch__eyebrow"><span aria-hidden="true">//</span> WHAT IS THIS</p>
+      <h2 class="pitch__h">You jacked into an author.</h2>
+      <p class="pitch__copy">Chris Ayers writes adult fiction you fall into like a game. Every node on the network is a world. Browse the archive, read the latest transmission, or get pinged the moment a new world opens.</p>
+      <div class="pitch__cta">
+        <a class="pitch__btn pitch__btn--primary" href="/works">Enter the Archive</a>
+        <a class="pitch__btn" href="/about">Meet the author</a>
+        <a class="pitch__btn" href="#notify">Get the signal</a>
+      </div>
+      {latest && (
+        <a class="pitch__latest" href={`/transmissions/${latest.slug}`}>
+          <span class="pitch__latest-k">LATEST TRANSMISSION // {latestDate}</span>
+          <span class="pitch__latest-t">{latest.data.title}</span>
+        </a>
+      )}
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .pitch { border-top: 1px solid var(--line); padding-block: clamp(2.5rem,6vh,4rem); }
+  .pitch__inner { max-width: 760px; margin-inline: auto; padding-inline: var(--space); }
+  .pitch__eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cy-cyan); opacity: 0.85; }
+  .pitch__h { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem,4.5vw,2.6rem); color: var(--ink); margin: 0.5rem 0 0.7rem; }
+  .pitch__copy { color: var(--ink); line-height: 1.7; max-width: 60ch; }
+  .pitch__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.3rem; }
+  .pitch__btn { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    color: var(--cy-cyan); border: 1px solid var(--line); padding: 0.6em 1em; clip-path: polygon(0 0,100% 0,100% 72%,92% 100%,0 100%); transition: border-color .12s, color .12s; }
+  .pitch__btn:hover { color: var(--cy-yellow); border-color: var(--cy-yellow); }
+  .pitch__btn--primary { background: var(--cy-yellow); color: #0a0a04; border-color: var(--cy-yellow); }
+  .pitch__btn--primary:hover { color: #0a0a04; filter: brightness(1.05); }
+  .pitch__latest { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 1.6rem; padding: 0.9rem 1rem; text-decoration: none;
+    background: rgba(8,8,12,.6); border: 1px solid var(--line); border-left: 2px solid var(--cy-cyan); }
+  .pitch__latest-k { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; color: var(--cy-cyan); }
+  .pitch__latest-t { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { .pitch__btn { transition: none; } }
+</style>

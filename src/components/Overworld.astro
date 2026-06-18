@@ -29,6 +29,7 @@ const polyPoints = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${y}`)
   <div class="ow-title" aria-hidden="true">
     <h2>Select Node</h2>
     <p><span class="blk">// BREACH</span> A SECTOR TO JACK IN</p>
+    <p class="ow-welcome">This is the network of Chris Ayers. Every node is a world he wrote. Jack in.</p>
   </div>
 
   <h1 class="sr-only">Choose your world</h1>
@@ -72,6 +73,7 @@ const polyPoints = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${y}`)
   .ow-title h2 { margin:0; font-family:system-ui,sans-serif; font-size:26px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:#f4fbff; text-shadow:2px 0 #ff2e4d,-2px 0 #00e5ff; }
   .ow-title p { margin:6px 0 0; font-size:11px; letter-spacing:.26em; color:#fcee0a; }
   .ow-title .blk { background:#fcee0a; color:#0a0a04; padding:0 6px; }
+  .ow-welcome { margin:8px 0 0; max-width:42ch; font-size:11px; line-height:1.5; letter-spacing:.04em; color:#9fb4bd; }
   .ow-cursor {
     position:absolute; z-index:3;            /* below nodes (z-index 4) so labels stay on top */
     width:184px; height:92px;
