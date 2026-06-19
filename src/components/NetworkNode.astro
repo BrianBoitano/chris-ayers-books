@@ -56,17 +56,17 @@ const Tag = locked ? 'button' : 'a';
 </div>
 
 <style>
-  .net-node { position:absolute; transform:translate(-50%,-50%); width:148px; z-index:4; font-family:"Courier New",ui-monospace,monospace; }
-  .term { position:relative; display:flex; align-items:center; gap:8px; padding:0 10px; height:58px;
+  .net-node { position:absolute; transform:translate(-50%,-50%); width:200px; z-index:4; font-family:"Courier New",ui-monospace,monospace; }
+  .term { position:relative; display:flex; align-items:center; gap:11px; padding:0 15px; height:78px;
     background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), rgba(8,8,12,.86));
     border:1px solid var(--accent); clip-path:polygon(0 0,100% 0,100% 64%,86% 100%,0 100%);
     box-shadow:0 0 16px color-mix(in srgb, var(--accent) 38%, transparent); }
   a.term { text-decoration:none; cursor:pointer; }
   .term:focus-visible { outline:2px solid #fff; outline-offset:2px; }
-  .ic { font-size:18px; color:var(--accent); }
-  .id { display:block; font-size:9px; letter-spacing:.14em; color:#cdd6b0; }
-  .nm { display:block; font-family:system-ui,sans-serif; font-weight:800; font-size:13px; color:#fff; }
-  .meta { display:block; margin-top:5px; font-size:9px; letter-spacing:.16em; color:var(--accent); }
+  .ic { font-size:25px; color:var(--accent); }
+  .id { display:block; font-size:11px; letter-spacing:.14em; color:#cdd6b0; }
+  .nm { display:block; font-family:system-ui,sans-serif; font-weight:800; font-size:17px; color:#fff; }
+  .meta { display:block; margin-top:6px; font-size:11px; letter-spacing:.16em; color:var(--accent); }
   .net-node.external { --accent:#00e5ff; }
   .net-node.locked { --accent:#ff2e4d; }
   .net-node.locked .term { box-shadow:none; cursor:not-allowed; background:linear-gradient(180deg, rgba(255,46,77,.06), rgba(8,8,12,.9)); }
