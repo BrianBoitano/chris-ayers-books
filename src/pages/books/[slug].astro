@@ -46,14 +46,6 @@ const hasBuy = !!(book.data.amazonUrl || book.data.paperbackUrl || book.data.aud
         {coverImage
           ? <Image src={coverImage} alt={`${book.data.title} cover`} width={600} height={960} widths={[300, 600]} sizes="(max-width: 640px) 60vw, 280px" loading="eager" class="book-cover-img" />
           : <div class="book-cover-ph" aria-hidden="true">NO SIGNAL</div>}
-      </div>
-
-      <div class="book-detail__body">
-        {book.data.order && series && (
-          <p class="book-kicker">Book {book.data.order} // {series.data.title}</p>
-        )}
-        <h1>{book.data.title}</h1>
-        <div class="book-blurb"><Content /></div>
 
         {hasBuy ? (
           <div class="buy-row">
@@ -67,6 +59,14 @@ const hasBuy = !!(book.data.amazonUrl || book.data.paperbackUrl || book.data.aud
             <a class="book-soon__cta" href="#notify">Get the signal &gt;</a>
           </div>
         )}
+      </div>
+
+      <div class="book-detail__body">
+        {book.data.order && series && (
+          <p class="book-kicker">Book {book.data.order} // {series.data.title}</p>
+        )}
+        <h1>{book.data.title}</h1>
+        <div class="book-blurb"><Content /></div>
 
         {series && (
           <p class="book-back"><a href={`/works/${book.data.work}`}>&lt; back to {series.data.title}</a></p>
@@ -144,7 +144,11 @@ const hasBuy = !!(book.data.amazonUrl || book.data.paperbackUrl || book.data.aud
   .book-blurb :global(strong) { color: var(--ink); }
   .book-blurb :global(em) { color: var(--cy-yellow); font-style: italic; }
 
-  .buy-row { display: flex; flex-wrap: wrap; gap: 1rem; }
+  /* Buy buttons live under the cover image, stacked full-width (ebook /
+     paperback / audiobook-soon). */
+  .book-detail__cover { display: flex; flex-direction: column; gap: 1rem; }
+  .buy-row { display: flex; flex-direction: column; gap: 0.6rem; }
+  .book-detail__cover :global(.buy-btn) { width: 100%; justify-content: center; }
 
   .book-soon {
     border: 1px solid var(--line);
