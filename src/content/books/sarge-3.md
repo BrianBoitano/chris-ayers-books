@@ -3,6 +3,8 @@ title: Some Reassembly Required
 work: sarge
 order: 3
 cover: sarge-3.jpg
+amazonUrl: "https://www.amazon.com/dp/B0H6342WKP"
+paperbackUrl: "https://www.amazon.com/dp/B0H634DBKZ"
 ---
 
 The door opened for everyone. That was the whole miracle, and Sarge watched it from the back of the room of the entire species, reading a planet-wide manifest for the one name that never scrolled.

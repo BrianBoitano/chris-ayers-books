@@ -3,6 +3,8 @@ title: Some Assembly Required
 work: sarge
 order: 1
 cover: sarge-1.jpg
+amazonUrl: "https://www.amazon.com/dp/B0GZYHRKWR"
+paperbackUrl: "https://www.amazon.com/dp/B0H63D4YXZ"
 ---
 
 Sarge reads patterns the way other people read faces. Badly, in the wrong order, and then, all at once, perfectly.

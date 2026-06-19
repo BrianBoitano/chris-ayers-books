@@ -1,7 +1,7 @@
 ---
 title: Signal to Noise
 type: series
-status: coming-soon
+status: live
 tagline: That's not noise, man.
 overview: "The funny one. Sarge loses his best friend to a thing nobody will admit is real, then spends nineteen years building a machine to bring him back while the world ends exactly the way Chris said it would."
 cover: /covers/sarge-1.jpg

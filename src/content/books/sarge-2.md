@@ -3,6 +3,8 @@ title: Search History
 work: sarge
 order: 2
 cover: sarge-2.jpg
+amazonUrl: "https://www.amazon.com/dp/B0H4PDNFFH"
+paperbackUrl: "https://www.amazon.com/dp/B0H632N7T3"
 ---
 
 The bus was always on time. Sarge just wishes, now, that he had been wrong about where it was going.
