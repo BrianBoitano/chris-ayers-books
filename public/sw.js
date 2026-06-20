@@ -1,8 +1,9 @@
 // Conservative PWA service worker for chrisayersbooks.com. Network-first so the
 // site stays fresh; caches the playable reader shell so The Haunt works offline.
 // Never touches POST or /api/ (the save endpoint must always hit the network).
-const CACHE = 'haunt-v1';
-const SHELL = ['/play/the-haunt', '/play/the-haunt.json', '/which-soul',
+const CACHE = 'haunt-v2';
+const SHELL = ['/play/the-haunt', '/play/the-haunt.json',
+  '/play/the-vigil', '/play/the-vigil.json', '/which-soul',
   '/covers/the-haunt.jpg', '/icons/haunt-192.png', '/icons/haunt-512.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
