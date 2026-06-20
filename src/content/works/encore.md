@@ -30,3 +30,7 @@ winning, costs you the very thing you came to keep.
 **▶ [Play The Haunt free in your browser](/play/the-haunt)**. 193 sections, 44
 endings, about an hour a path. The ebook and paperback are coming to Amazon; the
 interactive audiobook follows.
+
+Not sure you are ready to go in? First find out
+**[which member of the Company you are](/which-soul)**. The Curator recasts the same
+seven souls into every production. He will tell you which one is yours.

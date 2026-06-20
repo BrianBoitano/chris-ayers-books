@@ -17,10 +17,16 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
     <!-- start screen (server-rendered; JS hydrates) -->
     <div class="haunt__start" data-start>
-      <p>You wake in a cold parlour with no memory of dying, and a card on the table says you have been cast. The house is built out of someone's grief, and the way out costs you the very thing you came to keep. You decide where to step, what to pick up, and what you are willing to set down. The house remembers what you carry.</p>
+      <div class="haunt__curator">
+        <p class="haunt__curator-h">The Curator is pleased to welcome you to a new production.</p>
+        <p>You will wake in a cold parlour with no memory of dying. There is a card on the table, printed in a typeface that belongs on a theatre door, and it says you have been cast.</p>
+        <p>Step where you like. Pick up what you must. The House is hungry, and it eats only what you give it, so give it nothing you cannot bear to watch it wear. One reminder, with our compliments: the way out is real, and it will cost you the one thing you came to keep.</p>
+        <p class="haunt__curator-sign">Do proceed.</p>
+      </div>
       <p class="haunt__meta">193 sections &#183; 44 endings &#183; about an hour a path</p>
-      <button type="button" class="haunt__btn haunt__btn--big" data-begin>Begin</button>
+      <button type="button" class="haunt__btn haunt__btn--big" data-begin>Take your seat</button>
       <button type="button" class="haunt__btn haunt__link" data-resume hidden>Resume where you left off</button>
+      <p class="haunt__meta"><a href="/which-soul" style="color:#9a9486;">First, which member of the Company are you?</a></p>
     </div>
 
     <!-- reader stage -->
@@ -65,6 +71,18 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
   .haunt__start { max-width: 36rem; margin: 1.5rem auto 0; text-align: center; }
   .haunt__start p { margin: 0 0 1rem; }
+  .haunt__curator {
+    border: 1px solid #4a3f2c; background: rgba(200,162,74,0.05);
+    padding: 1.1rem 1.3rem; margin: 0 auto 1.4rem; text-align: left; max-width: 34rem;
+    font-style: italic; color: #d9cdaf;
+  }
+  .haunt__curator-h { font-style: normal; letter-spacing: 0.04em; color: #c8a24a; margin: 0 0 0.8rem; }
+  .haunt__curator-sign { margin: 0; text-align: right; color: #c8a24a; }
+  .haunt__curator p { margin: 0 0 0.8rem; }
+  .haunt__curator-remark {
+    font-style: italic; color: #c8a24a; max-width: 34rem; margin: 0 auto 0.8rem;
+    border-left: 2px solid #4a3f2c; padding-left: 0.8rem; text-align: left;
+  }
 
   .haunt__btn {
     font-family: inherit; cursor: pointer;
@@ -156,6 +174,18 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
     const pretty = (cw: string) =>
       game.codewordLabels[cw] || cw.replace(game.namespace, '').replace(/-/g, ' ').toLowerCase();
 
+    // The Curator's sardonic remark at a bad ending. Chosen by section for stability.
+    const CURATOR_BAD = [
+      'A pity. We did so hope you would stay for the part that mattered.',
+      'Cut. Struck from the cast. The fog is very forgiving about names.',
+      'You left before the centre. They always leave before the centre. Begin again, do.',
+      'The House is patient. The House has all the time you do not. Try once more.',
+      'How quickly they give it away, the thing they came to keep. Another, perhaps?',
+      'Not the truth, that ending. Close, some nights. Never the truth. Again?',
+      'The seat is still warm. It is always still warm. Sit back down.',
+      'You were almost wonderful. Almost is the house’s favourite word. Once more.',
+    ];
+
     function loadFound() {
       try { found = new Set(JSON.parse(localStorage.getItem(FOUND) || '[]')); } catch {}
     }
@@ -195,14 +225,15 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
         found.add(sec.n); saveFound();
         endingEl.hidden = false;
         if (sec.bridge) {
-          endingEl.innerHTML = `<p class="end-mark">End of Part</p>`;
+          endingEl.innerHTML = `<p class="haunt__curator-remark">Down you go. We have kept your seat.</p><p class="end-mark">End of Part</p>`;
           const b = button('Continue, and Part ' + sec.bridge.word, () => enter(sec.bridge!.to));
           endingEl.appendChild(b);
         } else if (sec.canonical) {
-          endingEl.innerHTML = `<p class="end-mark">The Curtain</p><p class="end-curtain">You reached the true ending of The Haunt.</p>`;
+          endingEl.innerHTML = `<p class="haunt__curator-remark">You let go. After so long, you finally let go. You have won the Haunt, and you know, now, what it cost. The Company will remember you.</p><p class="end-mark">The Curtain</p><p class="end-curtain">You reached the true ending of The Haunt. One of 44, and the only one the Curator calls winning.</p>`;
           endingEl.appendChild(button('Begin again', restart, true));
         } else {
-          endingEl.innerHTML = `<p class="end-mark">An ending</p>`;
+          const remark = CURATOR_BAD[sec.n % CURATOR_BAD.length];
+          endingEl.innerHTML = `<p class="haunt__curator-remark">${esc(remark)}</p><p class="end-mark">An ending</p><p class="haunt__meta">Ending ${found.size} of ${game.endings} found</p>`;
           endingEl.appendChild(button('Begin again', restart, true));
         }
       } else {

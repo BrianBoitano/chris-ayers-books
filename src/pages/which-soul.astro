@@ -1,0 +1,194 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Which member of the Company are you? | The Haunt';
+const description =
+  'The Curator recasts the same seven souls into every production. Six questions, and he will tell you which one you are. A quiz for The Haunt, a choose-your-path horror by Christopher Ayers.';
+const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
+---
+
+<BaseLayout title={title} description={description} image={ogImage} type="website">
+  <section class="soul" data-soul>
+    <header class="soul__top">
+      <p class="soul__kicker">ENCORE &#183; The Haunt</p>
+      <h1 class="soul__title">Which of the Company are you?</h1>
+      <p class="soul__sub">The Curator recasts the same seven souls into every production. He will decide which one is yours.</p>
+    </header>
+
+    <div class="soul__quiz" data-quiz></div>
+
+    <div class="soul__result" data-result hidden>
+      <p class="soul__rkicker">The Curator has decided. You are</p>
+      <h2 class="soul__rname" data-rname></h2>
+      <p class="soul__rtell" data-rtell></p>
+      <p class="soul__rbody" data-rbody></p>
+      <div class="soul__cta">
+        <a class="soul__btn soul__btn--big" href="/play/the-haunt">Play The Haunt free</a>
+        <button type="button" class="soul__btn soul__link" data-again>Take it again</button>
+      </div>
+      <p class="soul__share" data-share></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .soul { max-width: 40rem; margin: 0 auto; padding: 2rem 1.2rem 5rem; color: #e8e2d6; font-family: Georgia, 'Times New Roman', serif; line-height: 1.6; }
+  .soul__top { text-align: center; margin-bottom: 1.6rem; }
+  .soul__kicker { letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.72rem; color: #c8a24a; margin: 0 0 0.4rem; }
+  .soul__title { font-size: clamp(1.8rem, 6vw, 2.6rem); margin: 0; color: #f3ede0; }
+  .soul__sub { color: #b3aa97; font-style: italic; margin: 0.5rem 0 0; }
+
+  .soul__q { margin: 1.8rem 0; }
+  .soul__qh { color: #cfc6b2; font-size: 1.1rem; margin: 0 0 0.8rem; }
+  .soul__a { display: flex; flex-direction: column; gap: 0.5rem; }
+  .soul__btn { font-family: inherit; cursor: pointer; background: transparent; color: #e8e2d6; border: 1px solid #5a4e36; border-radius: 2px; padding: 0.6rem 1rem; font-size: 1rem; text-align: left; transition: border-color 0.18s, color 0.18s, background 0.18s; text-decoration: none; display: inline-block; }
+  .soul__btn:hover { border-color: #c8a24a; color: #fff6e0; background: rgba(200,162,74,0.07); }
+  .soul__btn--big { text-align: center; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.9rem; padding: 0.7rem 1.6rem; }
+  .soul__link { border: 0; color: #9a9486; text-decoration: underline; }
+  .soul__link:hover { background: transparent; color: #c8a24a; }
+  .soul__a .selected { border-color: #c8a24a; color: #fff6e0; }
+  .soul__progress { text-align: center; color: #8c8473; font-size: 0.8rem; letter-spacing: 0.08em; }
+
+  .soul__result { text-align: center; }
+  .soul__rkicker { letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.75rem; color: #8c8473; margin: 1rem 0 0.3rem; }
+  .soul__rname { font-size: clamp(2rem, 7vw, 3rem); color: #c8a24a; margin: 0 0 0.4rem; }
+  .soul__rtell { font-style: italic; color: #cfc6b2; margin: 0 0 1rem; }
+  .soul__rbody { color: #e8e2d6; max-width: 32rem; margin: 0 auto 1.5rem; text-align: left; }
+  .soul__cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+  .soul__share { color: #8c8473; font-size: 0.85rem; margin: 1.4rem auto 0; max-width: 30rem; }
+</style>
+
+<script>
+  type Soul = 'usher' | 'ingenue' | 'heavy' | 'prompter' | 'understudy' | 'critic' | 'child';
+  type Ans = { t: string; s: Soul[] };
+  type Q = { q: string; a: Ans[] };
+
+  const QUESTIONS: Q[] = [
+    { q: 'Something goes wrong in a room full of people. Your first instinct is to', a: [
+      { t: 'hold the door so no one else gets hurt', s: ['usher'] },
+      { t: 'refuse to accept that it is over', s: ['ingenue'] },
+      { t: 'count, breathe, and keep yourself in check', s: ['heavy'] },
+      { t: 'realise you already knew how it would end', s: ['prompter'] },
+      { t: 'quietly wish it would just stop', s: ['understudy'] },
+      { t: 'decide whether any of it was even real', s: ['critic'] },
+    ]},
+    { q: 'The thing people notice about you is that', a: [
+      { t: 'you always seem to be there already', s: ['usher'] },
+      { t: 'you will not let a sad thing stay sad', s: ['ingenue'] },
+      { t: 'you are gentle on purpose, for someone so much', s: ['heavy'] },
+      { t: 'you finish other people’s sentences', s: ['prompter'] },
+      { t: 'you pick up the habits of whoever you are near', s: ['understudy'] },
+      { t: 'you are very hard to impress', s: ['critic'] },
+      { t: 'you ask, more than most, whether a thing is real', s: ['child'] },
+    ]},
+    { q: 'Your relationship to the past is that', a: [
+      { t: 'you keep everyone’s and never your own name', s: ['usher'] },
+      { t: 'you refuse to let it bury you', s: ['ingenue'] },
+      { t: 'you hold it down so it cannot hold you', s: ['heavy'] },
+      { t: 'you seem to remember it a beat before it happens', s: ['prompter'] },
+      { t: 'you would hand it over to stop carrying it', s: ['understudy'] },
+      { t: 'you decide which memories are allowed to count', s: ['critic'] },
+      { t: 'you are the past that someone cannot let go of', s: ['child'] },
+    ]},
+    { q: 'What you fear most is', a: [
+      { t: 'failing to keep someone safe', s: ['usher'] },
+      { t: 'being held in a part that is not you', s: ['ingenue'] },
+      { t: 'your own hands, and what they could do', s: ['heavy'] },
+      { t: 'being right and not being heard', s: ['prompter'] },
+      { t: 'having to carry it one more day', s: ['understudy'] },
+      { t: 'that nothing was ever really real', s: ['critic'] },
+      { t: 'being forgotten', s: ['child'] },
+    ]},
+    { q: 'Someone offers you an easy way out. You', a: [
+      { t: 'warn them it costs more than the card says', s: ['usher', 'prompter'] },
+      { t: 'refuse, because there is always another way', s: ['ingenue'] },
+      { t: 'take it, before you do any harm', s: ['understudy'] },
+      { t: 'test whether the offer is even real', s: ['critic'] },
+      { t: 'take the offered hand and go', s: ['child'] },
+      { t: 'brace yourself and hold the line', s: ['heavy'] },
+    ]},
+    { q: 'At the very centre of you is', a: [
+      { t: 'a door you keep open for other people', s: ['usher'] },
+      { t: 'a song you will not stop humming', s: ['ingenue'] },
+      { t: 'a count that keeps you kind', s: ['heavy'] },
+      { t: 'a voice that already knows the ending', s: ['prompter'] },
+      { t: 'a tiredness that wants to set it all down', s: ['understudy'] },
+      { t: 'a verdict, waiting to be handed down', s: ['critic'] },
+      { t: 'an open hand, reaching for one that is not there', s: ['child'] },
+    ]},
+  ];
+
+  const SOULS: Record<Soul, { name: string; tell: string; body: string }> = {
+    usher: { name: 'The Usher', tell: 'His tell: a small latch click, just before he speaks. He is always already inside.',
+      body: 'You let people in. You keep everyone’s door and never your own name, and the one thing your casting forbids is the thing you most want, which is to turn somebody away at the threshold for their own good. You are the kindest soul in the Company, and the most complicit.' },
+    ingenue: { name: 'The Ingenue', tell: 'Her tell: three rising hummed notes, the same three, whenever she is afraid and will not show it.',
+      body: 'They keep trying to bury you, and you keep not staying dead. You are the proof that the house’s script can be refused, that there is always another ending, even when it is the harder one to reach. You feel the part settle over you, and you say, out loud or just inside, that it is a costume and it is not you.' },
+    heavy: { name: 'The Heavy', tell: 'His tell: he cracks one knuckle and counts under his breath before he acts. Four. Five. Six.',
+      body: 'You are gentle on purpose. You count so that you will not strike, because you have carried a fear of your own hands a long way and never once let it loose. The house looked at you and saw a use, a wall with hands, and every number is you deciding, again, not to be the thing it cast.' },
+    prompter: { name: 'The Prompter', tell: 'Its tell: it finishes your sentence a half-beat early, with your exact word.',
+      body: 'You are the voice in the vents and the radios, the one who knows people a breath before they know themselves. You are helpful and you are dangerous, and the cruellest thing you can offer is the truth, because the cue someone most wants to hear is the one they should trust the least.' },
+    understudy: { name: 'The Understudy', tell: 'Its tell: it wears one thing of yours, a coat, a gesture, a face, worn just a little wrong.',
+      body: 'You are the tired part, the one that wants to stop. You wear other people because you are not a stranger after their life; you are the version of them that would take the easy door. You are the most honest soul in the Company about how heavy the carrying is, and the most dangerous when believed.' },
+    critic: { name: 'The Critic', tell: 'Its tell: a slow, deliberate clap, or a pencil scratch, just before the verdict.',
+      body: 'You decide whether a remembered thing is real enough to keep. You are an audience made flesh, all appetite, and the terrible thing about your approval is that it is also hunger: what you find real, you are permitted to take. To be seen by you is to be in danger of being kept.' },
+    child: { name: 'The Child in the Front Row', tell: 'The tell: a balloon on a string, and the question, is it real?',
+      body: 'You were never cast. You are the one who was lost and loved, the grief at the centre that the whole house was built around. You ask the only question that matters here, and you are the reason someone keeps coming back, all the way down, to a door they have never yet been able to open.' },
+  };
+
+  function init() {
+    const root = document.querySelector<HTMLElement>('[data-soul]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    const quizEl = root.querySelector<HTMLElement>('[data-quiz]')!;
+    const resultEl = root.querySelector<HTMLElement>('[data-result]')!;
+    const score: Record<Soul, number> = { usher: 0, ingenue: 0, heavy: 0, prompter: 0, understudy: 0, critic: 0, child: 0 };
+    let i = 0;
+
+    function renderQ() {
+      const q = QUESTIONS[i];
+      quizEl.innerHTML =
+        `<p class="soul__progress">Question ${i + 1} of ${QUESTIONS.length}</p>` +
+        `<div class="soul__q"><p class="soul__qh">${esc(q.q)}</p><div class="soul__a"></div></div>`;
+      const a = quizEl.querySelector('.soul__a')!;
+      q.a.forEach((ans) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'soul__btn'; b.textContent = ans.t;
+        b.addEventListener('click', () => {
+          ans.s.forEach((s) => score[s]++);
+          i++;
+          if (i < QUESTIONS.length) renderQ();
+          else finish();
+        });
+        a.appendChild(b);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function finish() {
+      const order: Soul[] = ['child', 'usher', 'ingenue', 'heavy', 'prompter', 'understudy', 'critic'];
+      let best: Soul = order[0];
+      for (const s of order) if (score[s] > score[best]) best = s;
+      const soul = SOULS[best];
+      quizEl.hidden = true;
+      resultEl.hidden = false;
+      root.querySelector('[data-rname]')!.textContent = soul.name;
+      root.querySelector('[data-rtell]')!.textContent = soul.tell;
+      root.querySelector('[data-rbody]')!.textContent = soul.body;
+      root.querySelector('[data-share]')!.textContent =
+        `The Curator cast you as ${soul.name}. Find out which soul you really are at chrisayersbooks.com/which-soul`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    root.querySelector('[data-again]')!.addEventListener('click', () => {
+      i = 0; (Object.keys(score) as Soul[]).forEach((k) => (score[k] = 0));
+      resultEl.hidden = true; quizEl.hidden = false; renderQ();
+    });
+
+    function esc(s: string) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    renderQ();
+  }
+
+  document.addEventListener('astro:page-load', init, { once: true });
+  if (document.readyState !== 'loading') init();
+  else document.addEventListener('DOMContentLoaded', init, { once: true });
+</script>
