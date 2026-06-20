@@ -143,6 +143,14 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
   .haunt__choice--locked { opacity: 0.5; cursor: default; border-style: dashed; }
   .haunt__choice--locked:hover { border-color: #5a4e36; color: #e8e2d6; background: transparent; }
   .haunt__choice .gate { display: block; font-size: 0.72rem; color: #9a7d3e; letter-spacing: 0.04em; margin-top: 0.2rem; font-style: italic; }
+  .haunt__choice--unlocked { border-color: #c8a24a; box-shadow: 0 0 12px rgba(200,162,74,0.18); }
+  .haunt__choice--unlocked::before { content: '\2726  '; color: #c8a24a; }
+
+  .haunt__reactive { margin: 1.1rem 0 0; padding-left: 0.85rem; border-left: 2px solid #4a3f2c; font-style: italic; }
+  .haunt__reactive p { margin: 0; }
+  .haunt__reactive--curator { color: #d9cdaf; border-left-color: #c8a24a; }
+  .haunt__reactive--prompter { color: #9fb0b8; border-left-color: #5a6b72; }
+  .haunt__reactive--narration { color: #cfc6b2; }
 
   .haunt__ending { margin: 1.8rem 0 0; text-align: center; }
   .haunt__ending .end-mark { letter-spacing: 0.4em; text-transform: uppercase; color: #c8a24a; font-size: 0.8rem; margin: 0 0 0.4rem; }
@@ -171,7 +179,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 <script>
   type Choice = { label: string; to: number; requires: string | null; forbids: string | null };
   type Block = { t: 'p'; s: string } | { t: 'sys'; lines: string[] } | { t: 'rule' };
-  type Sec = { n: number; title: string; blocks: Block[]; grants: string[]; terminal: boolean; canonical: boolean; choices: Choice[]; mood?: string; partStart?: { word: string; title: string }; bridge?: { to: number; word: string } };
+  type Sec = { n: number; title: string; blocks: Block[]; grants: string[]; terminal: boolean; canonical: boolean; choices: Choice[]; mood?: string; gated?: { when: any; aside?: string; voice?: string; choice?: { label: string; to: number } }[]; partStart?: { word: string; title: string }; bridge?: { to: number; word: string } };
   type Game = { title: string; start: number; total: number; endings: number; codewordLabels: Record<string, string>; namespace: string; sections: Record<string, Sec> };
   type Stats = { nerve: number; insight: number; grip: number };
 
@@ -241,6 +249,13 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       carried.forEach((c) => { const d = STAT_MAP[c]; if (d) { t.nerve += d.nerve || 0; t.insight += d.insight || 0; t.grip += d.grip || 0; } });
       return t;
     }
+    function whenOk(w: any, st: Stats): boolean {
+      if (!w) return false;
+      if (w.soul) return character.soul === w.soul;
+      if (w.carry) return carried.has(w.carry);
+      if (w.stat) { const v = (st as any)[w.stat] ?? 0; if (w.min != null && v < w.min) return false; if (w.max != null && v > w.max) return false; return true; }
+      return false;
+    }
 
     // ---- persistence ----
     function saveLocal() {
@@ -307,6 +322,22 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
           } else {
             choicesEl.appendChild(button(ch.label, () => enter(ch.to)));
           }
+        }
+      }
+      // character reactivity: the house notices who you are
+      const st = stats();
+      for (const ov of (sec.gated || [])) {
+        if (!whenOk(ov.when, st)) continue;
+        if (ov.aside) {
+          const d = document.createElement('div');
+          d.className = 'haunt__reactive haunt__reactive--' + (ov.voice || 'narration');
+          d.innerHTML = `<p>${esc(ov.aside)}</p>`;
+          secEl.appendChild(d);
+        }
+        if (ov.choice && !sec.terminal) {
+          const b = button(ov.choice.label, () => enter(ov.choice!.to));
+          b.classList.add('haunt__choice--unlocked');
+          choicesEl.appendChild(b);
         }
       }
       renderSheet();
