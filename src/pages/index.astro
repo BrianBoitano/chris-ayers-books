@@ -17,6 +17,18 @@ const latestDate = latest ? latest.data.date.toISOString().slice(0, 10) : '';
 ---
 <BaseLayout title={`${SITE_NAME} | Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
   <Overworld works={works} />
+  <section class="playnow" aria-label="Play The Haunt">
+    <div class="playnow__inner">
+      <p class="playnow__eyebrow"><span aria-hidden="true">//</span> NOW PLAYING &#183; FREE IN YOUR BROWSER</p>
+      <h2 class="playnow__h">The Haunt is a horror you <em>play</em>, not just read.</h2>
+      <p class="playnow__copy">Wake in a cold parlour with no memory of dying. Build a character, descend a house built out of grief, and the house remembers what you carry. The way out, the ending the Curator calls winning, costs you the very thing you came to keep. 193 sections, 44 endings, one true way down.</p>
+      <div class="playnow__cta">
+        <a class="playnow__btn playnow__btn--play" href="/play/the-haunt"><span aria-hidden="true">&#9658;</span> Play The Haunt free</a>
+        <a class="playnow__btn" href="/which-soul">Which of the Company are you?</a>
+      </div>
+      <p class="playnow__meta">Build a character &#183; save across devices &#183; install it to your phone</p>
+    </div>
+  </section>
   <section class="pitch" id="pitch">
     <div class="pitch__inner">
       <p class="pitch__eyebrow"><span aria-hidden="true">//</span> WHAT IS THIS</p>
@@ -54,4 +66,23 @@ const latestDate = latest ? latest.data.date.toISOString().slice(0, 10) : '';
   .pitch__latest-k { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; color: var(--cy-cyan); }
   .pitch__latest-t { font-family: var(--font-display); font-weight: 700; color: var(--ink); }
   @media (prefers-reduced-motion: reduce) { .pitch__btn { transition: none; } }
+
+  /* ---- Play The Haunt feature band (crimson ENCORE accent) ---- */
+  .playnow { border-top: 1px solid var(--line); background:
+      radial-gradient(120% 140% at 80% 0%, rgba(255,46,77,0.10), transparent 60%); padding-block: clamp(2.5rem,6vh,4rem); }
+  .playnow__inner { max-width: 760px; margin-inline: auto; padding-inline: var(--space);
+    border-left: 2px solid var(--cy-red); padding-left: 1.1rem; }
+  .playnow__eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cy-red); }
+  .playnow__h { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.7rem,4.8vw,2.8rem); color: var(--ink); margin: 0.5rem 0 0.7rem; }
+  .playnow__h em { color: var(--cy-red); font-style: italic; }
+  .playnow__copy { color: var(--ink); line-height: 1.7; max-width: 62ch; }
+  .playnow__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.3rem; }
+  .playnow__btn { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    color: var(--cy-cyan); border: 1px solid var(--line); padding: 0.7em 1.1em; clip-path: polygon(0 0,100% 0,100% 72%,92% 100%,0 100%); transition: border-color .12s, color .12s, background .12s; }
+  .playnow__btn:hover { color: var(--cy-yellow); border-color: var(--cy-yellow); }
+  .playnow__btn--play { background: var(--cy-red); color: #fff; border-color: var(--cy-red); font-weight: 700;
+    box-shadow: 0 0 18px rgba(255,46,77,0.35); }
+  .playnow__btn--play:hover { color: #fff; filter: brightness(1.1); border-color: var(--cy-red); }
+  .playnow__meta { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cy-cyan); opacity: 0.8; margin-top: 1rem; }
+  @media (prefers-reduced-motion: reduce) { .playnow__btn { transition: none; } }
 </style>

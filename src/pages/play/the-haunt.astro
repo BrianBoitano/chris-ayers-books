@@ -9,6 +9,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
 <BaseLayout title={title} description={description} image={ogImage} type="book">
   <section class="haunt" data-haunt>
+    <div class="haunt__bg" data-bg aria-hidden="true"></div>
     <header class="haunt__top">
       <p class="haunt__kicker">ENCORE &#183; Book One</p>
       <h1 class="haunt__title">The Haunt</h1>
@@ -75,7 +76,9 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 </BaseLayout>
 
 <style is:global>
-  .haunt { max-width: 44rem; margin: 0 auto; padding: 2rem 1.2rem 5rem; color: #e8e2d6; font-family: Georgia, 'Times New Roman', serif; line-height: 1.6; }
+  .haunt { max-width: 44rem; margin: 0 auto; padding: 2rem 1.2rem 5rem; color: #e8e2d6; font-family: Georgia, 'Times New Roman', serif; line-height: 1.6; position: relative; }
+  .haunt__bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; transition: background 1.4s ease; }
+  @media (prefers-reduced-motion: reduce) { .haunt__bg { transition: none; } }
   .haunt__top { text-align: center; margin-bottom: 1.6rem; }
   .haunt__kicker { letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.72rem; color: #c8a24a; margin: 0 0 0.4rem; }
   .haunt__title { font-size: clamp(2.4rem, 8vw, 3.6rem); margin: 0; color: #f3ede0; letter-spacing: 0.04em; }
@@ -168,7 +171,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 <script>
   type Choice = { label: string; to: number; requires: string | null; forbids: string | null };
   type Block = { t: 'p'; s: string } | { t: 'sys'; lines: string[] } | { t: 'rule' };
-  type Sec = { n: number; title: string; blocks: Block[]; grants: string[]; terminal: boolean; canonical: boolean; choices: Choice[]; partStart?: { word: string; title: string }; bridge?: { to: number; word: string } };
+  type Sec = { n: number; title: string; blocks: Block[]; grants: string[]; terminal: boolean; canonical: boolean; choices: Choice[]; mood?: string; partStart?: { word: string; title: string }; bridge?: { to: number; word: string } };
   type Game = { title: string; start: number; total: number; endings: number; codewordLabels: Record<string, string>; namespace: string; sections: Record<string, Sec> };
   type Stats = { nerve: number; insight: number; grip: number };
 
@@ -204,6 +207,14 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
     'The seat is still warm. It is always still warm. Sit back down.',
     'You were almost wonderful. Almost is the house’s favourite word. Once more.',
   ];
+  const MOOD_BG: Record<string, string> = {
+    eerie_calm: 'radial-gradient(120% 90% at 50% 0%, rgba(90,110,140,0.16), transparent 65%)',
+    dread: 'radial-gradient(120% 90% at 50% 0%, rgba(130,22,34,0.20), transparent 62%)',
+    tense: 'radial-gradient(120% 90% at 50% 0%, rgba(150,116,40,0.14), transparent 62%)',
+    grief: 'radial-gradient(120% 95% at 50% 0%, rgba(46,58,120,0.18), transparent 66%)',
+    melancholy: 'radial-gradient(120% 95% at 50% 0%, rgba(120,100,78,0.13), transparent 66%)',
+    neutral: 'transparent',
+  };
 
   function init() {
     const root = document.querySelector<HTMLElement>('[data-haunt]');
@@ -212,6 +223,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
     const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
     const createEl = $('[data-create]'), stage = $('[data-stage]'), sheet = $('[data-sheet]');
     const partEl = $('[data-part]'), secEl = $('[data-section]'), choicesEl = $('[data-choices]'), endingEl = $('[data-ending]');
+    const bgEl = $('[data-bg]');
     const handleIn = $<HTMLInputElement>('[data-handle]'), soulsEl = $('[data-souls]'), beginBtn = $<HTMLButtonElement>('[data-begin]');
 
     let game: Game;
@@ -263,6 +275,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
     }
 
     function render(sec: Sec) {
+      bgEl.style.background = MOOD_BG[sec.mood || 'neutral'] || 'transparent';
       partEl.hidden = !sec.partStart;
       if (sec.partStart) partEl.innerHTML = `<b>Part ${esc(sec.partStart.word)}</b><span>${esc(sec.partStart.title)}</span>`;
       secEl.innerHTML = sec.blocks.map(blockHtml).join('');

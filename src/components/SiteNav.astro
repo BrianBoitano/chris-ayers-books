@@ -28,6 +28,7 @@ const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
     <!-- Nav links -->
     <nav id="nav-menu" class="nav__menu" aria-label="Site navigation">
       <ul class="nav__list" role="list">
+        <li><a href="/play/the-haunt" class="nav__link nav__play"><span aria-hidden="true">▶</span> Play</a></li>
         <li><a href="/" class="nav__link">Select Node</a></li>
         <li><a href="/works" class="nav__link">Works</a></li>
         <li><a href="/transmissions" class="nav__link">Transmissions</a></li>
@@ -256,6 +257,21 @@ const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
     filter: brightness(1.15);
   }
 
+  /* Play CTA — the headline free game, crimson so it stands out from the links */
+  .nav__play {
+    color: var(--cy-red);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    white-space: nowrap;
+  }
+  .nav__play:hover,
+  .nav__play:focus-visible {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 46, 77, 0.8);
+  }
+
   /* ---- Desktop layout (>= 768px) ---- */
   @media (min-width: 768px) {
     .nav__inner {
@@ -308,6 +324,20 @@ const showSupport = SUPPORT_URL && SUPPORT_URL.length > 0;
       color: var(--bg-0);
       border-color: var(--amber);
       filter: none;
+    }
+
+    .nav__play {
+      background: rgba(255, 46, 77, 0.1);
+      border: 1px solid rgba(255, 46, 77, 0.45);
+      padding: 0.35em 0.85em;
+      border-radius: 2px;
+      transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+    }
+    .nav__play:hover {
+      background: var(--cy-red);
+      color: #fff;
+      border-color: var(--cy-red);
+      text-shadow: none;
     }
   }
 
