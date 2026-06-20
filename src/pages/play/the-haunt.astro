@@ -54,7 +54,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
   </section>
 </BaseLayout>
 
-<style>
+<style is:global>
   .haunt {
     max-width: 44rem;
     margin: 0 auto;
@@ -100,14 +100,14 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
   .haunt__part b { display: block; letter-spacing: 0.28em; text-transform: uppercase; color: #c8a24a; font-size: 0.82rem; }
   .haunt__part span { font-style: italic; color: #cfc6b2; font-size: 1.3rem; }
 
-  .haunt__section :global(p) { margin: 0 0 1rem; }
-  .haunt__section :global(.sys) {
+  .haunt__section p { margin: 0 0 1rem; }
+  .haunt__section .sys {
     border: 1px solid #4a3f2c; background: rgba(200,162,74,0.05);
     padding: 0.8rem 1rem; margin: 1.2rem 0; font-style: italic; color: #d9cdaf;
   }
-  .haunt__section :global(.sys p) { margin: 0 0 0.4rem; }
-  .haunt__section :global(.sys p:last-child) { margin: 0; }
-  .haunt__section :global(.rule) { text-align: center; color: #6f6550; margin: 1.4rem 0; letter-spacing: 0.6em; }
+  .haunt__section .sys p { margin: 0 0 0.4rem; }
+  .haunt__section .sys p:last-child { margin: 0; }
+  .haunt__section .rule { text-align: center; color: #6f6550; margin: 1.4rem 0; letter-spacing: 0.6em; }
 
   .haunt__choices { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.8rem 0 0; }
   .haunt__choice { text-align: left; }
