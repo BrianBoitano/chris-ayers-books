@@ -1,0 +1,15 @@
+{
+  "name": "The Haunt — ENCORE",
+  "short_name": "The Haunt",
+  "description": "A playable choose-your-path horror. Build a character and descend a house made of grief.",
+  "start_url": "/play/the-haunt",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0a0d",
+  "theme_color": "#07090c",
+  "icons": [
+    { "src": "/icons/haunt-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/haunt-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

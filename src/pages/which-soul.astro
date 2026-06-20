@@ -176,6 +176,11 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       root.querySelector('[data-rbody]')!.textContent = soul.body;
       root.querySelector('[data-share]')!.textContent =
         `The Curator cast you as ${soul.name}. Find out which soul you really are at chrisayersbooks.com/which-soul`;
+      const playBtn = root.querySelector<HTMLAnchorElement>('.soul__btn--big');
+      if (playBtn) {
+        try { localStorage.setItem('haunt.pickedSoul', best); } catch {}
+        playBtn.textContent = `Begin The Haunt as ${soul.name}`;
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
