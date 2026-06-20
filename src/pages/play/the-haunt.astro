@@ -1,0 +1,300 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Play The Haunt | Chris Ayers';
+const description =
+  'A free, playable choose-your-path horror story. You wake in a cold parlour with no memory of dying, and the way out costs you the very thing you came to keep. Your choices decide which of 44 endings the house gives you.';
+const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
+---
+
+<BaseLayout title={title} description={description} image={ogImage} type="book">
+  <section class="haunt" data-haunt>
+    <header class="haunt__top">
+      <p class="haunt__kicker">ENCORE &#183; Book One</p>
+      <h1 class="haunt__title">The Haunt</h1>
+      <p class="haunt__sub">A choose-your-path horror. Play it free, in your browser.</p>
+    </header>
+
+    <!-- start screen (server-rendered; JS hydrates) -->
+    <div class="haunt__start" data-start>
+      <p>You wake in a cold parlour with no memory of dying, and a card on the table says you have been cast. The house is built out of someone's grief, and the way out costs you the very thing you came to keep. You decide where to step, what to pick up, and what you are willing to set down. The house remembers what you carry.</p>
+      <p class="haunt__meta">193 sections &#183; 44 endings &#183; about an hour a path</p>
+      <button type="button" class="haunt__btn haunt__btn--big" data-begin>Begin</button>
+      <button type="button" class="haunt__btn haunt__link" data-resume hidden>Resume where you left off</button>
+    </div>
+
+    <!-- reader stage -->
+    <div class="haunt__stage" data-stage hidden>
+      <div class="haunt__part" data-part hidden></div>
+      <article class="haunt__section" data-section aria-live="polite"></article>
+      <nav class="haunt__choices" data-choices aria-label="Your choices"></nav>
+      <div class="haunt__ending" data-ending hidden></div>
+    </div>
+
+    <!-- casting card -->
+    <aside class="haunt__card" data-card hidden>
+      <p class="haunt__card-h">Your casting card</p>
+      <ul class="haunt__carry" data-carry></ul>
+      <p class="haunt__found" data-found></p>
+      <div class="haunt__controls">
+        <button type="button" class="haunt__btn haunt__link" data-back hidden>&#8592; Step back</button>
+        <button type="button" class="haunt__btn haunt__link" data-restart>Begin again</button>
+      </div>
+    </aside>
+
+    <noscript>
+      <p class="haunt__noscript">This reader needs JavaScript. You can also read The Haunt as an ebook or paperback.</p>
+    </noscript>
+  </section>
+</BaseLayout>
+
+<style>
+  .haunt {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 2rem 1.2rem 5rem;
+    color: #e8e2d6;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.6;
+  }
+  .haunt__top { text-align: center; margin-bottom: 1.6rem; }
+  .haunt__kicker { letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.72rem; color: #c8a24a; margin: 0 0 0.4rem; }
+  .haunt__title { font-size: clamp(2.4rem, 8vw, 3.6rem); margin: 0; color: #f3ede0; letter-spacing: 0.04em; }
+  .haunt__sub { color: #b3aa97; font-style: italic; margin: 0.4rem 0 0; }
+  .haunt__meta { color: #8c8473; font-size: 0.82rem; letter-spacing: 0.06em; }
+
+  .haunt__start { max-width: 36rem; margin: 1.5rem auto 0; text-align: center; }
+  .haunt__start p { margin: 0 0 1rem; }
+
+  .haunt__btn {
+    font-family: inherit; cursor: pointer;
+    background: transparent; color: #e8e2d6;
+    border: 1px solid #5a4e36; border-radius: 2px;
+    padding: 0.6rem 1.1rem; font-size: 1rem; line-height: 1.3;
+    transition: border-color 0.18s, color 0.18s, background 0.18s;
+  }
+  .haunt__btn:hover { border-color: #c8a24a; color: #fff6e0; background: rgba(200,162,74,0.07); }
+  .haunt__btn--big { margin-top: 0.6rem; padding: 0.7rem 2.2rem; letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.9rem; }
+  .haunt__link { border: 0; color: #9a9486; text-decoration: underline; padding: 0.3rem 0.4rem; font-size: 0.85rem; }
+  .haunt__link:hover { background: transparent; color: #c8a24a; }
+
+  .haunt__part { text-align: center; margin: 2.5rem 0 1.5rem; }
+  .haunt__part b { display: block; letter-spacing: 0.28em; text-transform: uppercase; color: #c8a24a; font-size: 0.82rem; }
+  .haunt__part span { font-style: italic; color: #cfc6b2; font-size: 1.3rem; }
+
+  .haunt__section :global(p) { margin: 0 0 1rem; }
+  .haunt__section :global(.sys) {
+    border: 1px solid #4a3f2c; background: rgba(200,162,74,0.05);
+    padding: 0.8rem 1rem; margin: 1.2rem 0; font-style: italic; color: #d9cdaf;
+  }
+  .haunt__section :global(.sys p) { margin: 0 0 0.4rem; }
+  .haunt__section :global(.sys p:last-child) { margin: 0; }
+  .haunt__section :global(.rule) { text-align: center; color: #6f6550; margin: 1.4rem 0; letter-spacing: 0.6em; }
+
+  .haunt__choices { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.8rem 0 0; }
+  .haunt__choice { text-align: left; }
+  .haunt__choice--locked {
+    opacity: 0.5; cursor: default; border-style: dashed;
+  }
+  .haunt__choice--locked:hover { border-color: #5a4e36; color: #e8e2d6; background: transparent; }
+  .haunt__choice .gate { display: block; font-size: 0.72rem; color: #9a7d3e; letter-spacing: 0.04em; margin-top: 0.2rem; font-style: italic; }
+
+  .haunt__ending { margin: 1.8rem 0 0; text-align: center; }
+  .haunt__ending .end-mark { letter-spacing: 0.4em; text-transform: uppercase; color: #c8a24a; font-size: 0.8rem; margin: 0 0 0.4rem; }
+  .haunt__ending .end-curtain { color: #f3ede0; font-style: italic; }
+
+  .haunt__card {
+    margin: 3rem auto 0; max-width: 30rem; padding: 1rem 1.2rem;
+    border-top: 1px solid #3a3225;
+  }
+  .haunt__card-h { letter-spacing: 0.22em; text-transform: uppercase; font-size: 0.7rem; color: #8c8473; margin: 0 0 0.6rem; }
+  .haunt__carry { list-style: none; margin: 0 0 0.6rem; padding: 0; }
+  .haunt__carry li { color: #cfc6b2; font-size: 0.92rem; padding: 0.1rem 0; }
+  .haunt__carry li::before { content: '\2014  '; color: #c8a24a; }
+  .haunt__carry li.empty::before { content: ''; }
+  .haunt__carry li.empty { color: #6f6550; font-style: italic; }
+  .haunt__found { color: #8c8473; font-size: 0.8rem; margin: 0 0 0.8rem; }
+  .haunt__controls { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .haunt__noscript { text-align: center; color: #b3aa97; }
+</style>
+
+<script>
+  type Choice = { label: string; to: number; requires: string | null; forbids: string | null };
+  type Block = { t: 'p'; s: string } | { t: 'sys'; lines: string[] } | { t: 'rule' };
+  type Sec = {
+    n: number; title: string; blocks: Block[]; grants: string[];
+    terminal: boolean; canonical: boolean; choices: Choice[];
+    partStart?: { word: string; title: string };
+    bridge?: { to: number; word: string };
+  };
+  type Game = {
+    title: string; start: number; total: number; endings: number;
+    codewordLabels: Record<string, string>; namespace: string;
+    sections: Record<string, Sec>;
+  };
+
+  const SAVE = 'haunt.save.v1';
+  const FOUND = 'haunt.found.v1';
+
+  function init() {
+    const root = document.querySelector<HTMLElement>('[data-haunt]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const startEl = $('[data-start]'), stage = $('[data-stage]'), card = $('[data-card]');
+    const partEl = $('[data-part]'), secEl = $('[data-section]'), choicesEl = $('[data-choices]');
+    const endingEl = $('[data-ending]'), carryEl = $('[data-carry]'), foundEl = $('[data-found]');
+    const backBtn = $<HTMLButtonElement>('[data-back]');
+
+    let game: Game;
+    let cur = 1;
+    let carried = new Set<string>();
+    let history: { n: number; carried: string[] }[] = [];
+    let found = new Set<number>();
+
+    const pretty = (cw: string) =>
+      game.codewordLabels[cw] || cw.replace(game.namespace, '').replace(/-/g, ' ').toLowerCase();
+
+    function loadFound() {
+      try { found = new Set(JSON.parse(localStorage.getItem(FOUND) || '[]')); } catch {}
+    }
+    function saveFound() {
+      try { localStorage.setItem(FOUND, JSON.stringify([...found])); } catch {}
+    }
+    function save() {
+      try { localStorage.setItem(SAVE, JSON.stringify({ cur, carried: [...carried], history })); } catch {}
+    }
+    function clearSave() { try { localStorage.removeItem(SAVE); } catch {} }
+
+    function enter(n: number, push = true) {
+      const sec = game.sections[String(n)];
+      if (!sec) return;
+      if (push) history.push({ n: cur, carried: [...carried] });
+      cur = n;
+      for (const g of sec.grants) carried.add(g);
+      render(sec);
+      save();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function render(sec: Sec) {
+      // part divider
+      if (sec.partStart) {
+        partEl.hidden = false;
+        partEl.innerHTML = `<b>Part ${esc(sec.partStart.word)}</b><span>${esc(sec.partStart.title)}</span>`;
+      } else { partEl.hidden = true; }
+
+      // body
+      secEl.innerHTML = sec.blocks.map(blockHtml).join('');
+
+      // choices / ending
+      choicesEl.innerHTML = '';
+      endingEl.hidden = true;
+      if (sec.terminal) {
+        found.add(sec.n); saveFound();
+        endingEl.hidden = false;
+        if (sec.bridge) {
+          endingEl.innerHTML = `<p class="end-mark">End of Part</p>`;
+          const b = button('Continue, and Part ' + sec.bridge.word, () => enter(sec.bridge!.to));
+          endingEl.appendChild(b);
+        } else if (sec.canonical) {
+          endingEl.innerHTML = `<p class="end-mark">The Curtain</p><p class="end-curtain">You reached the true ending of The Haunt.</p>`;
+          endingEl.appendChild(button('Begin again', restart, true));
+        } else {
+          endingEl.innerHTML = `<p class="end-mark">An ending</p>`;
+          endingEl.appendChild(button('Begin again', restart, true));
+        }
+      } else {
+        for (const ch of sec.choices) {
+          const lockedReq = ch.requires && !carried.has(ch.requires);
+          const lockedFor = ch.forbids && carried.has(ch.forbids);
+          if (lockedReq || lockedFor) {
+            const why = lockedReq ? `needs: ${pretty(ch.requires!)}` : `not while you carry ${pretty(ch.forbids!)}`;
+            const b = document.createElement('div');
+            b.className = 'haunt__btn haunt__choice haunt__choice--locked';
+            b.innerHTML = `${esc(ch.label)}<span class="gate">${esc(why)}</span>`;
+            choicesEl.appendChild(b);
+          } else {
+            choicesEl.appendChild(button(ch.label, () => enter(ch.to)));
+          }
+        }
+      }
+      renderCard();
+      backBtn.hidden = history.length === 0;
+    }
+
+    function blockHtml(b: Block): string {
+      if (b.t === 'p') return `<p>${esc(b.s)}</p>`;
+      if (b.t === 'rule') return `<div class="rule">&#10022; &#10022; &#10022;</div>`;
+      return `<div class="sys">${b.lines.map((l) => `<p>${esc(l)}</p>`).join('')}</div>`;
+    }
+
+    function renderCard() {
+      card.hidden = false;
+      const items = [...carried].filter((c) => game.codewordLabels[c] !== undefined ? true : true);
+      if (items.length === 0) {
+        carryEl.innerHTML = `<li class="empty">You carry nothing yet.</li>`;
+      } else {
+        carryEl.innerHTML = items.map((c) => `<li>${esc(pretty(c))}</li>`).join('');
+      }
+      foundEl.textContent = `Endings found: ${found.size} of ${game.endings}`;
+    }
+
+    function button(label: string, onClick: () => void, link = false) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'haunt__btn haunt__choice' + (link ? ' haunt__link' : '');
+      b.textContent = label;
+      b.addEventListener('click', onClick);
+      return b;
+    }
+
+    function showStage() { startEl.hidden = true; stage.hidden = false; }
+    function restart() {
+      cur = game.start; carried = new Set(); history = [];
+      clearSave(); showStage(); enter(game.start, false);
+    }
+    function stepBack() {
+      const prev = history.pop();
+      if (!prev) return;
+      cur = prev.n; carried = new Set(prev.carried);
+      render(game.sections[String(cur)]); save();
+    }
+
+    backBtn.addEventListener('click', stepBack);
+    $('[data-restart]').addEventListener('click', restart);
+    $('[data-begin]').addEventListener('click', () => { showStage(); enter(game.start, false); });
+    const resumeBtn = $<HTMLButtonElement>('[data-resume]');
+    resumeBtn.addEventListener('click', () => {
+      showStage();
+      render(game.sections[String(cur)]);
+    });
+
+    function esc(s: string) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    fetch('/play/the-haunt.json')
+      .then((r) => r.json())
+      .then((g: Game) => {
+        game = g;
+        loadFound();
+        try {
+          const saved = JSON.parse(localStorage.getItem(SAVE) || 'null');
+          if (saved && saved.cur && game.sections[String(saved.cur)]) {
+            cur = saved.cur; carried = new Set(saved.carried || []); history = saved.history || [];
+            resumeBtn.hidden = false;
+          }
+        } catch {}
+        renderCard();
+      })
+      .catch(() => {
+        startEl.innerHTML = '<p>The reader could not load. Please try again, or read The Haunt as an ebook.</p>';
+      });
+  }
+
+  document.addEventListener('astro:page-load', init, { once: true });
+  if (document.readyState !== 'loading') init();
+  else document.addEventListener('DOMContentLoaded', init, { once: true });
+</script>
