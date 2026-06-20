@@ -17,6 +17,7 @@ const latestDate = latest ? latest.data.date.toISOString().slice(0, 10) : '';
 ---
 <BaseLayout title={`${SITE_NAME} | Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
   <Overworld works={works} />
+  <div class="home-split">
   <section class="playnow" aria-label="Play The Haunt">
     <div class="playnow__inner">
       <p class="playnow__eyebrow"><span aria-hidden="true">//</span> NOW PLAYING &#183; FREE IN YOUR BROWSER</p>
@@ -47,6 +48,7 @@ const latestDate = latest ? latest.data.date.toISOString().slice(0, 10) : '';
       )}
     </div>
   </section>
+  </div>
 </BaseLayout>
 
 <style>
@@ -85,4 +87,13 @@ const latestDate = latest ? latest.data.date.toISOString().slice(0, 10) : '';
   .playnow__btn--play:hover { color: #fff; filter: brightness(1.1); border-color: var(--cy-red); }
   .playnow__meta { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cy-cyan); opacity: 0.8; margin-top: 1rem; }
   @media (prefers-reduced-motion: reduce) { .playnow__btn { transition: none; } }
+
+  /* Two-column home: the game band beside the "what is this" band on desktop */
+  .home-split { border-top: 1px solid var(--line); }
+  .home-split .playnow, .home-split .pitch { border-top: 0; }
+  @media (min-width: 60rem) {
+    .home-split { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+    .home-split .pitch { border-left: 1px solid var(--line); }
+    .home-split .playnow__inner, .home-split .pitch__inner { max-width: 38rem; margin-inline: 0; }
+  }
 </style>

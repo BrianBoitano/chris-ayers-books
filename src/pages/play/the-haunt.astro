@@ -61,6 +61,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       <p class="haunt__card-h">What you carry</p>
       <ul class="haunt__carry" data-carry></ul>
       <p class="haunt__found" data-found></p>
+      <ul class="haunt__tells" data-tells hidden></ul>
       <div class="haunt__controls">
         <button type="button" class="haunt__btn haunt__link" data-back hidden>&#8592; Step back</button>
         <button type="button" class="haunt__btn haunt__link" data-restart>Begin again</button>
@@ -176,7 +177,12 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
   .haunt__carry li::before { content: '\2014  '; color: #c8a24a; }
   .haunt__carry li.empty::before { content: ''; }
   .haunt__carry li.empty { color: #6f6550; font-style: italic; }
-  .haunt__found { color: #8c8473; font-size: 0.8rem; margin: 0 0 0.8rem; }
+  .haunt__found { color: #8c8473; font-size: 0.8rem; margin: 0 0 0.6rem; }
+  .haunt__tells { list-style: none; margin: 0 0 0.9rem; padding: 0.6rem 0 0; border-top: 1px solid #2e281d; }
+  .haunt__tells li { color: #c8a24a; font-size: 0.82rem; font-style: italic; padding: 0.12rem 0; }
+  .haunt__tells li::before { content: '\2726  '; color: #8c7330; }
+  .haunt__carry-fwd { margin: 1.2rem auto 0; max-width: 33rem; color: #d9cdaf; font-style: italic; border-top: 1px solid #3a3225; padding-top: 0.9rem; }
+  .haunt__carry-fwd b { letter-spacing: 0.18em; color: #c8a24a; font-style: normal; }
   .haunt__controls { display: flex; gap: 1rem; flex-wrap: wrap; }
   .haunt__savecode { color: #c8a24a; font-size: 0.85rem; margin: 0.8rem 0 0; }
   .haunt__savecode b { letter-spacing: 0.2em; }
@@ -263,13 +269,29 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       if (w.stat) { const v = (st as any)[w.stat] ?? 0; if (w.min != null && v < w.min) return false; if (w.max != null && v > w.max) return false; return true; }
       return false;
     }
+    function tells(): string[] {
+      const t: string[] = [];
+      if (carried.has('HAUNT-NAME-SPOKEN')) t.push('You spoke a true name aloud.');
+      if (carried.has('HAUNT-EMBER')) t.push('You kept a memory warm.');
+      if (carried.has('HAUNT-LOCKET')) t.push('You carried the locket down.');
+      if (carried.has('HAUNT-WITNESSED')) t.push('You witnessed what the way out costs.');
+      if (carried.has('HAUNT-REFUSED')) t.push('You refused the wager.');
+      if (carried.has('HAUNT-GAVE-IT-UP')) t.push('You let the grief go.');
+      if (carried.has('HAUNT-KEPT-IT')) t.push('You held the grief close.');
+      if (found.size >= 5) t.push('You have died in many shapes.');
+      return t;
+    }
+    function letGo(): boolean { return carried.has('HAUNT-GAVE-IT-UP') || carried.has('HAUNT-REFUSED'); }
 
     // ---- persistence ----
     function saveLocal() {
       try { localStorage.setItem(SAVE, JSON.stringify({ character, cur, carried: [...carried], history, code })); } catch {}
       try { localStorage.setItem(FOUND, JSON.stringify([...found])); } catch {}
     }
-    function snapshot() { return { character, cur, carried: [...carried], history, found: [...found], v: 2 }; }
+    function snapshot() {
+      return { character, cur, carried: [...carried], history, found: [...found], v: 2,
+        legacy: { soul: character.soul, handle: character.handle, stats: stats(), tells: tells(), letGo: letGo(), endings: found.size } };
+    }
     function makeCode() { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c = ''; for (let i = 0; i < 6; i++) c += a[Math.floor(Math.random() * a.length)]; return c; }
     function cloudSync(force = false) {
       if (!code) code = makeCode();
@@ -309,7 +331,8 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
           endingEl.innerHTML = `<p class="haunt__curator-remark">Down you go, ${esc(character.handle || 'dear one')}. We have kept your seat.</p><p class="end-mark">End of Part</p>`;
           endingEl.appendChild(button('Continue, and Part ' + sec.bridge.word, () => enter(sec.bridge!.to)));
         } else if (sec.canonical) {
-          endingEl.innerHTML = `<p class="haunt__curator-remark">You let go, ${esc(character.handle || 'dear one')}. After so long, you finally let go. You have won the Haunt, and you know, now, what it cost. The Company will remember you.</p><p class="end-mark">The Curtain</p><p class="end-curtain">You reached the true ending of The Haunt. One of 44, and the only one the Curator calls winning.</p>`;
+          endingEl.innerHTML = `<p class="haunt__curator-remark">You let go, ${esc(character.handle || 'dear one')}. After so long, you finally let go. You have won the Haunt, and you know, now, what it cost. The Company will remember you.</p><p class="end-mark">The Curtain</p><p class="end-curtain">You reached the true ending of The Haunt. One of 44, and the only one the Curator calls winning.</p><p class="haunt__carry-fwd">Your character carries forward to ENCORE Book Two. Your code: <b>${esc(code)}</b> &#8212; keep it, and the Company will know you when the lights come up again.</p>`;
+          cloudSync(true);
           endingEl.appendChild(button('Begin again', restart, true));
         } else {
           const remark = CURATOR_BAD[sec.n % CURATOR_BAD.length];
@@ -368,6 +391,9 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       const items = [...carried];
       $('[data-carry]').innerHTML = items.length ? items.map((c) => `<li>${esc(pretty(c))}</li>`).join('') : `<li class="empty">You carry nothing yet.</li>`;
       $('[data-found]').textContent = `Endings found: ${found.size} of ${game.endings}`;
+      const tl = tells(); const tellsEl = $('[data-tells]');
+      if (tl.length) { tellsEl.hidden = false; tellsEl.innerHTML = tl.map((t) => `<li>${esc(t)}</li>`).join(''); }
+      else tellsEl.hidden = true;
       const sc = $('[data-savecode]');
       if (code) { sc.hidden = false; sc.innerHTML = `Save code: <b>${esc(code)}</b> &#183; resume on any device`; }
     }
