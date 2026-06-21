@@ -9,6 +9,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
 <BaseLayout title={title} description={description} image={ogImage} type="book">
   <section class="haunt" data-haunt>
+    <div class="haunt__scene" data-scene aria-hidden="true"></div>
     <div class="haunt__bg" data-bg aria-hidden="true"></div>
     <header class="haunt__top">
       <p class="haunt__kicker">ENCORE &#183; Book Two</p>
@@ -57,7 +58,10 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
     <!-- character sheet -->
     <aside class="haunt__sheet" data-sheet hidden>
-      <p class="haunt__sheet-h"><span data-sheet-handle></span> &#183; <span data-sheet-soul></span></p>
+      <div class="haunt__sheet-id">
+        <img class="haunt__sheet-portrait" data-sheet-portrait alt="" hidden />
+        <p class="haunt__sheet-h"><span data-sheet-handle></span> &#183; <span data-sheet-soul></span></p>
+      </div>
       <div class="haunt__stats" data-stats></div>
       <p class="haunt__card-h">What you carry</p>
       <ul class="haunt__carry" data-carry></ul>
@@ -86,7 +90,15 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
   .haunt *, .haunt *::before, .haunt *::after { box-sizing: border-box; }
   .haunt button, .haunt input { font-family: inherit; }
   .haunt__bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; transition: background 1.4s ease; }
-  @media (prefers-reduced-motion: reduce) { .haunt__bg { transition: none; } }
+  /* Per-part photographic backdrop, sits BEHIND the mood tint. A heavy dark scrim
+     keeps the reader text fully legible; the mood gradient still layers on top. */
+  .haunt__scene { position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    opacity: 0; transition: opacity 1.6s ease; }
+  .haunt__scene.on { opacity: 0.22; }
+  .haunt__scene::after { content: ''; position: absolute; inset: 0;
+    background: radial-gradient(120% 100% at 50% 30%, rgba(8,6,6,0.55), rgba(6,4,5,0.86) 75%); }
+  @media (prefers-reduced-motion: reduce) { .haunt__bg, .haunt__scene { transition: none; } }
   .haunt__top { text-align: center; margin-bottom: 1.6rem; }
   .haunt__kicker { letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.72rem; color: #c8a24a; margin: 0 0 0.4rem; }
   .haunt__title { font-size: clamp(2.4rem, 8vw, 3.6rem); margin: 0; color: #f3ede0; letter-spacing: 0.04em; }
@@ -113,12 +125,16 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
   .haunt__souls { display: grid; grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr)); gap: 0.6rem; margin: 0 0 1.5rem; }
   .haunt__soul {
+    display: grid; grid-template-columns: 3.2rem 1fr; gap: 0.7rem; align-items: center;
     text-align: left; cursor: pointer; background: rgba(0,0,0,0.25); color: #e8e2d6;
     border: 1px solid #3f3525; border-radius: 3px; padding: 0.7rem 0.85rem; font-family: inherit;
     transition: border-color 0.18s, background 0.18s, transform 0.12s;
   }
   .haunt__soul:hover { border-color: #c8a24a; background: rgba(200,162,74,0.06); transform: translateY(-1px); }
   .haunt__soul.sel { border-color: #c8a24a; background: rgba(200,162,74,0.12); box-shadow: 0 0 12px rgba(200,162,74,0.15); }
+  .haunt__soul-portrait { width: 3.2rem; height: 4.2rem; object-fit: cover; border-radius: 2px;
+    border: 1px solid #4a3f2c; filter: saturate(0.92) brightness(0.92); background: #100c0a; }
+  .haunt__soul-txt { min-width: 0; }
   .haunt__soul b { display: block; color: #f3ede0; margin-bottom: 0.2rem; letter-spacing: 0.02em; }
   .haunt__soul span { display: block; font-size: 0.82rem; line-height: 1.45; color: #a99f8b; font-style: italic; }
 
@@ -166,8 +182,11 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
   .haunt__sheet { margin: 2.6rem 0 0; padding: 1.1rem 1.3rem 1.3rem; border: 1px solid #3a3225; border-radius: 4px;
     background: linear-gradient(180deg, rgba(200,162,74,0.04), rgba(0,0,0,0.18)); }
-  .haunt__sheet-h { letter-spacing: 0.06em; color: #c8a24a; margin: 0 0 0.9rem; font-size: 1.05rem;
+  .haunt__sheet-id { display: flex; align-items: center; gap: 0.8rem; margin: 0 0 0.9rem;
     border-bottom: 1px solid #3a3225; padding-bottom: 0.6rem; }
+  .haunt__sheet-portrait { width: 3rem; height: 4rem; object-fit: cover; border-radius: 2px;
+    border: 1px solid #4a3f2c; filter: saturate(0.92) brightness(0.92); background: #100c0a; flex: 0 0 auto; }
+  .haunt__sheet-h { letter-spacing: 0.06em; color: #c8a24a; margin: 0; font-size: 1.05rem; }
   .haunt__stats { display: flex; flex-direction: column; gap: 0.35rem; margin: 0 0 1rem; }
   .haunt__stat { display: grid; grid-template-columns: 4.5rem 1fr 1.6rem; gap: 0.5rem; align-items: center; font-size: 0.82rem; color: #b3aa97; }
   .haunt__stat .bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
@@ -195,7 +214,8 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
   type Choice = { label: string; to: number; requires: string | null; forbids: string | null };
   type Block = { t: 'p'; s: string } | { t: 'sys'; lines: string[] } | { t: 'rule' };
   type Sec = { n: number; title: string; blocks: Block[]; grants: string[]; terminal: boolean; canonical: boolean; choices: Choice[]; mood?: string; gated?: { when: any; aside?: string; voice?: string; choice?: { label: string; to: number } }[]; partStart?: { word: string; title: string }; bridge?: { to: number; word: string } };
-  type Game = { title: string; start: number; total: number; endings: number; codewordLabels: Record<string, string>; namespace: string; sections: Record<string, Sec> };
+  type Part = { word: string; title: string; start: number };
+  type Game = { title: string; start: number; total: number; endings: number; codewordLabels: Record<string, string>; namespace: string; parts?: Part[]; sections: Record<string, Sec> };
   type Stats = { nerve: number; insight: number; grip: number };
   type Legacy = { soul: string; handle: string; stats: Stats; tells: string[]; letGo: boolean; endings: number; book2?: string };
 
@@ -285,7 +305,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
     const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
     const createEl = $('[data-create]'), stage = $('[data-stage]'), sheet = $('[data-sheet]');
     const partEl = $('[data-part]'), secEl = $('[data-section]'), choicesEl = $('[data-choices]'), endingEl = $('[data-ending]');
-    const bgEl = $('[data-bg]'), welcomeEl = $('[data-welcome]');
+    const bgEl = $('[data-bg]'), sceneEl = $('[data-scene]'), welcomeEl = $('[data-welcome]');
     const handleIn = $<HTMLInputElement>('[data-handle]'), soulsEl = $('[data-souls]'), beginBtn = $<HTMLButtonElement>('[data-begin]');
 
     let game: Game;
@@ -402,7 +422,28 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       return null;
     }
 
+    // Map a section number to its Part index (1-5) using the parts table, so the
+    // photographic backdrop follows the descent. Falls back to no backdrop.
+    function partOf(n: number): number {
+      const ps = game.parts;
+      if (!ps || !ps.length) return 0;
+      let idx = 1;
+      ps.forEach((p, i) => { if (n >= p.start) idx = i + 1; });
+      return idx;
+    }
+    let sceneN = 0;
+    function setScene(n: number) {
+      const p = partOf(n);
+      if (p === sceneN) return;
+      sceneN = p;
+      if (!p) { sceneEl.classList.remove('on'); return; }
+      const url = `/play/vigil/part-${p}.jpg`;
+      sceneEl.style.backgroundImage = `url("${url}")`;
+      sceneEl.classList.add('on');
+    }
+
     function render(sec: Sec) {
+      setScene(sec.n);
       bgEl.style.background = MOOD_BG[sec.mood || 'neutral'] || 'transparent';
       partEl.hidden = !sec.partStart;
       if (sec.partStart) partEl.innerHTML = `<b>Part ${esc(sec.partStart.word)}</b><span>${esc(sec.partStart.title)}</span>`;
@@ -478,6 +519,12 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       sheet.hidden = false;
       $('[data-sheet-handle]').textContent = character.handle || 'Unnamed';
       $('[data-sheet-soul]').textContent = soulName(character.soul);
+      const portrait = $<HTMLImageElement>('[data-sheet-portrait]');
+      if (character.soul) {
+        portrait.src = `/play/souls/${character.soul}.jpg`;
+        portrait.hidden = false;
+        portrait.onerror = () => { portrait.hidden = true; };
+      } else { portrait.hidden = true; }
       const st = stats();
       const rows: [string, number][] = [['Nerve', st.nerve], ['Insight', st.insight], ['Grip', st.grip]];
       $('[data-stats]').innerHTML = rows.map(([k, v]) =>
@@ -508,7 +555,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       SOULS.forEach((s) => {
         const b = document.createElement('button');
         b.type = 'button'; b.className = 'haunt__soul' + (character.soul === s.id ? ' sel' : '');
-        b.innerHTML = `<b>${esc(s.name)}</b><span>${esc(s.line)}</span>`;
+        b.innerHTML = `<img class="haunt__soul-portrait" src="/play/souls/${s.id}.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" /><span class="haunt__soul-txt"><b>${esc(s.name)}</b><span>${esc(s.line)}</span></span>`;
         b.addEventListener('click', () => { character.soul = s.id; renderSouls(); updateBegin(); });
         soulsEl.appendChild(b);
       });

@@ -19,6 +19,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
     <div class="soul__result" data-result hidden>
       <p class="soul__rkicker">The Curator has decided. You are</p>
+      <img class="soul__rportrait" data-rportrait alt="" hidden />
       <h2 class="soul__rname" data-rname></h2>
       <p class="soul__rtell" data-rtell></p>
       <p class="soul__rbody" data-rbody></p>
@@ -57,6 +58,9 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
 
   .soul__result { text-align: center; }
   .soul__rkicker { letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.75rem; color: #8c8473; margin: 1rem 0 0.3rem; }
+  .soul__rportrait { display: block; width: 9rem; height: 12rem; object-fit: cover; margin: 0.6rem auto 0.8rem;
+    border-radius: 3px; border: 1px solid #4a3f2c; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    filter: saturate(0.92) brightness(0.94); background: #100c0a; }
   .soul__rname { font-size: clamp(2rem, 7vw, 3rem); color: #c8a24a; margin: 0 0 0.4rem; }
   .soul__rtell { font-style: italic; color: #cfc6b2; margin: 0 0 1rem; }
   .soul__rbody { color: #e8e2d6; max-width: 32rem; margin: 0 auto 1.5rem; text-align: left; }
@@ -177,6 +181,12 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       const soul = SOULS[best];
       quizEl.hidden = true;
       resultEl.hidden = false;
+      const portrait = root.querySelector<HTMLImageElement>('[data-rportrait]');
+      if (portrait) {
+        portrait.src = `/play/souls/${best}.jpg`;
+        portrait.hidden = false;
+        portrait.onerror = () => { portrait.hidden = true; };
+      }
       root.querySelector('[data-rname]')!.textContent = soul.name;
       root.querySelector('[data-rtell]')!.textContent = soul.tell;
       root.querySelector('[data-rbody]')!.textContent = soul.body;
