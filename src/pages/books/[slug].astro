@@ -32,6 +32,7 @@ if (book.data.cover) {
 const ogImage = coverImage ? new URL(coverImage.src, Astro.site).href : undefined;
 
 const hasBuy = !!(book.data.amazonUrl || book.data.paperbackUrl || book.data.audiobookUrl);
+const hasSample = !!book.data.audioSampleUrl;
 ---
 <BaseLayout
   title={`${book.data.title} | Chris Ayers`}
@@ -67,6 +68,18 @@ const hasBuy = !!(book.data.amazonUrl || book.data.paperbackUrl || book.data.aud
         )}
         <h1>{book.data.title}</h1>
         <div class="book-blurb"><Content /></div>
+
+        {hasSample && (
+          <div class="book-audio">
+            <p class="book-audio__h">&#9835; Listen to a sample</p>
+            <audio class="book-audio__player" controls preload="none" src={book.data.audioSampleUrl}>
+              Your browser does not support the audio element.
+            </audio>
+            {book.data.audiobookUrl
+              ? <a class="book-audio__cta" href={book.data.audiobookUrl} target="_blank" rel="noopener noreferrer">Get the full audiobook &gt;</a>
+              : <p class="book-audio__soon">Full audiobook coming soon.</p>}
+          </div>
+        )}
 
         {series && (
           <p class="book-back"><a href={`/works/${book.data.work}`}>&lt; back to {series.data.title}</a></p>
@@ -174,4 +187,37 @@ const hasBuy = !!(book.data.amazonUrl || book.data.paperbackUrl || book.data.aud
 
   .book-back { margin-top: 1.75rem; font-family: var(--font-mono); font-size: 0.8rem; }
   .book-back a { color: var(--cy-cyan); }
+
+  /* Audiobook sample player block. */
+  .book-audio {
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--cy-yellow);
+    background: rgba(252, 238, 10, 0.04);
+    padding: 0.9rem 1.1rem;
+    margin: 0 0 1.75rem;
+  }
+  .book-audio__h {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cy-yellow);
+    margin: 0 0 0.6rem;
+  }
+  .book-audio__player { width: 100%; display: block; margin: 0 0 0.6rem; }
+  .book-audio__cta {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cy-cyan);
+    text-decoration: none;
+  }
+  .book-audio__soon {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--dim);
+    margin: 0;
+  }
 </style>

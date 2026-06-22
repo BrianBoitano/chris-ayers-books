@@ -1,0 +1,708 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Play The Understudy | Chris Ayers';
+const description =
+  'A free, playable choose-your-path horror, ENCORE Book Three. Bring the character you built in The Haunt and The Vigil, or begin anew. Take the stage in a theatre that casts you as someone else, and the way out asks whether you can walk off as yourself. 38 endings.';
+const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
+---
+
+<BaseLayout title={title} description={description} image={ogImage} type="book">
+  <section class="haunt" data-haunt>
+    <div class="haunt__scene" data-scene aria-hidden="true"></div>
+    <div class="haunt__bg" data-bg aria-hidden="true"></div>
+    <header class="haunt__top">
+      <p class="haunt__kicker">ENCORE &#183; Book Three</p>
+      <h1 class="haunt__title">The Understudy</h1>
+      <p class="haunt__sub">A choose-your-path horror. Bring your character. Play it free.</p>
+    </header>
+
+    <!-- character creation -->
+    <div class="haunt__create" data-create>
+      <div class="haunt__curator">
+        <p class="haunt__curator-h">The Curator is pleased to call you back for a third production.</p>
+        <p>You will arrive at a theatre that has been waiting for you, the house lights warm and the front row full. There is a role with your name on the callboard, a part the Company has rehearsed without you. One reminder, with our compliments: the way out is real, and this time it asks whether you can walk off that stage as yourself, and not as the part we cast.</p>
+        <div class="haunt__welcome" data-welcome hidden></div>
+      </div>
+
+      <div class="haunt__field">
+        <label for="handle">What shall the Curator call you?</label>
+        <input id="handle" data-handle type="text" maxlength="24" autocomplete="off" placeholder="a name, or a stage name" />
+      </div>
+
+      <p class="haunt__field-h">And which of the Company are you? (You can change this later, or <a href="/which-soul">let the Curator decide</a>.)</p>
+      <div class="haunt__souls" data-souls></div>
+
+      <button type="button" class="haunt__btn haunt__btn--big" data-begin disabled>Take your seat</button>
+
+      <div class="haunt__resume">
+        <button type="button" class="haunt__btn haunt__link" data-resume hidden>Resume where you left off</button>
+        <details class="haunt__code" data-carrybox open>
+          <summary>Played The Haunt or The Vigil? Bring your character with your save code.</summary>
+          <div class="haunt__codein">
+            <input data-codein type="text" maxlength="12" autocomplete="off" placeholder="SAVE CODE" />
+            <button type="button" class="haunt__btn" data-load>Bring them in</button>
+            <span class="haunt__codemsg" data-codemsg></span>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- reader stage -->
+    <div class="haunt__stage" data-stage hidden>
+      <div class="haunt__part" data-part hidden></div>
+      <article class="haunt__section" data-section aria-live="polite"></article>
+      <nav class="haunt__choices" data-choices aria-label="Your choices"></nav>
+      <div class="haunt__ending" data-ending hidden></div>
+    </div>
+
+    <!-- character sheet -->
+    <aside class="haunt__sheet" data-sheet hidden>
+      <div class="haunt__sheet-id">
+        <img class="haunt__sheet-portrait" data-sheet-portrait alt="" hidden />
+        <p class="haunt__sheet-h"><span data-sheet-handle></span> &#183; <span data-sheet-soul></span></p>
+      </div>
+      <div class="haunt__stats" data-stats></div>
+      <p class="haunt__card-h">What you carry</p>
+      <ul class="haunt__carry" data-carry></ul>
+      <p class="haunt__found" data-found></p>
+      <ul class="haunt__tells" data-tells hidden></ul>
+      <div class="haunt__controls">
+        <button type="button" class="haunt__btn haunt__link" data-back hidden>&#8592; Step back</button>
+        <button type="button" class="haunt__btn haunt__link" data-restart>Begin again</button>
+        <button type="button" class="haunt__btn haunt__link" data-cloud>Save to the cloud</button>
+      </div>
+      <p class="haunt__savecode" data-savecode hidden></p>
+    </aside>
+
+    <noscript>
+      <p class="haunt__noscript">This reader needs JavaScript. You can also read The Understudy as an ebook or paperback.</p>
+    </noscript>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .haunt { max-width: 46rem; margin: 2rem auto; padding: 2.4rem clamp(1.1rem, 4vw, 2.6rem) 3.5rem; color: #e8e2d6;
+    font-family: Georgia, 'Times New Roman', serif; line-height: 1.7; position: relative;
+    background: linear-gradient(180deg, rgba(20,14,12,0.82), rgba(13,9,8,0.9));
+    border: 1px solid rgba(200,162,74,0.18); border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 24px 60px rgba(0,0,0,0.5); }
+  .haunt *, .haunt *::before, .haunt *::after { box-sizing: border-box; }
+  .haunt button, .haunt input { font-family: inherit; }
+  .haunt__bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; transition: background 1.4s ease; }
+  /* Per-part photographic backdrop, sits BEHIND the mood tint. A heavy dark scrim
+     keeps the reader text fully legible; the mood gradient still layers on top. */
+  .haunt__scene { position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    opacity: 0; transition: opacity 1.6s ease; }
+  .haunt__scene.on { opacity: 0.22; }
+  .haunt__scene::after { content: ''; position: absolute; inset: 0;
+    background: radial-gradient(120% 100% at 50% 30%, rgba(8,6,6,0.55), rgba(6,4,5,0.86) 75%); }
+  @media (prefers-reduced-motion: reduce) { .haunt__bg, .haunt__scene { transition: none; } }
+  .haunt__top { text-align: center; margin-bottom: 1.6rem; }
+  .haunt__kicker { letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.72rem; color: #c8a24a; margin: 0 0 0.4rem; }
+  .haunt__title { font-size: clamp(2.4rem, 8vw, 3.6rem); margin: 0; color: #f3ede0; letter-spacing: 0.04em; }
+  .haunt__sub { color: #b3aa97; font-style: italic; margin: 0.4rem 0 0; }
+  .haunt__meta { color: #8c8473; font-size: 0.82rem; letter-spacing: 0.06em; }
+
+  .haunt__create { max-width: 36rem; margin: 1.5rem auto 0; }
+  .haunt__curator { border: 1px solid #4a3f2c; background: rgba(200,162,74,0.05); padding: 1.1rem 1.3rem; margin: 0 0 1.4rem; font-style: italic; color: #d9cdaf; }
+  .haunt__curator-h { font-style: normal; letter-spacing: 0.04em; color: #c8a24a; margin: 0 0 0.8rem; }
+  .haunt__curator p { margin: 0 0 0.8rem; }
+  .haunt__curator p:last-child { margin: 0; }
+  .haunt__curator-remark { font-style: italic; color: #c8a24a; max-width: 34rem; margin: 0 auto 0.8rem; border-left: 2px solid #4a3f2c; padding-left: 0.8rem; text-align: left; }
+  .haunt__welcome { font-style: italic; color: #e7d8b4; border-top: 1px solid #4a3f2c; margin-top: 0.6rem; padding-top: 0.8rem; }
+
+  .haunt__field { margin: 0 0 1.2rem; }
+  .haunt__field label, .haunt__field-h { display: block; color: #cfc6b2; margin: 0 0 0.5rem; }
+  .haunt__field-h a { color: #c8a24a; }
+  .haunt__field input, .haunt__codein input {
+    width: 100%; box-sizing: border-box; font-family: inherit; font-size: 1rem;
+    background: rgba(0,0,0,0.35); color: #f3ede0; border: 1px solid #5a4e36;
+    border-radius: 2px; padding: 0.6rem 0.8rem;
+  }
+  .haunt__field input:focus, .haunt__codein input:focus { outline: none; border-color: #c8a24a; }
+
+  .haunt__souls { display: grid; grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr)); gap: 0.6rem; margin: 0 0 1.5rem; }
+  .haunt__soul {
+    display: grid; grid-template-columns: 3.2rem 1fr; gap: 0.7rem; align-items: center;
+    text-align: left; cursor: pointer; background: rgba(0,0,0,0.25); color: #e8e2d6;
+    border: 1px solid #3f3525; border-radius: 3px; padding: 0.7rem 0.85rem; font-family: inherit;
+    transition: border-color 0.18s, background 0.18s, transform 0.12s;
+  }
+  .haunt__soul:hover { border-color: #c8a24a; background: rgba(200,162,74,0.06); transform: translateY(-1px); }
+  .haunt__soul.sel { border-color: #c8a24a; background: rgba(200,162,74,0.12); box-shadow: 0 0 12px rgba(200,162,74,0.15); }
+  .haunt__soul-portrait { width: 3.2rem; height: 4.2rem; object-fit: cover; border-radius: 2px;
+    border: 1px solid #4a3f2c; filter: saturate(0.92) brightness(0.92); background: #100c0a; }
+  .haunt__soul-txt { min-width: 0; }
+  .haunt__soul b { display: block; color: #f3ede0; margin-bottom: 0.2rem; letter-spacing: 0.02em; }
+  .haunt__soul span { display: block; font-size: 0.82rem; line-height: 1.45; color: #a99f8b; font-style: italic; }
+
+  .haunt__btn { font-family: inherit; cursor: pointer; background: transparent; color: #e8e2d6; border: 1px solid #5a4e36; border-radius: 2px; padding: 0.6rem 1.1rem; font-size: 1rem; line-height: 1.3; transition: border-color 0.18s, color 0.18s, background 0.18s; }
+  .haunt__btn:hover:not(:disabled) { border-color: #c8a24a; color: #fff6e0; background: rgba(200,162,74,0.07); }
+  .haunt__btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .haunt__btn--big { display: block; width: 100%; margin: 0.4rem 0; padding: 0.75rem 1rem; letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.9rem; }
+  .haunt__link { border: 0; color: #9a9486; text-decoration: underline; padding: 0.3rem 0.4rem; font-size: 0.85rem; }
+  .haunt__link:hover { background: transparent; color: #c8a24a; }
+
+  .haunt__resume { margin-top: 1rem; text-align: center; }
+  .haunt__code { margin-top: 0.6rem; color: #8c8473; }
+  .haunt__code summary { cursor: pointer; font-size: 0.82rem; }
+  .haunt__codein { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.6rem; flex-wrap: wrap; }
+  .haunt__codein input { max-width: 9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .haunt__codemsg { font-size: 0.8rem; color: #c8a24a; }
+
+  .haunt__part { text-align: center; margin: 2.5rem 0 1.5rem; }
+  .haunt__part b { display: block; letter-spacing: 0.28em; text-transform: uppercase; color: #c8a24a; font-size: 0.82rem; }
+  .haunt__part span { font-style: italic; color: #cfc6b2; font-size: 1.3rem; }
+
+  .haunt__section p { margin: 0 0 1rem; }
+  .haunt__section .sys { border: 1px solid #4a3f2c; background: rgba(200,162,74,0.05); padding: 0.8rem 1rem; margin: 1.2rem 0; font-style: italic; color: #d9cdaf; }
+  .haunt__section .sys p { margin: 0 0 0.4rem; }
+  .haunt__section .sys p:last-child { margin: 0; }
+  .haunt__section .rule { text-align: center; color: #6f6550; margin: 1.4rem 0; letter-spacing: 0.6em; }
+
+  .haunt__choices { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.8rem 0 0; }
+  .haunt__choice { text-align: left; }
+  .haunt__choice--locked { opacity: 0.5; cursor: default; border-style: dashed; }
+  .haunt__choice--locked:hover { border-color: #5a4e36; color: #e8e2d6; background: transparent; }
+  .haunt__choice .gate { display: block; font-size: 0.72rem; color: #9a7d3e; letter-spacing: 0.04em; margin-top: 0.2rem; font-style: italic; }
+  .haunt__choice--unlocked { border-color: #c8a24a; box-shadow: 0 0 12px rgba(200,162,74,0.18); }
+  .haunt__choice--unlocked::before { content: '\2726  '; color: #c8a24a; }
+
+  .haunt__reactive { margin: 1.1rem 0 0; padding-left: 0.85rem; border-left: 2px solid #4a3f2c; font-style: italic; }
+  .haunt__reactive p { margin: 0; }
+  .haunt__reactive--curator { color: #d9cdaf; border-left-color: #c8a24a; }
+  .haunt__reactive--prompter { color: #9fb0b8; border-left-color: #5a6b72; }
+  .haunt__reactive--narration { color: #cfc6b2; }
+
+  .haunt__ending { margin: 1.8rem 0 0; text-align: center; }
+  .haunt__ending .end-mark { letter-spacing: 0.4em; text-transform: uppercase; color: #c8a24a; font-size: 0.8rem; margin: 0 0 0.4rem; }
+  .haunt__ending .end-curtain { color: #f3ede0; font-style: italic; }
+
+  .haunt__sheet { margin: 2.6rem 0 0; padding: 1.1rem 1.3rem 1.3rem; border: 1px solid #3a3225; border-radius: 4px;
+    background: linear-gradient(180deg, rgba(200,162,74,0.04), rgba(0,0,0,0.18)); }
+  .haunt__sheet-id { display: flex; align-items: center; gap: 0.8rem; margin: 0 0 0.9rem;
+    border-bottom: 1px solid #3a3225; padding-bottom: 0.6rem; }
+  .haunt__sheet-portrait { width: 3rem; height: 4rem; object-fit: cover; border-radius: 2px;
+    border: 1px solid #4a3f2c; filter: saturate(0.92) brightness(0.92); background: #100c0a; flex: 0 0 auto; }
+  .haunt__sheet-h { letter-spacing: 0.06em; color: #c8a24a; margin: 0; font-size: 1.05rem; }
+  .haunt__stats { display: flex; flex-direction: column; gap: 0.35rem; margin: 0 0 1rem; }
+  .haunt__stat { display: grid; grid-template-columns: 4.5rem 1fr 1.6rem; gap: 0.5rem; align-items: center; font-size: 0.82rem; color: #b3aa97; }
+  .haunt__stat .bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .haunt__stat .bar i { display: block; height: 100%; background: #c8a24a; }
+  .haunt__stat .val { text-align: right; color: #cfc6b2; }
+  .haunt__card-h { letter-spacing: 0.22em; text-transform: uppercase; font-size: 0.7rem; color: #8c8473; margin: 0 0 0.4rem; }
+  .haunt__carry { list-style: none; margin: 0 0 0.6rem; padding: 0; }
+  .haunt__carry li { color: #cfc6b2; font-size: 0.92rem; padding: 0.1rem 0; }
+  .haunt__carry li::before { content: '\2014  '; color: #c8a24a; }
+  .haunt__carry li.empty::before { content: ''; }
+  .haunt__carry li.empty { color: #6f6550; font-style: italic; }
+  .haunt__found { color: #8c8473; font-size: 0.8rem; margin: 0 0 0.6rem; }
+  .haunt__tells { list-style: none; margin: 0 0 0.9rem; padding: 0.6rem 0 0; border-top: 1px solid #2e281d; }
+  .haunt__tells li { color: #c8a24a; font-size: 0.82rem; font-style: italic; padding: 0.12rem 0; }
+  .haunt__tells li::before { content: '\2726  '; color: #8c7330; }
+  .haunt__carry-fwd { margin: 1.2rem auto 0; max-width: 33rem; color: #d9cdaf; font-style: italic; border-top: 1px solid #3a3225; padding-top: 0.9rem; }
+  .haunt__carry-fwd b { letter-spacing: 0.18em; color: #c8a24a; font-style: normal; }
+  .haunt__controls { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .haunt__savecode { color: #c8a24a; font-size: 0.85rem; margin: 0.8rem 0 0; }
+  .haunt__savecode b { letter-spacing: 0.2em; }
+  .haunt__noscript { text-align: center; color: #b3aa97; }
+</style>
+
+<script>
+  type Choice = { label: string; to: number; requires: string | null; forbids: string | null };
+  type Block = { t: 'p'; s: string } | { t: 'sys'; lines: string[] } | { t: 'rule' };
+  type Sec = { n: number; title: string; blocks: Block[]; grants: string[]; terminal: boolean; canonical: boolean; choices: Choice[]; mood?: string; gated?: { when: any; aside?: string; voice?: string; choice?: { label: string; to: number } }[]; partStart?: { word: string; title: string }; bridge?: { to: number; word: string } };
+  type Part = { word: string; title: string; start: number };
+  type Game = { title: string; start: number; total: number; endings: number; codewordLabels: Record<string, string>; namespace: string; parts?: Part[]; sections: Record<string, Sec> };
+  type Stats = { nerve: number; insight: number; grip: number };
+  // Legacy carries the prior-book climactic flag in `book2` (The Vigil's flag:
+  // letDie | kept | refused) and `book3` (The Understudy's: unmasked | cast | refused).
+  type Legacy = { soul: string; handle: string; stats: Stats; tells: string[]; letGo: boolean; endings: number; book2?: string; book3?: string };
+
+  const SAVE = 'understudy.save.v1';
+  const FOUND = 'understudy.found.v1';
+  const SOUL_PICK = 'haunt.pickedSoul';
+  // Book Two (The Vigil) local keys, read for cross-book carry on this device.
+  const VIGIL_SAVE = 'vigil.save.v1';
+  const VIGIL_FOUND = 'vigil.found.v1';
+  // Book One (The Haunt) local keys, read if no Vigil save exists on this device.
+  const HAUNT_SAVE = 'haunt.save.v2';
+  const HAUNT_FOUND = 'haunt.found.v1';
+
+  // The Understudy codeword -> emergent stat deltas. Mirrors the Vigil's table,
+  // keyed to the CAST- codewords (master-design emergent-stat pattern).
+  const STAT_MAP: Record<string, Partial<Stats>> = {
+    'CAST-CALLED': { grip: 1 },
+    'CAST-MIRROR': { insight: 1 },
+    'CAST-NAME': { insight: 2 },
+    'CAST-PLAIN': { nerve: 1, insight: 1 },
+    'CAST-LINES': { grip: 1 },
+    'CAST-MISSED-CUE': { nerve: 1 },
+    'CAST-APPLAUSE': { grip: 2 },
+    'CAST-SEEN': { nerve: 1, insight: 1 },
+    'CAST-INGENUE-FREED': { nerve: 2 },
+    'CAST-USHER-KEY': { insight: 1 },
+    'CAST-WITNESSED': { nerve: 1, insight: 1 },
+    'CAST-UNMASKED': { nerve: 2, grip: -2 },
+    'CAST-CAST': { grip: 2 },
+    'CAST-REFUSED': { nerve: 2, insight: 1 },
+  };
+  // Book Two's table, used to recompute a carried character's legacy from a
+  // Vigil local save (the cloud save already carries legacy directly).
+  const VIGIL_STAT_MAP: Record<string, Partial<Stats>> = {
+    'COVEN-INVITED': { grip: 1 }, 'COVEN-WARD': { insight: 1 }, 'COVEN-DAYLIGHT': { nerve: 1, insight: 1 },
+    'COVEN-NAME-SPOKEN': { insight: 2 }, 'COVEN-REFUSED-THE-CUP': { nerve: 1 }, 'COVEN-CUP': { grip: 1 },
+    'COVEN-FED': { grip: 2 }, 'COVEN-INGENUE-FREED': { nerve: 2 }, 'COVEN-USHER-KEY': { insight: 1 },
+    'COVEN-WITNESSED': { nerve: 1, insight: 1 }, 'COVEN-KEPT': { grip: 2 },
+    'COVEN-LET-DIE': { nerve: 2, grip: -2 }, 'COVEN-REFUSED': { nerve: 2, insight: 1 },
+  };
+  // Book One's table, used to recompute a carried character's legacy from a
+  // Haunt local save when no Vigil run exists.
+  const HAUNT_STAT_MAP: Record<string, Partial<Stats>> = {
+    'HAUNT-IRON-KEY': { nerve: 1 }, 'HAUNT-SALT': { insight: 1 }, 'HAUNT-WARDED': { insight: 1 },
+    'HAUNT-PROMPTER-TRUST': { insight: 1 }, 'HAUNT-SEEN-BY-CHILD': { nerve: 1 },
+    'HAUNT-NAME-SPOKEN': { insight: 2 }, 'HAUNT-WITNESSED': { insight: 2 },
+    'HAUNT-LOCKET': { grip: 1 }, 'HAUNT-EMBER': { grip: 2 }, 'HAUNT-KEPT-IT': { grip: 2 },
+    'HAUNT-YOU-LIED': { insight: 1, grip: 1 }, 'HAUNT-GAVE-IT-UP': { nerve: 2, grip: -2 },
+    'HAUNT-REFUSED': { nerve: 2, insight: 1 },
+  };
+
+  const SOULS: { id: string; name: string; line: string }[] = [
+    { id: 'usher', name: 'The Usher', line: 'You keep the door for everyone but yourself.' },
+    { id: 'ingenue', name: 'The Ingenue', line: 'You will not let a sad thing stay sad.' },
+    { id: 'heavy', name: 'The Heavy', line: 'You count, so you will not strike.' },
+    { id: 'prompter', name: 'The Prompter', line: 'You know the ending a beat early.' },
+    { id: 'understudy', name: 'The Understudy', line: 'You are the part that wants to stop.' },
+    { id: 'critic', name: 'The Critic', line: 'You decide what is real enough to keep.' },
+    { id: 'child', name: 'The Child', line: 'You ask, is it real, and reach for a hand.' },
+  ];
+  const CURATOR_BAD = [
+    'A pity. We had the part so beautifully lit for you. Begin again, do.',
+    'The curtain falls early, and the house does not applaud. Once more.',
+    'You left before your cue. They always leave before the cue. Again.',
+    'The stage is warm and patient. The stage has all the time you do not. Try again.',
+    'How quickly they walk off the mark we chalked so carefully. Another take?',
+    'Not the truth, that ending. A near thing. Never the truth. Again?',
+    'The role is still open. It is always still open. Step back into the light.',
+    'You were almost wonderful. Almost is the house’s favourite review. Once more.',
+  ];
+  const MOOD_BG: Record<string, string> = {
+    eerie_calm: 'radial-gradient(120% 90% at 50% 0%, rgba(150,90,40,0.16), transparent 65%)',
+    dread: 'radial-gradient(120% 90% at 50% 0%, rgba(130,22,34,0.22), transparent 62%)',
+    tense: 'radial-gradient(120% 90% at 50% 0%, rgba(150,116,40,0.14), transparent 62%)',
+    grief: 'radial-gradient(120% 95% at 50% 0%, rgba(46,58,120,0.18), transparent 66%)',
+    melancholy: 'radial-gradient(120% 95% at 50% 0%, rgba(120,90,60,0.14), transparent 66%)',
+    neutral: 'transparent',
+  };
+
+  // The Understudy's gated overlays key off the prior book's climactic flag using
+  // snake_case values (let_die | kept | refused). The Vigil writes its flag as
+  // camelCase `letDie`; normalise so a carried Vigil legacy lights the right spots.
+  function priorFlag(l: Legacy | null): string | null {
+    if (!l || !l.book2) return null;
+    return l.book2 === 'letDie' ? 'let_die' : l.book2;
+  }
+
+  // ---- carried Book Two legacy (from a Vigil local save with no clean legacy) ----
+  function vigilLegacyFromCarried(carried: string[]): { stats: Stats; letGo: boolean; tells: string[] } {
+    const st: Stats = { nerve: 0, insight: 0, grip: 0 };
+    carried.forEach((c) => { const d = VIGIL_STAT_MAP[c]; if (d) { st.nerve += d.nerve || 0; st.insight += d.insight || 0; st.grip += d.grip || 0; } });
+    const has = (c: string) => carried.includes(c);
+    const tells: string[] = [];
+    if (has('COVEN-NAME-SPOKEN')) tells.push('You spoke the beloved’s name aloud.');
+    if (has('COVEN-WITNESSED')) tells.push('You witnessed what keeping really costs.');
+    if (has('COVEN-INGENUE-FREED')) tells.push('You helped her toward the death she wanted.');
+    if (has('COVEN-KEPT')) tells.push('You kept them.');
+    if (has('COVEN-LET-DIE')) tells.push('You kept a vigil, and chose to let the dead rest.');
+    if (has('COVEN-REFUSED')) tells.push('You refused the wager again.');
+    const letGo = has('COVEN-LET-DIE') || has('COVEN-REFUSED');
+    const book2 = has('COVEN-LET-DIE') ? 'letDie' : has('COVEN-KEPT') ? 'kept' : has('COVEN-REFUSED') ? 'refused' : undefined;
+    return { stats: st, letGo, tells, ...(book2 ? { book2 } : {}) } as any;
+  }
+
+  // ---- carried Book One legacy (from a Haunt local save, when no Vigil run) ----
+  function hauntLegacyFromCarried(carried: string[]): { stats: Stats; letGo: boolean; tells: string[] } {
+    const st: Stats = { nerve: 0, insight: 0, grip: 0 };
+    carried.forEach((c) => { const d = HAUNT_STAT_MAP[c]; if (d) { st.nerve += d.nerve || 0; st.insight += d.insight || 0; st.grip += d.grip || 0; } });
+    const has = (c: string) => carried.includes(c);
+    const tells: string[] = [];
+    if (has('HAUNT-NAME-SPOKEN')) tells.push('You spoke a true name aloud.');
+    if (has('HAUNT-EMBER')) tells.push('You kept a memory warm.');
+    if (has('HAUNT-LOCKET')) tells.push('You carried the locket down.');
+    if (has('HAUNT-WITNESSED')) tells.push('You witnessed what the way out costs.');
+    if (has('HAUNT-REFUSED')) tells.push('You refused the wager.');
+    if (has('HAUNT-GAVE-IT-UP')) tells.push('You let the grief go.');
+    if (has('HAUNT-KEPT-IT')) tells.push('You held the grief close.');
+    const letGo = has('HAUNT-GAVE-IT-UP') || has('HAUNT-REFUSED');
+    return { stats: st, letGo, tells };
+  }
+
+  function init() {
+    const root = document.querySelector<HTMLElement>('[data-haunt]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
+    const $ = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const createEl = $('[data-create]'), stage = $('[data-stage]'), sheet = $('[data-sheet]');
+    const partEl = $('[data-part]'), secEl = $('[data-section]'), choicesEl = $('[data-choices]'), endingEl = $('[data-ending]');
+    const bgEl = $('[data-bg]'), sceneEl = $('[data-scene]'), welcomeEl = $('[data-welcome]');
+    const handleIn = $<HTMLInputElement>('[data-handle]'), soulsEl = $('[data-souls]'), beginBtn = $<HTMLButtonElement>('[data-begin]');
+
+    let game: Game;
+    let character = { handle: '', soul: '' };
+    let cur = 1, carried = new Set<string>(), history: { n: number; carried: string[] }[] = [], found = new Set<number>();
+    let code = '';
+    let syncT: any = null;
+    // the carried prior-book legacy, if any. Drives soul/stat/letGo/flag recognition.
+    let legacy: Legacy | null = null;
+
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const pretty = (cw: string) => game.codewordLabels[cw] || cw.replace(game.namespace, '').replace(/-/g, ' ').toLowerCase();
+    const soulName = (id: string) => (SOULS.find((s) => s.id === id)?.name || 'unsung');
+
+    function stats(): Stats {
+      // Understudy play stats, seeded by the carried prior-book stats (kinship persists).
+      const t: Stats = legacy ? { ...legacy.stats } : { nerve: 0, insight: 0, grip: 0 };
+      carried.forEach((c) => { const d = STAT_MAP[c]; if (d) { t.nerve += d.nerve || 0; t.insight += d.insight || 0; t.grip += d.grip || 0; } });
+      return t;
+    }
+    function letGo(): boolean {
+      // Carried legacy is the temptation axis; if none, derive within the Understudy.
+      if (legacy) return !!legacy.letGo;
+      return carried.has('CAST-UNMASKED') || carried.has('CAST-REFUSED');
+    }
+    function whenOk(w: any, st: Stats): boolean {
+      if (!w) return false;
+      if ('letGo' in w) return letGo() === !!w.letGo;
+      if (w.flag) return priorFlag(legacy) === w.flag;     // prior-book climactic flag (let_die | kept | refused)
+      if (w.soul) return character.soul === w.soul;
+      if (w.carry) return carried.has(w.carry);
+      if (w.stat) { const v = (st as any)[w.stat] ?? 0; if (w.min != null && v < w.min) return false; if (w.max != null && v > w.max) return false; return true; }
+      return false;
+    }
+    function tells(): string[] {
+      const t: string[] = legacy ? [...legacy.tells] : [];
+      if (carried.has('CAST-NAME')) t.push('You said your own true name on the stage.');
+      if (carried.has('CAST-SEEN')) t.push('The front row saw the real you.');
+      if (carried.has('CAST-INGENUE-FREED')) t.push('You helped her keep her own face.');
+      if (carried.has('CAST-USHER-KEY')) t.push('You learned the stage door opens outward.');
+      if (carried.has('CAST-APPLAUSE')) t.push('You took the applause.');
+      if (found.size >= 5) t.push('You have taken many final bows.');
+      return [...new Set(t)];
+    }
+
+    // ---- persistence ----
+    function saveLocal() {
+      try { localStorage.setItem(SAVE, JSON.stringify({ character, cur, carried: [...carried], history, code, legacy })); } catch {}
+      try { localStorage.setItem(FOUND, JSON.stringify([...found])); } catch {}
+    }
+    // The legacy this run writes forward for Book Four at an Understudy curtain.
+    function legacyForward(book3: 'unmasked' | 'cast' | 'refused'): Legacy {
+      const priorLetGo = legacy ? !!legacy.letGo : false;
+      // letGo updated: true if you walked out as yourself (unmasked), false if you
+      // kept the role (cast), carried-through if you refused the wager.
+      const newLetGo = book3 === 'unmasked' ? true : book3 === 'cast' ? false : priorLetGo;
+      const t = tells();
+      if (book3 === 'unmasked') t.push('You walked off the stage as yourself.');
+      else if (book3 === 'cast') t.push('You kept the role they cast for you.');
+      else t.push('You refused the wager a third time.');
+      return { soul: character.soul, handle: character.handle, stats: stats(),
+        tells: [...new Set(t)], letGo: newLetGo, book3, endings: found.size,
+        ...(legacy && legacy.book2 ? { book2: legacy.book2 } : {}) };
+    }
+    function snapshot() {
+      return { character, cur, carried: [...carried], history, found: [...found], v: 1, legacy };
+    }
+    function snapshotAtCurtain(book3: 'unmasked' | 'cast' | 'refused') {
+      return { ...snapshot(), legacy: legacyForward(book3) };
+    }
+    function makeCode() { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c = ''; for (let i = 0; i < 6; i++) c += a[Math.floor(Math.random() * a.length)]; return c; }
+    function cloudSync(force = false, save?: any) {
+      if (!code) code = makeCode();
+      clearTimeout(syncT);
+      const body = JSON.stringify({ code, save: save || snapshot() });
+      syncT = setTimeout(() => {
+        fetch('/api/progress', { method: 'POST', headers: { 'content-type': 'application/json' }, body }).catch(() => {});
+      }, force ? 0 : 1200);
+    }
+    function applySave(s: any) {
+      character = s.character || character;
+      cur = s.cur || game.start; carried = new Set(s.carried || []); history = s.history || [];
+      if (s.found) found = new Set([...found, ...s.found]);
+      if (s.code) code = s.code;
+      if (s.legacy) legacy = s.legacy;
+    }
+
+    // greet a returning prior-book character in the Curator's framing.
+    function greet(l: Legacy) {
+      legacy = l;
+      if (!character.handle && l.handle) { character.handle = l.handle; handleIn.value = l.handle; }
+      if (!character.soul && l.soul) character.soul = l.soul;
+      const sn = soulName(l.soul);
+      const flag = priorFlag(l);
+      // recognise the Vigil's climactic choice if it carried one; otherwise the letGo axis.
+      const axis = flag === 'let_die'
+        ? 'You kept a vigil, and then you let the dead rest. The Company watched you do the unthinkable thing twice over now, and they have written you a part that knows the weight of it.'
+        : flag === 'kept'
+        ? 'You took your seat at the deathless table and never rose from it. The Company knows a keeper when one walks back through the stage door, and the role they have for you is warm and waiting.'
+        : flag === 'refused'
+        ? 'You refused the wager, again, and the defiance follows you in. The Company has cast that look before, and rarely. They are curious what you will do with a stage.'
+        : l.letGo
+        ? 'You let go, once. You did the unthinkable thing, and the Company has been keeping a mark on the stage for someone who knows exactly what that cost.'
+        : 'You held on. You never once let go, and the Company knows its own. You are already half in costume.';
+      welcomeEl.hidden = false;
+      welcomeEl.innerHTML = `<p>Ah. ${esc(l.handle || 'You')}. ${esc(sn)} again. ${esc(axis)}</p>`;
+      renderSouls(); updateBegin();
+    }
+
+    // ---- flow ----
+    function enter(n: number, push = true) {
+      const sec = game.sections[String(n)];
+      if (!sec) return;
+      if (push) history.push({ n: cur, carried: [...carried] });
+      cur = n;
+      for (const g of sec.grants) carried.add(g);
+      render(sec); saveLocal(); cloudSync();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // which Book Four legacy a curtain writes, by its granted codeword.
+    function curtainKind(sec: Sec): 'unmasked' | 'cast' | 'refused' | null {
+      if (sec.grants.includes('CAST-UNMASKED')) return 'unmasked';
+      if (sec.grants.includes('CAST-CAST')) return 'cast';
+      if (sec.grants.includes('CAST-REFUSED')) return 'refused';
+      return null;
+    }
+
+    // Map a section number to its Part index (1-5) using the parts table, so the
+    // photographic backdrop follows the descent. Falls back to no backdrop.
+    function partOf(n: number): number {
+      const ps = game.parts;
+      if (!ps || !ps.length) return 0;
+      let idx = 1;
+      ps.forEach((p, i) => { if (n >= p.start) idx = i + 1; });
+      return idx;
+    }
+    let sceneN = 0;
+    function setScene(n: number) {
+      const p = partOf(n);
+      if (p === sceneN) return;
+      sceneN = p;
+      if (!p) { sceneEl.classList.remove('on'); return; }
+      const url = `/play/understudy/part-${p}.jpg`;
+      sceneEl.style.backgroundImage = `url("${url}")`;
+      sceneEl.classList.add('on');
+    }
+
+    function render(sec: Sec) {
+      setScene(sec.n);
+      bgEl.style.background = MOOD_BG[sec.mood || 'neutral'] || 'transparent';
+      partEl.hidden = !sec.partStart;
+      if (sec.partStart) partEl.innerHTML = `<b>Part ${esc(sec.partStart.word)}</b><span>${esc(sec.partStart.title)}</span>`;
+      secEl.innerHTML = sec.blocks.map(blockHtml).join('');
+      choicesEl.innerHTML = ''; endingEl.hidden = true;
+      if (sec.terminal) {
+        found.add(sec.n);
+        endingEl.hidden = false;
+        const kind = curtainKind(sec);
+        if (sec.bridge) {
+          endingEl.innerHTML = `<p class="haunt__curator-remark">On you go, ${esc(character.handle || 'dear one')}. We have kept your mark warm.</p><p class="end-mark">End of Part</p>`;
+          endingEl.appendChild(button('Continue, and Part ' + sec.bridge.word, () => enter(sec.bridge!.to)));
+        } else if (kind) {
+          // an Understudy curtain: write the Book Four legacy and show the save code.
+          const fwd = legacyForward(kind);
+          legacy = fwd;
+          const curtainCopy = kind === 'unmasked'
+            ? `You walked off that stage as yourself, ${esc(character.handle || 'dear one')}, and you took your own face with you. No role, no mask, no warm applause to keep you. The lights came up on a real person leaving a real theatre, alive and unwritten. The Company will remember.`
+            : kind === 'cast'
+            ? `You kept the role, ${esc(character.handle || 'dear one')}. The part fit so well, in the end, and the applause was so warm, and the Company is so glad you stayed. Nobody here will ever ask you to be anyone but who we cast. Nobody here is ever allowed to leave the part.`
+            : `You refused the wager again, ${esc(character.handle || 'dear one')}. A third time now, the same defiant door, and the cost of it is still yours to learn. The Company has seen that look before, and never twice in the same person, until you.`;
+          endingEl.innerHTML = `<p class="haunt__curator-remark">${curtainCopy}</p><p class="end-mark">The Curtain</p><p class="end-curtain">You reached a true ending of The Understudy. One of ${game.endings}.</p><p class="haunt__carry-fwd">Your character carries forward to ENCORE Book Four. Your code: <b>${esc(code)}</b> &#8212; keep it, and the Company will know you when the lights come up again.</p>`;
+          cloudSync(true, { ...snapshot(), legacy: fwd });
+          saveLocal();
+          endingEl.appendChild(button('Begin again', restart, true));
+        } else {
+          const remark = CURATOR_BAD[sec.n % CURATOR_BAD.length];
+          endingEl.innerHTML = `<p class="haunt__curator-remark">${esc(remark)}</p><p class="end-mark">An ending</p><p class="haunt__meta">Endings found: ${found.size} of ${game.endings}</p>`;
+          endingEl.appendChild(button('Begin again', restart, true));
+        }
+      } else {
+        for (const ch of sec.choices) {
+          const lockedReq = ch.requires && !carried.has(ch.requires);
+          const lockedFor = ch.forbids && carried.has(ch.forbids);
+          if (lockedReq || lockedFor) {
+            const why = lockedReq ? `needs: ${pretty(ch.requires!)}` : `not while you carry ${pretty(ch.forbids!)}`;
+            const d = document.createElement('div');
+            d.className = 'haunt__btn haunt__choice haunt__choice--locked';
+            d.innerHTML = `${esc(ch.label)}<span class="gate">${esc(why)}</span>`;
+            choicesEl.appendChild(d);
+          } else {
+            choicesEl.appendChild(button(ch.label, () => enter(ch.to)));
+          }
+        }
+      }
+      // character reactivity: the house notices who you are and what you carried.
+      const st = stats();
+      for (const ov of (sec.gated || [])) {
+        if (!whenOk(ov.when, st)) continue;
+        if (ov.aside) {
+          const d = document.createElement('div');
+          d.className = 'haunt__reactive haunt__reactive--' + (ov.voice || 'narration');
+          d.innerHTML = `<p>${esc(ov.aside)}</p>`;
+          secEl.appendChild(d);
+        }
+        if (ov.choice && !sec.terminal) {
+          const b = button(ov.choice.label, () => enter(ov.choice!.to));
+          b.classList.add('haunt__choice--unlocked');
+          choicesEl.appendChild(b);
+        }
+      }
+      renderSheet();
+      $<HTMLButtonElement>('[data-back]').hidden = history.length === 0;
+    }
+
+    function blockHtml(b: Block): string {
+      if (b.t === 'p') return `<p>${esc(b.s)}</p>`;
+      if (b.t === 'rule') return `<div class="rule">&#10022; &#10022; &#10022;</div>`;
+      return `<div class="sys">${b.lines.map((l) => `<p>${esc(l)}</p>`).join('')}</div>`;
+    }
+
+    function renderSheet() {
+      sheet.hidden = false;
+      $('[data-sheet-handle]').textContent = character.handle || 'Unnamed';
+      $('[data-sheet-soul]').textContent = soulName(character.soul);
+      const portrait = $<HTMLImageElement>('[data-sheet-portrait]');
+      if (character.soul) {
+        portrait.src = `/play/souls/${character.soul}.jpg`;
+        portrait.hidden = false;
+        portrait.onerror = () => { portrait.hidden = true; };
+      } else { portrait.hidden = true; }
+      const st = stats();
+      const rows: [string, number][] = [['Nerve', st.nerve], ['Insight', st.insight], ['Grip', st.grip]];
+      $('[data-stats]').innerHTML = rows.map(([k, v]) =>
+        `<div class="haunt__stat"><span>${k}</span><span class="bar"><i style="width:${Math.max(0, Math.min(100, (v / 8) * 100))}%"></i></span><span class="val">${v}</span></div>`).join('');
+      const items = [...carried];
+      $('[data-carry]').innerHTML = items.length ? items.map((c) => `<li>${esc(pretty(c))}</li>`).join('') : `<li class="empty">You carry nothing yet.</li>`;
+      $('[data-found]').textContent = `Endings found: ${found.size} of ${game.endings}`;
+      const tl = tells(); const tellsEl = $('[data-tells]');
+      if (tl.length) { tellsEl.hidden = false; tellsEl.innerHTML = tl.map((t) => `<li>${esc(t)}</li>`).join(''); }
+      else tellsEl.hidden = true;
+      const sc = $('[data-savecode]');
+      if (code) { sc.hidden = false; sc.innerHTML = `Save code: <b>${esc(code)}</b> &#183; resume on any device`; }
+    }
+
+    function button(label: string, onClick: () => void, link = false) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'haunt__btn haunt__choice' + (link ? ' haunt__link' : '');
+      b.textContent = label; b.addEventListener('click', onClick); return b;
+    }
+
+    function showStage() { createEl.hidden = true; stage.hidden = false; }
+    function restart() { cur = game.start; carried = new Set(); history = []; showStage(); enter(game.start, false); }
+    function stepBack() { const p = history.pop(); if (!p) return; cur = p.n; carried = new Set(p.carried); render(game.sections[String(cur)]); saveLocal(); }
+
+    // ---- creation UI ----
+    function renderSouls() {
+      soulsEl.innerHTML = '';
+      SOULS.forEach((s) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'haunt__soul' + (character.soul === s.id ? ' sel' : '');
+        b.innerHTML = `<img class="haunt__soul-portrait" src="/play/souls/${s.id}.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" /><span class="haunt__soul-txt"><b>${esc(s.name)}</b><span>${esc(s.line)}</span></span>`;
+        b.addEventListener('click', () => { character.soul = s.id; renderSouls(); updateBegin(); });
+        soulsEl.appendChild(b);
+      });
+    }
+    function updateBegin() { beginBtn.disabled = !(handleIn.value.trim() && character.soul); }
+
+    handleIn.addEventListener('input', () => { character.handle = handleIn.value.trim(); updateBegin(); });
+    beginBtn.addEventListener('click', () => { character.handle = handleIn.value.trim() || 'Unnamed'; code = code || makeCode(); showStage(); enter(game.start, false); cloudSync(true); });
+    $('[data-back]').addEventListener('click', stepBack);
+    $('[data-restart]').addEventListener('click', restart);
+    $('[data-cloud]').addEventListener('click', () => { cloudSync(true); const sc = $('[data-savecode]'); sc.hidden = false; sc.innerHTML = `Saved. Your code is <b>${esc(code)}</b>. Keep it to resume anywhere.`; });
+    const resumeBtn = $<HTMLButtonElement>('[data-resume]');
+    resumeBtn.addEventListener('click', () => { showStage(); render(game.sections[String(cur)]); });
+
+    // load by code: an in-progress Understudy save, OR a prior-book character to carry in.
+    $('[data-load]').addEventListener('click', () => {
+      const c = $<HTMLInputElement>('[data-codein]').value.trim().toUpperCase();
+      const msg = $('[data-codemsg]');
+      if (!/^[A-Z0-9]{6,12}$/.test(c)) { msg.textContent = 'That code looks wrong.'; return; }
+      msg.textContent = 'Loading...';
+      fetch('/api/progress?code=' + encodeURIComponent(c)).then((r) => r.json()).then((d) => {
+        if (!d?.ok || !d.save) { msg.textContent = 'No save found for that code.'; return; }
+        const s = d.save;
+        // an in-progress Understudy save resumes; a prior-book save brings the character in.
+        if (s.v === 1 && typeof s.cur === 'number' && game.sections[String(s.cur)] && s.character && carriesUnderstudy(s)) {
+          applySave(s); code = c; msg.textContent = 'Welcome back.'; showStage(); render(game.sections[String(cur)]); return;
+        }
+        if (s.legacy) { code = c; msg.textContent = 'The Company knows you.'; greet(s.legacy as Legacy); return; }
+        // legacy-less Vigil save: recompute the carry from what it carried.
+        if (Array.isArray(s.carried) && carriesVigil(s)) {
+          const l = vigilLegacyFromCarried(s.carried);
+          code = c; msg.textContent = 'The Company knows you.';
+          greet({ soul: s.character?.soul || '', handle: s.character?.handle || '', stats: l.stats, tells: l.tells, letGo: l.letGo, endings: (s.found || []).length, ...(((l as any).book2) ? { book2: (l as any).book2 } : {}) });
+          return;
+        }
+        // legacy-less Haunt save: recompute the carry from what it carried.
+        if (Array.isArray(s.carried)) {
+          const l = hauntLegacyFromCarried(s.carried);
+          code = c; msg.textContent = 'The Company knows you.';
+          greet({ soul: s.character?.soul || '', handle: s.character?.handle || '', stats: l.stats, tells: l.tells, letGo: l.letGo, endings: (s.found || []).length });
+          return;
+        }
+        msg.textContent = 'No save found for that code.';
+      }).catch(() => { msg.textContent = 'Could not reach the cloud.'; });
+    });
+
+    // heuristics: does a carried set belong to the Understudy (CAST-) or the Vigil (COVEN-)?
+    function carriesUnderstudy(s: any) { return Array.isArray(s.carried) && (s.carried.length === 0 || s.carried.some((c: string) => c.startsWith('CAST-'))); }
+    function carriesVigil(s: any) { return Array.isArray(s.carried) && s.carried.some((c: string) => c.startsWith('COVEN-')); }
+
+    // ---- boot ----
+    fetch('/play/the-understudy.json').then((r) => r.json()).then((g: Game) => {
+      game = g;
+      try { found = new Set(JSON.parse(localStorage.getItem(FOUND) || '[]')); } catch {}
+      // soul picked from the quiz?
+      try { const ps = localStorage.getItem(SOUL_PICK); if (ps) { character.soul = ps; localStorage.removeItem(SOUL_PICK); } } catch {}
+      // existing in-progress Understudy save on this device?
+      let hasUnderstudy = false;
+      try {
+        const s = JSON.parse(localStorage.getItem(SAVE) || 'null');
+        if (s && s.cur && game.sections[String(s.cur)]) { applySave(s); resumeBtn.hidden = false; hasUnderstudy = true; }
+      } catch {}
+      // no Understudy run yet: carry the prior-book character from this device.
+      // Prefer the Vigil (Book Two) save, then fall back to the Haunt (Book One).
+      if (!hasUnderstudy) {
+        let greeted = false;
+        try {
+          const vs = JSON.parse(localStorage.getItem(VIGIL_SAVE) || 'null');
+          if (vs && (vs.legacy || Array.isArray(vs.carried))) {
+            if (vs.legacy) { greet(vs.legacy as Legacy); greeted = true; }
+            else {
+              const vfound = (() => { try { return JSON.parse(localStorage.getItem(VIGIL_FOUND) || '[]'); } catch { return []; } })();
+              const l = vigilLegacyFromCarried(vs.carried);
+              greet({ soul: vs.character?.soul || '', handle: vs.character?.handle || '', stats: l.stats, tells: l.tells, letGo: l.letGo, endings: vfound.length, ...(((l as any).book2) ? { book2: (l as any).book2 } : {}) });
+              greeted = true;
+            }
+          }
+        } catch {}
+        if (!greeted) {
+          try {
+            const hs = JSON.parse(localStorage.getItem(HAUNT_SAVE) || 'null');
+            if (hs && Array.isArray(hs.carried)) {
+              const found1 = (() => { try { return JSON.parse(localStorage.getItem(HAUNT_FOUND) || '[]'); } catch { return []; } })();
+              const l = hauntLegacyFromCarried(hs.carried);
+              greet({ soul: hs.character?.soul || '', handle: hs.character?.handle || '', stats: l.stats, tells: l.tells, letGo: l.letGo, endings: found1.length });
+            }
+          } catch {}
+        }
+      }
+      renderSouls(); updateBegin(); renderSheet();
+    }).catch(() => { createEl.innerHTML = '<p>The reader could not load. Please try again, or read The Understudy as an ebook.</p>'; });
+  }
+
+  document.addEventListener('astro:page-load', init, { once: true });
+  if (document.readyState !== 'loading') init();
+  else document.addEventListener('DOMContentLoaded', init, { once: true });
+</script>

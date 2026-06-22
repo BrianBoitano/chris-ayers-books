@@ -3,6 +3,7 @@ title: The Haunt
 work: encore
 order: 1
 cover: the-haunt.jpg
+audioSampleUrl: /audio/the-haunt-sample.mp3
 ---
 
 You wake on a chaise the colour of old wine, in a parlour cold enough to show your breath, and you do not remember lying down. There is a card on the table, printed in a typeface that belongs on a theatre door, and it says you have been cast.
