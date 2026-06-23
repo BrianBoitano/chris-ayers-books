@@ -1,0 +1,151 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// All playable ENCORE gamebooks, in reading order.
+const books = (await getCollection('books'))
+  .filter((b) => b.data.work === 'encore')
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+// Resolve covers (optimized at build time), same pattern as BookCard.
+const coverModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/covers/*.{jpg,jpeg,png,webp}',
+  { eager: true }
+);
+function coverFor(file?: string): ImageMetadata | undefined {
+  if (!file) return undefined;
+  const base = file.split('/').pop();
+  const hit = Object.entries(coverModules).find(([p]) => p.endsWith('/' + base));
+  return hit?.[1].default;
+}
+
+const ORD = ['One', 'Two', 'Three', 'Four', 'Five'];
+const PITCH: Record<string, string> = {
+  'the-haunt':
+    'Wake in a cold parlour with no memory of dying. A house built out of one soul’s grief, and the way out, the ending the Curator calls winning, costs you the memory of who you lost.',
+  'the-vigil':
+    'A warm house where nobody is allowed to die. Sit the long vigil at the centre of a coven, and the way out asks whether love can finally let the beloved end.',
+  'the-understudy':
+    'A theatre that has already cast you as someone else, an Understudy who plays you better than you do. The way out asks whether you can walk off the stage as your own unremarkable self.',
+  'the-crossing':
+    'A great ocean liner held forever at the last night of her sinking, where the morning never comes. The way out asks whether you can let her finish and surface alone into the cold morning and all the years after it.',
+};
+const STATS: Record<string, string> = {
+  'the-haunt': '193 sections · 44 endings',
+  'the-vigil': '189 sections · 39 endings',
+  'the-understudy': '174 sections · 38 endings',
+  'the-crossing': '181 sections · 38 endings',
+};
+---
+<BaseLayout
+  title="Play ENCORE | Chris Ayers"
+  description="Choose a book in ENCORE, the playable horror anthology. Each one is a free choose-your-path game in your browser, and the character you build carries from book to book."
+>
+  <section class="choose">
+    <header class="choose__head">
+      <p class="choose__eyebrow"><span aria-hidden="true">//</span> NOW PLAYING &#183; FREE IN YOUR BROWSER</p>
+      <h1 class="choose__title">Choose your production</h1>
+      <p class="choose__sub">
+        ENCORE is a horror anthology you <em>play</em>, not just read. Build a character, descend, and the way out
+        always costs the one thing you came to keep. Each book stands alone, but the character you make,
+        their nerve and what they carry and the choices they cannot take back, follows you from one to the next.
+        New here? Start with <a href="/play/the-haunt">The Haunt</a>.
+      </p>
+      <p class="choose__continue" data-continue hidden></p>
+    </header>
+
+    <ol class="choose__grid" role="list">
+      {books.map((b) => {
+        const img = coverFor(b.data.cover);
+        const n = b.data.order ?? 0;
+        return (
+          <li class="bk" style={`--accent:#c8a24a`}>
+            <a class="bk__media" href={`/play/${b.slug}`} aria-label={`Play ${b.data.title}`}>
+              {img
+                ? <Image src={img} alt={`${b.data.title} cover`} width={120} height={192} loading="lazy" />
+                : <span class="bk__ph" aria-hidden="true">?</span>}
+              {n === 1 && <span class="bk__badge">START HERE</span>}
+            </a>
+            <div class="bk__body">
+              <p class="bk__kicker">Book {ORD[n - 1] ?? n} &#183; <span class="bk__meta">{STATS[b.slug] ?? 'live'}</span></p>
+              <h2 class="bk__title">{b.data.title}</h2>
+              <p class="bk__pitch">{PITCH[b.slug] ?? ''}</p>
+              <div class="bk__cta">
+                <a class="bk__btn bk__btn--play" href={`/play/${b.slug}`}><span aria-hidden="true">&#9658;</span> Play free</a>
+                <a class="bk__btn" href={`/books/${b.slug}`}>About this book</a>
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+
+    <p class="choose__note">
+      Your character and progress save automatically in your browser, and a save code lets you carry them to another
+      device or into the next book. Build a character &#183; save across devices &#183; install it to your phone.
+      <a href="/which-soul">Not sure who you are? Let the Curator cast you.</a>
+    </p>
+  </section>
+
+  <script is:inline>
+    // "Continue where you left off": surface the furthest book that has a local save.
+    (function () {
+      try {
+        var books = [
+          { slug: 'the-crossing', title: 'The Crossing', key: 'crossing.save.v1' },
+          { slug: 'the-understudy', title: 'The Understudy', key: 'understudy.save.v1' },
+          { slug: 'the-vigil', title: 'The Vigil', key: 'vigil.save.v1' },
+          { slug: 'the-haunt', title: 'The Haunt', key: 'haunt.save.v2' },
+        ];
+        for (var i = 0; i < books.length; i++) {
+          var raw = localStorage.getItem(books[i].key);
+          if (!raw) continue;
+          var s = JSON.parse(raw);
+          if (s && s.character && s.character.handle) {
+            var el = document.querySelector('[data-continue]');
+            if (el) {
+              el.innerHTML =
+                'Welcome back, <b>' + (s.character.handle + '').replace(/[<>&]/g, '') +
+                '</b>. <a href="/play/' + books[i].slug + '">Continue ' + books[i].title + ' &#8594;</a>';
+              el.hidden = false;
+            }
+            break;
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    .choose { max-width: 1040px; margin-inline: auto; padding: clamp(2.5rem,6vh,4.5rem) var(--space); }
+    .choose__eyebrow { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cy-red); }
+    .choose__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem,6vw,3.4rem); text-transform: uppercase; letter-spacing: -0.02em; color: var(--ink); margin: 0.6rem 0 0.5rem; }
+    .choose__sub { color: var(--ink); line-height: 1.7; max-width: 64ch; }
+    .choose__sub em { color: var(--cy-red); font-style: italic; }
+    .choose__sub a, .choose__note a, .choose__continue a { color: var(--cy-yellow); }
+    .choose__continue { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink);
+      border: 1px solid var(--line); border-left: 3px solid var(--cy-yellow); padding: 0.6rem 0.8rem; background: rgba(8,8,12,.55); }
+    .choose__grid { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 1.1rem; counter-reset: bk; }
+    @media (min-width: 760px) { .choose__grid { grid-template-columns: 1fr 1fr; } }
+    .bk { display: flex; gap: 1rem; padding: 1rem; background: rgba(8,8,12,.72); border: 1px solid var(--line);
+      clip-path: polygon(0 0,100% 0,100% 95%,97% 100%,0 100%); }
+    .bk__media { position: relative; flex: 0 0 120px; display: block; }
+    .bk__media img { width: 120px; height: 192px; object-fit: cover; border: 1px solid var(--accent); display: block; }
+    .bk__ph { display: flex; width: 120px; height: 192px; align-items: center; justify-content: center; border: 1px dashed var(--accent); color: var(--accent); font-size: 32px; }
+    .bk__badge { position: absolute; top: 6px; left: -4px; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.12em; background: var(--cy-red); color: #fff; padding: 0.15rem 0.4rem; }
+    .bk__body { display: flex; flex-direction: column; min-width: 0; }
+    .bk__kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0; }
+    .bk__meta { color: var(--muted); }
+    .bk__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem,3.4vw,1.7rem); color: var(--ink); margin: 0.25rem 0 0.4rem; }
+    .bk__pitch { color: var(--ink); line-height: 1.55; font-size: 0.9rem; margin: 0 0 0.9rem; }
+    .bk__cta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: auto; }
+    .bk__btn { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+      border: 1px solid var(--line); color: var(--ink); padding: 0.45rem 0.7rem; }
+    .bk__btn:hover { color: var(--cy-yellow); border-color: var(--cy-yellow); }
+    .bk__btn--play { background: var(--cy-red); color: #fff; border-color: var(--cy-red); font-weight: 700; }
+    .bk__btn--play:hover { color: #fff; filter: brightness(1.1); border-color: var(--cy-red); }
+    .choose__note { margin-top: 2rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); line-height: 1.7; max-width: 70ch; }
+  </style>
+</BaseLayout>
