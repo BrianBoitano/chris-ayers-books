@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { readFileSync } from 'node:fs';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 // All playable ENCORE gamebooks, in reading order.
@@ -22,22 +23,17 @@ function coverFor(file?: string): ImageMetadata | undefined {
 }
 
 const ORD = ['One', 'Two', 'Three', 'Four', 'Five'];
-const PITCH: Record<string, string> = {
-  'the-haunt':
-    'Wake in a cold parlour with no memory of dying. A house built out of one soul’s grief, and the way out, the ending the Curator calls winning, costs you the memory of who you lost.',
-  'the-vigil':
-    'A warm house where nobody is allowed to die. Sit the long vigil at the centre of a coven, and the way out asks whether love can finally let the beloved end.',
-  'the-understudy':
-    'A theatre that has already cast you as someone else, an Understudy who plays you better than you do. The way out asks whether you can walk off the stage as your own unremarkable self.',
-  'the-crossing':
-    'A great ocean liner held forever at the last night of her sinking, where the morning never comes. The way out asks whether you can let her finish and surface alone into the cold morning and all the years after it.',
-};
-const STATS: Record<string, string> = {
-  'the-haunt': '193 sections · 44 endings',
-  'the-vigil': '189 sections · 39 endings',
-  'the-understudy': '174 sections · 38 endings',
-  'the-crossing': '181 sections · 38 endings',
-};
+
+// Stats are derived from each book's compiled play graph, so a new book needs no
+// edit here: drop in its play.json + a `blurb` in the book's frontmatter and it
+// lists itself.
+function statsFor(slug: string): string {
+  try {
+    const g = JSON.parse(readFileSync(`./public/play/${slug}.json`, 'utf8'));
+    if (g.total && g.endings) return `${g.total} sections · ${g.endings} endings`;
+  } catch {}
+  return 'live';
+}
 ---
 <BaseLayout
   title="Play ENCORE | Chris Ayers"
@@ -69,9 +65,9 @@ const STATS: Record<string, string> = {
               {n === 1 && <span class="bk__badge">START HERE</span>}
             </a>
             <div class="bk__body">
-              <p class="bk__kicker">Book {ORD[n - 1] ?? n} &#183; <span class="bk__meta">{STATS[b.slug] ?? 'live'}</span></p>
+              <p class="bk__kicker">Book {ORD[n - 1] ?? n} &#183; <span class="bk__meta">{statsFor(b.slug)}</span></p>
               <h2 class="bk__title">{b.data.title}</h2>
-              <p class="bk__pitch">{PITCH[b.slug] ?? ''}</p>
+              <p class="bk__pitch">{b.data.blurb ?? ''}</p>
               <div class="bk__cta">
                 <a class="bk__btn bk__btn--play" href={`/play/${b.slug}`}><span aria-hidden="true">&#9658;</span> Play free</a>
                 <a class="bk__btn" href={`/books/${b.slug}`}>About this book</a>

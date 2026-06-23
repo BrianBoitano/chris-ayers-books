@@ -1,6 +1,7 @@
 ---
 title: The Haunt
 work: encore
+blurb: "Wake in a cold parlour with no memory of dying. A house built out of one soul's grief, and the way out, the ending the Curator calls winning, costs you the memory of who you lost."
 order: 1
 cover: the-haunt.jpg
 audioSampleUrl: /audio/the-haunt-sample.mp3

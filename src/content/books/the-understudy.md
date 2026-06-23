@@ -1,6 +1,7 @@
 ---
 title: The Understudy
 work: encore
+blurb: "A theatre that has already cast you as someone else, an Understudy who plays you better than you do. The way out asks whether you can walk off the stage as your own unremarkable self."
 order: 3
 audioSampleUrl: /audio/the-understudy-sample.mp3
 cover: the-understudy.jpg

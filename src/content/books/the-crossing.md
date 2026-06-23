@@ -1,6 +1,7 @@
 ---
 title: The Crossing
 work: encore
+blurb: "A great ocean liner held forever at the last night of her sinking, where the morning never comes. The way out asks whether you can let her finish and surface alone into the cold morning and all the years after it."
 order: 4
 audioSampleUrl: /audio/the-crossing-sample.mp3
 cover: the-crossing.jpg

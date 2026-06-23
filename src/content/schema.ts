@@ -25,6 +25,7 @@ export const bookSchema = z.object({
   work: z.string(), // parent work slug
   order: z.number().int(),
   cover: z.string().optional(),
+  blurb: z.string().optional(), // one-line pitch for the /play chooser
   amazonUrl: z.string().url().optional(),
   paperbackUrl: z.string().url().optional(),
   audiobookUrl: z.string().url().optional(),

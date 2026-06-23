@@ -1,6 +1,7 @@
 ---
 title: The Vigil
 work: encore
+blurb: "A warm house where nobody is allowed to die. Sit the long vigil at the centre of a coven, and the way out asks whether love can finally let the beloved end."
 order: 2
 audioSampleUrl: /audio/the-vigil-sample.mp3
 cover: the-vigil.jpg
