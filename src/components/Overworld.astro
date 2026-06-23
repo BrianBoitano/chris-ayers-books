@@ -126,6 +126,16 @@ const polyPoints = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${y}`)
     font-weight:700; font-size:12px; letter-spacing:.12em; clip-path:polygon(0 0,100% 0,100% 64%,90% 100%,0 100%);
     box-shadow:0 0 18px rgba(255,43,214,.6); }
   .ow-secret[hidden] { display:none; }
+
+  @media (max-width: 640px) {
+    .overworld { height:auto; min-height:0; overflow:visible; display:flex; flex-direction:column; gap:12px; padding:16px 14px 22px; margin:8px 0; }
+    .ow-net, .ow-grid, .ow-cursor, .ow-scroll, .ow-vig, .ow-scan { display:none !important; }
+    .ow-title { position:static; }
+    .ow-title h2 { font-size:20px; }
+    .ow-welcome { max-width:none; }
+    .ow-hud { position:static; background:none; padding:10px 0 0; flex-wrap:wrap; gap:10px; }
+    .ow-secret { display:none !important; }
+  }
 </style>
 
 <script>

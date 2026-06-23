@@ -101,4 +101,9 @@ const Tag = locked ? 'button' : 'a';
   @media (prefers-reduced-motion: no-preference) {
     .net-tip { transition:opacity .15s ease, visibility .15s ease; }
   }
+
+  @media (max-width: 640px) {
+    .net-node { position:static !important; width:100% !important; transform:none !important; }
+    .net-tip { display:none !important; }
+  }
 </style>

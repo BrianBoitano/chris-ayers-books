@@ -14,22 +14,33 @@ const ld = worksLd(
 );
 const latest = (await getCollection('transmissions')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())[0];
 const latestDate = latest ? latest.data.date.toISOString().slice(0, 10) : '';
+
+// ENCORE playable books, in reading order. The "now playing" band is generated from
+// this, so a new book needs no homepage edit.
+const encoreBooks = (await getCollection('books'))
+  .filter((b) => b.data.work === 'encore')
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+const encoreFirst = encoreBooks[0];
+const encoreLatest = encoreBooks[encoreBooks.length - 1];
+const ORDW = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+const ordWord = (n?: number) => (n && ORDW[n - 1]) || String(n ?? '');
 ---
 <BaseLayout title={`${SITE_NAME} | Choose Your World`} description={SITE_TAGLINE} jsonLd={ld} image={new URL('/og/default.png', Astro.site).href}>
   <Overworld works={works} />
   <div class="home-split">
-  <section class="playnow" aria-label="Play The Haunt">
+  <section class="playnow" aria-label="Play ENCORE">
     <div class="playnow__inner">
       <p class="playnow__eyebrow"><span aria-hidden="true">//</span> NOW PLAYING &#183; FREE IN YOUR BROWSER</p>
-      <h2 class="playnow__h">The Haunt is a horror you <em>play</em>, not just read.</h2>
-      <p class="playnow__copy">Wake in a cold parlour with no memory of dying. Build a character, descend a house built out of grief, and the house remembers what you carry. The way out, the ending the Curator calls winning, costs you the very thing you came to keep. 193 sections, 44 endings, one true way down.</p>
+      <h2 class="playnow__h">ENCORE is a horror you <em>play</em>, not just read.</h2>
+      <p class="playnow__copy">A horror anthology of choose-your-path novellas. Build a character, descend, and the way out, the ending the Curator calls winning, always costs the one thing you came to keep. {encoreBooks.length} book{encoreBooks.length === 1 ? '' : 's'} and counting, one company of the dead recast each time, and the character you make carries through all of them.</p>
       <div class="playnow__cta">
-        <a class="playnow__btn playnow__btn--play" href="/play/the-haunt"><span aria-hidden="true">&#9658;</span> Play The Haunt free</a>
+        <a class="playnow__btn playnow__btn--play" href="/play"><span aria-hidden="true">&#9658;</span> Browse all {encoreBooks.length} books</a>
+        {encoreFirst && <a class="playnow__btn" href={`/play/${encoreFirst.slug}`}>Start with {encoreFirst.data.title}</a>}
         <a class="playnow__btn" href="/which-soul">Which of the Company are you?</a>
       </div>
-      <p class="playnow__book2"><span aria-hidden="true">&#9658;</span> <a href="/play/the-vigil">Book Two: The Vigil</a> is live. Bring the character you built in The Haunt to a warm house where nobody is allowed to die, and the way out asks whether love can let the beloved end. 189 sections, 39 endings.</p>
-      <p class="playnow__book2"><span aria-hidden="true">&#9658;</span> <a href="/play/the-understudy">Book Three: The Understudy</a> is live. Carry your character into a theatre that has already cast you as someone else, and the way out asks whether you can walk off the stage as yourself. 174 sections, 38 endings.</p>
-      <p class="playnow__book2"><span aria-hidden="true">&#9658;</span> <a href="/play/the-crossing">Book Four: The Crossing</a> is live. Bring your character aboard a great liner held at the last night of her sinking, and the way out asks whether you can let her finish and surface alone into the cold morning. 181 sections, 38 endings.</p>
+      {encoreLatest && (
+        <p class="playnow__book2"><span aria-hidden="true">&#9658;</span> Newest: <a href={`/play/${encoreLatest.slug}`}>Book {ordWord(encoreLatest.data.order)}: {encoreLatest.data.title}</a> is live. {encoreLatest.data.blurb}</p>
+      )}
       <p class="playnow__meta">Build a character &#183; save across devices &#183; install it to your phone</p>
     </div>
   </section>

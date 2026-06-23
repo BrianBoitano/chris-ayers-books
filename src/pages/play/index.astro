@@ -49,10 +49,13 @@ function statsFor(slug: string): string {
         their nerve and what they carry and the choices they cannot take back, follows you from one to the next.
         New here? Start with <a href="/play/the-haunt">The Haunt</a>.
       </p>
+      <p class="choose__count">{books.length} book{books.length === 1 ? '' : 's'}, in reading order. Scroll the shelf to browse, or jump in anywhere.</p>
       <p class="choose__continue" data-continue hidden></p>
     </header>
 
-    <ol class="choose__grid" role="list">
+    <div class="choose__rail">
+      <button class="choose__arrow choose__arrow--prev" type="button" data-rail-prev aria-label="Scroll back" hidden>&#8249;</button>
+      <ol class="choose__grid" role="list" data-rail tabindex="0" aria-label="ENCORE books">
       {books.map((b) => {
         const img = coverFor(b.data.cover);
         const n = b.data.order ?? 0;
@@ -76,7 +79,9 @@ function statsFor(slug: string): string {
           </li>
         );
       })}
-    </ol>
+      </ol>
+      <button class="choose__arrow choose__arrow--next" type="button" data-rail-next aria-label="Scroll forward" hidden>&#8250;</button>
+    </div>
 
     <section class="carry" aria-labelledby="carry-h">
       <h2 class="carry__h" id="carry-h">Your character carries from book to book</h2>
@@ -150,6 +155,26 @@ function statsFor(slug: string): string {
         }
       } catch (e) {}
     })();
+
+    // Shelf arrows: scroll by one card; show only when there is somewhere to go.
+    (function () {
+      var rail = document.querySelector('[data-rail]');
+      var prev = document.querySelector('[data-rail-prev]');
+      var next = document.querySelector('[data-rail-next]');
+      if (!rail || !prev || !next) return;
+      function step() { var c = rail.querySelector('.bk'); return (c ? c.getBoundingClientRect().width : 300) + 16; }
+      function update() {
+        var max = rail.scrollWidth - rail.clientWidth;
+        var has = max > 4;
+        prev.hidden = !has || rail.scrollLeft <= 2;
+        next.hidden = !has || rail.scrollLeft >= max - 2;
+      }
+      prev.addEventListener('click', function () { rail.scrollBy({ left: -step(), behavior: 'smooth' }); });
+      next.addEventListener('click', function () { rail.scrollBy({ left: step(), behavior: 'smooth' }); });
+      rail.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
   </script>
 
   <style>
@@ -161,13 +186,27 @@ function statsFor(slug: string): string {
     .choose__sub a, .choose__note a, .choose__continue a { color: var(--cy-yellow); }
     .choose__continue { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink);
       border: 1px solid var(--line); border-left: 3px solid var(--cy-yellow); padding: 0.6rem 0.8rem; background: rgba(8,8,12,.55); }
-    .choose__grid { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 1.1rem; counter-reset: bk; }
-    @media (min-width: 760px) { .choose__grid { grid-template-columns: 1fr 1fr; } }
-    .bk { display: flex; gap: 1rem; padding: 1rem; background: rgba(8,8,12,.72); border: 1px solid var(--line);
-      clip-path: polygon(0 0,100% 0,100% 95%,97% 100%,0 100%); }
-    .bk__media { position: relative; flex: 0 0 120px; display: block; }
-    .bk__media img { width: 120px; height: 192px; object-fit: cover; border: 1px solid var(--accent); display: block; }
-    .bk__ph { display: flex; width: 120px; height: 192px; align-items: center; justify-content: center; border: 1px dashed var(--accent); color: var(--accent); font-size: 32px; }
+    .choose__count { margin-top: 0.8rem; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cy-cyan); opacity: 0.85; }
+    /* Horizontal shelf: scales to any number of books, swipe on touch, arrows on desktop. */
+    .choose__rail { position: relative; margin: 1.4rem 0 0; }
+    .choose__grid { list-style: none; margin: 0; padding: 0.3rem 0.2rem 1.1rem; display: flex; gap: 1rem;
+      overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 0.2rem; -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+    .choose__grid::-webkit-scrollbar { height: 8px; }
+    .choose__grid::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+    .bk { scroll-snap-align: start; flex: 0 0 clamp(258px, 80vw, 340px); display: flex; gap: 0.9rem; padding: 1rem;
+      background: rgba(8,8,12,.72); border: 1px solid var(--line); clip-path: polygon(0 0,100% 0,100% 95%,97% 100%,0 100%); }
+    .bk__media { position: relative; flex: 0 0 110px; display: block; }
+    .bk__media img { width: 110px; height: 176px; object-fit: cover; border: 1px solid var(--accent); display: block; }
+    .bk__ph { display: flex; width: 110px; height: 176px; align-items: center; justify-content: center; border: 1px dashed var(--accent); color: var(--accent); font-size: 32px; }
+    .choose__arrow { position: absolute; top: calc(50% - 0.55rem); transform: translateY(-50%); z-index: 5; width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.6rem; line-height: 1;
+      background: rgba(8,8,12,.92); color: var(--ink); border: 1px solid var(--line); cursor: pointer; }
+    .choose__arrow:hover { color: var(--cy-yellow); border-color: var(--cy-yellow); }
+    .choose__arrow--prev { left: -8px; }
+    .choose__arrow--next { right: -8px; }
+    .choose__arrow[hidden] { display: none; }
+    @media (hover: none) { .choose__arrow { display: none !important; } }
     .bk__badge { position: absolute; top: 6px; left: -4px; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.12em; background: var(--cy-red); color: #fff; padding: 0.15rem 0.4rem; }
     .bk__body { display: flex; flex-direction: column; min-width: 0; }
     .bk__kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0; }
