@@ -82,9 +82,47 @@ const STATS: Record<string, string> = {
       })}
     </ol>
 
+    <section class="carry" aria-labelledby="carry-h">
+      <h2 class="carry__h" id="carry-h">Your character carries from book to book</h2>
+      <p class="carry__lead">
+        ENCORE is one company of the dead, recast into a new nightmare each book. The person you play is yours, and
+        they come with you. Here is how it works.
+      </p>
+      <ol class="carry__steps" role="list">
+        <li class="carry__step">
+          <span class="carry__num">1</span>
+          <div>
+            <b>You build a character.</b> Pick a handle and one of the Company to be, or
+            <a href="/which-soul">let the Curator cast you</a>. As you play, the choices you make become the stats and
+            the things you carry: your nerve, your insight, your grip, and the items, mercies, and refusals that mark you.
+          </div>
+        </li>
+        <li class="carry__step">
+          <span class="carry__num">2</span>
+          <div>
+            <b>It saves itself, and you get a code.</b> Your character and your place in the story save automatically in
+            your browser, so you can close the tab and come back. Tap <i>Save to the cloud</i> and you get a short save
+            code. Type that code into any book on any device and your character appears there, exactly as you left them.
+          </div>
+        </li>
+        <li class="carry__step">
+          <span class="carry__num">3</span>
+          <div>
+            <b>The next book remembers.</b> When you reach an ending, the book writes down who you became: your soul,
+            your stats, the tells you earned, and the one big choice you could not take back. The next book reads that
+            and recasts you. It greets you by name, and the house bends around what you did, the doors it opens for you
+            and the ones it will not, are shaped by the player you have already been.
+          </div>
+        </li>
+      </ol>
+      <p class="carry__free">
+        <span aria-hidden="true">&#9733;</span> And reaching an ending is its own reward: finish any book and that book's
+        ebook is yours, free, to keep and read again or pass along. The download appears when the curtain falls.
+      </p>
+    </section>
+
     <p class="choose__note">
-      Your character and progress save automatically in your browser, and a save code lets you carry them to another
-      device or into the next book. Build a character &#183; save across devices &#183; install it to your phone.
+      Build a character &#183; save across devices &#183; install it to your phone.
       <a href="/which-soul">Not sure who you are? Let the Curator cast you.</a>
     </p>
   </section>
@@ -146,6 +184,18 @@ const STATS: Record<string, string> = {
     .bk__btn:hover { color: var(--cy-yellow); border-color: var(--cy-yellow); }
     .bk__btn--play { background: var(--cy-red); color: #fff; border-color: var(--cy-red); font-weight: 700; }
     .bk__btn--play:hover { color: #fff; filter: brightness(1.1); border-color: var(--cy-red); }
+    .carry { margin-top: 2.6rem; border-top: 1px solid var(--line); padding-top: 1.8rem; }
+    .carry__h { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.4rem,3.6vw,2rem); color: var(--ink); margin: 0 0 0.5rem; }
+    .carry__lead { color: var(--ink); line-height: 1.7; max-width: 64ch; margin: 0 0 1.3rem; }
+    .carry__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; max-width: 70ch; }
+    .carry__step { display: flex; gap: 0.9rem; align-items: flex-start; line-height: 1.6; color: var(--ink); }
+    .carry__step b { color: var(--cy-yellow); font-weight: 700; }
+    .carry__step a { color: var(--cy-yellow); }
+    .carry__num { flex: 0 0 1.7rem; height: 1.7rem; display: inline-flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 0.85rem; color: #fff; background: var(--cy-red); border-radius: 50%; }
+    .carry__free { margin-top: 1.4rem; color: var(--ink); line-height: 1.65; max-width: 66ch;
+      border: 1px solid var(--line); border-left: 3px solid var(--cy-yellow); padding: 0.7rem 0.9rem; background: rgba(8,8,12,.55); }
+    .carry__free span { color: var(--cy-yellow); }
     .choose__note { margin-top: 2rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); line-height: 1.7; max-width: 70ch; }
   </style>
 </BaseLayout>

@@ -527,6 +527,21 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
       sceneEl.classList.add('on');
     }
 
+    const REWARD_SLUG = 'the-crossing';
+    const REWARD_TITLE = 'The Crossing';
+    function rewardEl() {
+      const d = document.createElement('div');
+      d.style.cssText = 'margin:1.5rem auto 0;max-width:34rem;border-top:1px solid #3a3225;padding-top:1.1rem;text-align:center';
+      d.innerHTML = '<p style="color:#c8a24a;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem;margin:0 0 .35rem">A gift for reaching an ending</p>'
+        + '<p style="color:#cfc6b2;font-size:.92rem;line-height:1.55;margin:0 0 .8rem">You played ' + REWARD_TITLE + ' to an ending, so the ebook is yours, free. Keep it, read it again, or send it to someone.</p>';
+      const a = document.createElement('a');
+      a.className = 'haunt__btn';
+      a.href = '/ebooks/' + REWARD_SLUG + '.epub';
+      a.setAttribute('download', '');
+      a.textContent = 'Download the ' + REWARD_TITLE + ' ebook (EPUB)';
+      d.appendChild(a);
+      return d;
+    }
     function render(sec: Sec) {
       setScene(sec.n);
       bgEl.style.background = MOOD_BG[sec.mood || 'neutral'] || 'transparent';
@@ -559,6 +574,7 @@ const ogImage = new URL('/covers/the-haunt.jpg', Astro.site).href;
           endingEl.innerHTML = `<p class="haunt__curator-remark">${esc(remark)}</p><p class="end-mark">An ending</p><p class="haunt__meta">Endings found: ${found.size} of ${game.endings}</p>`;
           endingEl.appendChild(button('Begin again', restart, true));
         }
+        if (!sec.bridge) endingEl.appendChild(rewardEl());
       } else {
         for (const ch of sec.choices) {
           const lockedReq = ch.requires && !carried.has(ch.requires);
